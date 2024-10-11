@@ -27,3 +27,8 @@ public class ReverseInteger {
         System.out.println(ri.reverse(1534236469)); // Output: 0 (overflow)
     }
 }
+
+
+//Complexity
+//Time Complexity: O(log(x)), where x is the input number, since the number of digits is logarithmic with respect to its value.
+//Space Complexity: O(1) since we are using a constant amount of space.
