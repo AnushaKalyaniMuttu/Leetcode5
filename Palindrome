@@ -15,6 +15,10 @@ public class Solution {
             x /= 10;
         }
 
+
+
+
+
         // Check if the original number is the same as the reversed number
         return original == reversed;
     }
