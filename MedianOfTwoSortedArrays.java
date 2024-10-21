@@ -53,3 +53,6 @@ public class MedianOfTwoSortedArrays {
         System.out.println(solution.findMedianSortedArrays(nums3, nums4)); // Output: 2.5
     }
 }
+
+//Time Complexity: O(log(min(n, m)))
+//Space Complexity: O(1)
