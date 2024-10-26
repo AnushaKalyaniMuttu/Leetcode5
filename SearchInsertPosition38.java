@@ -40,3 +40,17 @@ public class SearchInsertPosition38 {
         System.out.println("Insert Position: " + result); // Output: 0
     }
 }
+
+
+/*
+Complexity Analysis
+•	Time Complexity:
+o	)O(logN), where N is the length of the array. The binary search reduces the search space logarithmically.
+•	Space Complexity:
+o	O(1). The algorithm uses a constant amount of space for pointers and variables.
+Summary
+This binary search approach efficiently finds the index at which a target should be inserted into a sorted array with:
+•	Optimal Time Complexity: O(logN)
+•	Optimal Space Complexity: O(1)
+
+    */
