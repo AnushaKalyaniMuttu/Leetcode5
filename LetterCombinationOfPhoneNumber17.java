@@ -49,3 +49,19 @@ public class LetterCombinationOfPhoneNumber17 {
         System.out.println(combinations);
     }
 }
+
+
+
+/* Time Complexity: 
+𝑂(4𝑁)
+O(4N) in the worst case, where 𝑁
+N is the length of the input digits. Each digit can map to up to 4 letters (e.g., the digit '7').
+
+Space Complexity:
+Recursive Call Stack: 
+𝑂(𝑁)
+O(N) due to the depth of recursion.
+Result Storage: 
+𝑂(4𝑁)
+O(4 N ) for storing all possible combinations.
+    */
