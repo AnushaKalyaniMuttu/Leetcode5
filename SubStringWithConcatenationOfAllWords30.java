@@ -55,3 +55,18 @@ class SubStringWithConcatenationOfAllWords30 {
   
 }
 }
+
+
+/*
+Complexity Analysis
+•	Time Complexity:
+o	O(N), where N is the length of the string s. Each character is processed a constant number of times due to the sliding window technique.
+•	Space Complexity:
+o	O(W), where W is the number of unique words in the list, as we store their frequencies.
+Summary
+This approach effectively uses a single sliding window to check for valid substrings by managing the counts of words found in the current window, ensuring:
+•	Time Complexity: O(N)
+•	Space Complexity: O(W)
+
+
+        */
