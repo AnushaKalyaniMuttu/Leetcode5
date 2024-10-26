@@ -39,3 +39,7 @@ public class 3SumCloset16 {
         System.out.println(solution.threeSumClosest(nums, target)); // Output: 2
     }
 }
+
+
+//time complexity O(n2)
+//Space complexity O(1)
