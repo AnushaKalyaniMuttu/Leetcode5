@@ -58,7 +58,6 @@ o	Result Storage: The space to store the results can also grow based on the numb
 Thus, the space complexity can be summarized as:
 O(n)+O(number of unique combinations)O(n) + O(\text{number of unique combinations})O(n)+O(number of unique combinations)
 Summary
-•	Time Complexity: O(2n)O(2^n)O(2n) (with optimizations due to duplicate handling)
-•	Space Complexity: O(n)+O(number of unique combinations)O(n) + O(\text{number of unique combinations})O(n)+O(number of unique combinations)
-
+•	Time Complexity: O(2^n) (with optimizations due to duplicate handling)
+•	Space Complexity: O(n)+O(number of unique combinations)
   */
