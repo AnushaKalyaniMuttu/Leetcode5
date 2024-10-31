@@ -31,3 +31,12 @@ public class Subsets79 {
         }
     }
 }
+
+/*
+Time Complexity
+The time complexity is O(2^n), where n is the number of elements in the input array, as each element can either be included or excluded from a subset.
+
+Space Complexity
+The space complexity is O(n) for the current subset and O(2^n) for the result list, which stores all subsets.
+
+    */
