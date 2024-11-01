@@ -47,3 +47,13 @@ public class MaximalRectangle85 {
         return maxArea;
     }
 }
+
+
+/*
+Time Complexity
+The algorithm runs in O(m * n) time, where m is the number of rows and n is the number of columns in the matrix, 
+since each cell is processed a constant number of times. The space complexity is O(n) for the heights array and the stack.
+
+
+
+    */
