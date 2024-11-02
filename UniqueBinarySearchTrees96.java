@@ -1,4 +1,4 @@
-public class Solution {
+public class UniqueBinarySearchTrees96 {
     public int numTrees(int n) {
         if (n <= 0) return 0;
 
