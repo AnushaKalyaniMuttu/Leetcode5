@@ -42,3 +42,9 @@ public class Solution {
         System.out.println(traversal); // Output: [1, 3, 2]
     }
 }
+
+/*
+Complexity Analysis
+•	Time Complexity: O(N), where N is the number of nodes in the tree since each node is processed exactly once.
+•	Space Complexity: O(H), where H is the height of the tree. This space is used by the stack for the iterative approach and the recursion stack for the recursive approach.
+*/
