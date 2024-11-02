@@ -45,3 +45,9 @@ public class ValidateBinarySearchTree98 {
         System.out.println("Is valid BST (root2): " + sol.isValidBST(root2)); // Output: false
     }
 }
+
+/*
+•  Time Complexity: O(N), where N is the number of nodes in the tree, since each node is visited once.
+•  Space Complexity: O(H), where H is the height of the tree, due to the recursive stack space. In the worst case (for an unbalanced tree), this could be O(N)
+
+    */
