@@ -1,0 +1,43 @@
+import java.util.HashMap;
+
+public class Solution {
+    public TreeNode buildTree(int[] inorder, int[] postorder) {
+        HashMap<Integer, Integer> inorderMap = new HashMap<>();
+        
+        // Map each value to its index in inorder array for quick lookup
+        for (int i = 0; i < inorder.length; i++) {
+            inorderMap.put(inorder[i], i);
+        }
+        
+        // Start recursion with the entire range
+        return buildTreeHelper(postorder, 0, postorder.length - 1, 
+                               inorder, 0, inorder.length - 1, inorderMap);
+    }
+
+    private TreeNode buildTreeHelper(int[] postorder, int postStart, int postEnd, 
+                                     int[] inorder, int inStart, int inEnd, 
+                                     HashMap<Integer, Integer> inorderMap) {
+        // Base case
+        if (postStart > postEnd || inStart > inEnd) {
+            return null;
+        }
+        
+        // The last element in postorder is the root of the current subtree
+        int rootVal = postorder[postEnd];
+        TreeNode root = new TreeNode(rootVal);
+        
+        // Find the index of the root in inorder traversal
+        int rootIndex = inorderMap.get(rootVal);
+        
+        // Calculate the size of the left subtree
+        int leftSize = rootIndex - inStart;
+        
+        // Recursively build the left and right subtrees
+        root.left = buildTreeHelper(postorder, postStart, postStart + leftSize - 1, 
+                                    inorder, inStart, rootIndex - 1, inorderMap);
+        root.right = buildTreeHelper(postorder, postStart + leftSize, postEnd - 1, 
+                                     inorder, rootIndex + 1, inEnd, inorderMap);
+        
+        return root;
+    }
+}
