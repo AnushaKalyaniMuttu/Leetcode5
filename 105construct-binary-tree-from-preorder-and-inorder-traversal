@@ -1,0 +1,56 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        // Create a map to store the index of each value in inorder for faster lookup
+        Map<Integer, Integer> inorderMap = new HashMap<>();
+        for (int i = 0; i < inorder.length; i++) {
+            inorderMap.put(inorder[i], i);
+        }
+
+        // Initialize the index for preorder traversal
+        int[] preorderIndex = {0};
+
+        // Call the recursive helper function to build the tree
+        return build(preorder, inorder, preorderIndex, 0, inorder.length - 1, inorderMap);
+    }
+
+    private TreeNode build(int[] preorder, int[] inorder, int[] preorderIndex, 
+                           int inLeft, int inRight, Map<Integer, Integer> inorderMap) {
+        // Base case: If there is no range to build from
+        if (inLeft > inRight) {
+            return null;
+        }
+
+        // Get the root value from preorder traversal
+        int rootVal = preorder[preorderIndex[0]];
+        TreeNode root = new TreeNode(rootVal);
+        
+        // Move to the next element in preorder
+        preorderIndex[0]++;
+
+        // Find the index of root value in inorder array
+        int inorderRootIndex = inorderMap.get(rootVal);
+
+        // Build left subtree (elements to the left of root in inorder)
+        root.left = build(preorder, inorder, preorderIndex, inLeft, inorderRootIndex - 1, inorderMap);
+        
+        // Build right subtree (elements to the right of root in inorder)
+        root.right = build(preorder, inorder, preorderIndex, inorderRootIndex + 1, inRight, inorderMap);
+
+        return root;
+    }
+}
