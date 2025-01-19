@@ -1,0 +1,61 @@
+/*
+// Definition for a Node.
+class Node {
+    public int val;
+    public Node left;
+    public Node right;
+    public Node next;
+
+    public Node() {}
+    
+    public Node(int _val) {
+        val = _val;
+    }
+
+    public Node(int _val, Node _left, Node _right, Node _next) {
+        val = _val;
+        left = _left;
+        right = _right;
+        next = _next;
+    }
+};
+*/
+
+class Solution {
+    public Node connect(Node root) {
+        if (root == null) return null;
+
+        // Initialize the first node of the current level
+        Node currentLevelStart = root;
+
+        while (currentLevelStart != null) {
+            // Dummy node to help with linking nodes in the next level
+            Node dummy = new Node(0);
+            Node current = dummy;
+
+            // Traverse the current level
+            Node node = currentLevelStart;
+            while (node != null) {
+                // Link the left child if it exists
+                if (node.left != null) {
+                    current.next = node.left;
+                    current = current.next;
+                }
+
+                // Link the right child if it exists
+                if (node.right != null) {
+                    current.next = node.right;
+                    current = current.next;
+                }
+
+                // Move to the next node in the current level
+                node = node.next;
+            }
+
+            // Move to the next level
+            currentLevelStart = dummy.next;
+        }
+
+        return root;
+    }
+}
