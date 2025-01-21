@@ -1,0 +1,21 @@
+class Solution {
+  public int maxProfit(int[] prices) {
+        // Edge case: If prices array is empty or contains only one element
+        if (prices == null || prices.length < 2) {
+            return 0;
+        }
+
+        int totalProfit = 0;
+        
+        // Loop through the prices array
+        for (int i = 1; i < prices.length; i++) {
+            // If there's a price increase between consecutive days, take the profit
+            if (prices[i] > prices[i - 1]) {
+                totalProfit += prices[i] - prices[i - 1];
+            }
+        }
+
+        return totalProfit;
+    }
+
+}
