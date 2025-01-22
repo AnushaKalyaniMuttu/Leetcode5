@@ -1,0 +1,30 @@
+class Solution {
+   public int maxProfit(int[] prices) {
+        if (prices == null || prices.length == 0) {
+            return 0;
+        }
+
+        int n = prices.length;
+        
+        // dp[k][i] represents the maximum profit with at most k transactions by day i.
+        int[][] dp = new int[3][n];  // We need 3 because we consider 0, 1, or 2 transactions.
+
+        // Loop through the number of transactions (1 and 2 transactions).
+        for (int k = 1; k <= 2; k++) {
+            // Initialize max_diff which stores the maximum value of dp[k-1][j] - prices[j].
+            int max_diff = -prices[0];
+            
+            // Loop through all the days.
+            for (int i = 1; i < n; i++) {
+                // Max profit of day i with at most k transactions
+                dp[k][i] = Math.max(dp[k][i - 1], prices[i] + max_diff);
+                
+                // Update max_diff: The maximum of current max_diff and dp[k-1][i] - prices[i]
+                max_diff = Math.max(max_diff, dp[k - 1][i] - prices[i]);
+            }
+        }
+        
+        // The answer is the maximum profit achievable with 2 transactions by the last day.
+        return dp[2][n - 1];
+    }
+}
