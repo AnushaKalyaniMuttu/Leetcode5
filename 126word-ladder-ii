@@ -1,0 +1,93 @@
+public List<List<String>> findLadders(String beginWord, String endWord, List<String> wordList) {
+        List<List<String>> result = new ArrayList<>();
+        Set<String> wordSet = new HashSet<>(wordList);
+        
+        // If the end word is not in the word list, return an empty result.
+        if (!wordSet.contains(endWord)) return result;
+        
+        // Use a queue for BFS.
+        Queue<String> queue = new LinkedList<>();
+        queue.offer(beginWord);
+        
+        // A map to track the parent nodes for backtracking.
+        Map<String, List<String>> parents = new HashMap<>();
+        Set<String> visited = new HashSet<>();
+        visited.add(beginWord);
+        
+        boolean foundEnd = false;
+        boolean levelFound = false;
+        
+        while (!queue.isEmpty() && !foundEnd) {
+            Set<String> levelVisited = new HashSet<>();
+            
+            // Process the current level
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                String word = queue.poll();
+                char[] wordArray = word.toCharArray();
+                
+                // Try changing each character of the word.
+                for (int j = 0; j < word.length(); j++) {
+                    char originalChar = wordArray[j];
+                    
+                    // Try all possible characters for word[j]
+                    for (char c = 'a'; c <= 'z'; c++) {
+                        if (c == originalChar) continue;
+                        
+                        wordArray[j] = c;
+                        String newWord = new String(wordArray);
+                        
+                        if (wordSet.contains(newWord)) {
+                            // If we found the end word, mark the level as found
+                            if (newWord.equals(endWord)) {
+                                foundEnd = true;
+                            }
+                            
+                            // If we haven't visited this word at this level, add it to the queue and parents map
+                            if (!visited.contains(newWord)) {
+                                levelVisited.add(newWord);
+                                parents.putIfAbsent(newWord, new ArrayList<>());
+                                parents.get(newWord).add(word);
+                                
+                                if (!queue.contains(newWord)) {
+                                    queue.offer(newWord);
+                                }
+                            }
+                        }
+                    }
+                    
+                    wordArray[j] = originalChar; // Restore the original character
+                }
+            }
+            
+            // Mark the words in the current level as visited
+            visited.addAll(levelVisited);
+        }
+        
+        // Backtrack to find all paths from endWord to beginWord
+        if (foundEnd) {
+            List<String> path = new ArrayList<>();
+            path.add(endWord);
+            backtrack(beginWord, endWord, parents, path, result);
+        }
+        
+        return result;
+    }
+    
+    private void backtrack(String beginWord, String currentWord, Map<String, List<String>> parents, List<String> path, List<List<String>> result) {
+        if (currentWord.equals(beginWord)) {
+            Collections.reverse(path);
+            result.add(new ArrayList<>(path));
+            Collections.reverse(path);
+            return;
+        }
+        
+        // Explore all the parents of the current word
+        if (parents.containsKey(currentWord)) {
+            for (String parent : parents.get(currentWord)) {
+                path.add(parent);
+                backtrack(beginWord, parent, parents, path, result);
+                path.remove(path.size() - 1);
+            }
+        }
+    }
