@@ -1,0 +1,60 @@
+public void solve(char[][] board) {
+        if (board == null || board.length == 0 || board[0].length == 0) {
+            return;
+        }
+
+        int m = board.length;
+        int n = board[0].length;
+
+        // Helper function for DFS
+        for (int i = 0; i < m; i++) {
+            // Perform DFS from the first and last columns
+            if (board[i][0] == 'O') {
+                dfs(board, i, 0);
+            }
+            if (board[i][n - 1] == 'O') {
+                dfs(board, i, n - 1);
+            }
+        }
+
+        for (int j = 0; j < n; j++) {
+            // Perform DFS from the first and last rows
+            if (board[0][j] == 'O') {
+                dfs(board, 0, j);
+            }
+            if (board[m - 1][j] == 'O') {
+                dfs(board, m - 1, j);
+            }
+        }
+
+        // After DFS, convert 'O' to 'X' and '#' back to 'O'
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (board[i][j] == 'O') {
+                    board[i][j] = 'X'; // Convert surrounded 'O' to 'X'
+                } else if (board[i][j] == '#') {
+                    board[i][j] = 'O'; // Restore safe 'O' marked with '#'
+                }
+            }
+        }
+    }
+
+    // DFS function to mark the safe 'O's connected to the boundary
+    private void dfs(char[][] board, int i, int j) {
+        int m = board.length;
+        int n = board[0].length;
+        
+        // Boundary check and if the cell is not 'O'
+        if (i < 0 || i >= m || j < 0 || j >= n || board[i][j] != 'O') {
+            return;
+        }
+
+        // Mark the current 'O' as part of a safe region
+        board[i][j] = '#';
+
+        // Explore all four directions (up, down, left, right)
+        dfs(board, i + 1, j); // Down
+        dfs(board, i - 1, j); // Up
+        dfs(board, i, j + 1); // Right
+        dfs(board, i, j - 1); // Left
+    }
