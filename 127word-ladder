@@ -1,0 +1,60 @@
+class Solution {
+    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+        // Convert wordList to a HashSet for quick lookup
+        Set<String> wordSet = new HashSet<>(wordList);
+        
+        // If the endWord is not in the wordList, return 0 immediately
+        if (!wordSet.contains(endWord)) {
+            return 0;
+        }
+        
+        // BFS initialization
+        Queue<String> queue = new LinkedList<>();
+        queue.offer(beginWord);
+        int level = 1;
+        
+        // Visited set to avoid revisiting words
+        Set<String> visited = new HashSet<>();
+        visited.add(beginWord);
+        
+        // Start BFS
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            
+            // Process the current level
+            for (int i = 0; i < size; i++) {
+                String currentWord = queue.poll();
+                
+                // Try changing each character of the current word
+                for (int j = 0; j < currentWord.length(); j++) {
+                    char[] wordArray = currentWord.toCharArray();
+                    
+                    // Try all 26 possible letters for the current position
+                    for (char c = 'a'; c <= 'z'; c++) {
+                        if (c == wordArray[j]) continue;
+                        
+                        wordArray[j] = c;
+                        String newWord = new String(wordArray);
+                        
+                        // If the new word is the endWord, return the result
+                        if (newWord.equals(endWord)) {
+                            return level + 1;
+                        }
+                        
+                        // If the new word is in the word list and not visited, add it to the queue
+                        if (wordSet.contains(newWord) && !visited.contains(newWord)) {
+                            queue.offer(newWord);
+                            visited.add(newWord);
+                        }
+                    }
+                }
+            }
+            
+            // Increment level after processing the current level
+            level++;
+        }
+        
+        // If no transformation sequence exists, return 0
+        return 0;
+    }
+}
