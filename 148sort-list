@@ -1,0 +1,75 @@
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+   public ListNode sortList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;  // Base case: a list of length 0 or 1 is already sorted
+        }
+
+        // Step 1: Split the list into two halves
+        ListNode mid = getMiddle(head);
+        ListNode left = head;
+        ListNode right = mid.next;
+        mid.next = null;  // Split the list into two parts
+
+        // Step 2: Recursively sort each half
+        left = sortList(left);
+        right = sortList(right);
+
+        // Step 3: Merge the two sorted halves
+        return merge(left, right);
+    }
+
+    // Helper function to find the middle of the list
+    private ListNode getMiddle(ListNode head) {
+        if (head == null) {
+            return head;
+        }
+
+        ListNode slow = head;
+        ListNode fast = head;
+
+        // Move slow pointer one step at a time, fast pointer two steps
+        while (fast.next != null && fast.next.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+
+        return slow;  // Slow pointer will be at the middle
+    }
+
+    // Helper function to merge two sorted lists
+    private ListNode merge(ListNode left, ListNode right) {
+        ListNode dummy = new ListNode(0);
+        ListNode current = dummy;
+
+        // Merge the two sorted lists
+        while (left != null && right != null) {
+            if (left.val < right.val) {
+                current.next = left;
+                left = left.next;
+            } else {
+                current.next = right;
+                right = right.next;
+            }
+            current = current.next;
+        }
+
+        // If there are remaining nodes in either left or right list, append them
+        if (left != null) {
+            current.next = left;
+        } else {
+            current.next = right;
+        }
+
+        return dummy.next;  // Return the merged sorted list (excluding dummy node)
+    }
+}
