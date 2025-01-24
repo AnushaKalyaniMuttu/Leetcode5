@@ -1,0 +1,58 @@
+class Solution {
+    public int maxPoints(int[][] points) {
+        if (points == null || points.length < 2) {
+            return points.length;  // Edge case: if fewer than 2 points, all points are on a line
+        }
+
+        int max = 0;  // To store the maximum number of points on the same line
+
+        // Iterate over each point in the array
+        for (int i = 0; i < points.length; i++) {
+            Map<String, Integer> slopes = new HashMap<>();
+            int samePoint = 0;
+            int currentMax = 0;
+
+            // Compare point[i] with every other point[j]
+            for (int j = i + 1; j < points.length; j++) {
+                int dx = points[j][0] - points[i][0];
+                int dy = points[j][1] - points[i][1];
+
+                // Handle case where both points are the same
+                if (dx == 0 && dy == 0) {
+                    samePoint++;
+                    continue;
+                }
+
+                // Reduce slope to avoid precision issues: use GCD
+                int gcd = gcd(dy, dx);
+                dx /= gcd;
+                dy /= gcd;
+
+                // Normalize slope to handle negative slopes consistently
+                if (dx < 0) {
+                    dx = -dx;
+                    dy = -dy;
+                }
+
+                String slope = dy + "/" + dx;
+                slopes.put(slope, slopes.getOrDefault(slope, 0) + 1);
+                currentMax = Math.max(currentMax, slopes.get(slope));
+            }
+
+            // Update the maximum number of points on a line, including same points with the current point
+            max = Math.max(max, currentMax + samePoint + 1);
+        }
+
+        return max;
+    }
+
+    // Helper function to compute the GCD of two numbers
+    private int gcd(int a, int b) {
+        while (b != 0) {
+            int temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
+}
