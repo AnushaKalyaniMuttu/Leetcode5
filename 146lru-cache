@@ -1,0 +1,92 @@
+class LRUCache {
+
+   private final int capacity;
+    private final Map<Integer, DoublyLinkedListNode> cache;
+    private final DoublyLinkedListNode head, tail;
+
+    // Doubly Linked List Node
+    private static class DoublyLinkedListNode {
+        int key, value;
+        DoublyLinkedListNode prev, next;
+        DoublyLinkedListNode(int key, int value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
+
+    public LRUCache(int capacity) {
+        this.capacity = capacity;
+        this.cache = new HashMap<>();
+        this.head = new DoublyLinkedListNode(0, 0);  // Dummy head node
+        this.tail = new DoublyLinkedListNode(0, 0);  // Dummy tail node
+        this.head.next = this.tail;  // Initial linking
+        this.tail.prev = this.head;
+    }
+
+    // Get the value of the key if it exists, otherwise return -1
+    public int get(int key) {
+        if (!cache.containsKey(key)) {
+            return -1;
+        }
+
+        // Move the accessed node to the front (most recently used)
+        DoublyLinkedListNode node = cache.get(key);
+        moveToFront(node);
+        return node.value;
+    }
+
+    // Insert a new key-value pair or update the value of an existing key
+    public void put(int key, int value) {
+        if (cache.containsKey(key)) {
+            // Update the value and move to the front
+            DoublyLinkedListNode node = cache.get(key);
+            node.value = value;
+            moveToFront(node);
+        } else {
+            // If the cache has reached its capacity, evict the least recently used node
+            if (cache.size() >= capacity) {
+                evict();
+            }
+
+            // Insert the new node at the front
+            DoublyLinkedListNode newNode = new DoublyLinkedListNode(key, value);
+            cache.put(key, newNode);
+            addToFront(newNode);
+        }
+    }
+
+    // Move the node to the front (most recently used)
+    private void moveToFront(DoublyLinkedListNode node) {
+        removeNode(node);
+        addToFront(node);
+    }
+
+    // Add the node right after the head (most recently used)
+    private void addToFront(DoublyLinkedListNode node) {
+        node.next = head.next;
+        node.prev = head;
+        head.next.prev = node;
+        head.next = node;
+    }
+
+    // Remove a node from the doubly linked list
+    private void removeNode(DoublyLinkedListNode node) {
+        node.prev.next = node.next;
+        node.next.prev = node.prev;
+    }
+
+    // Evict the least recently used node (node at the tail)
+    private void evict() {
+        // Remove the node just before the tail (the LRU node)
+        DoublyLinkedListNode lru = tail.prev;
+        removeNode(lru);
+        cache.remove(lru.key);
+    }
+}
+
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * LRUCache obj = new LRUCache(capacity);
+ * int param_1 = obj.get(key);
+ * obj.put(key,value);
+ */
