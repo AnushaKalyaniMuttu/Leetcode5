@@ -1,0 +1,41 @@
+class Solution {
+     public List<String> wordBreak(String s, List<String> wordDict) {
+        Set<String> wordSet = new HashSet<>(wordDict);
+        Map<Integer, List<String>> memo = new HashMap<>();
+        return backtrack(s, 0, wordSet, memo);
+    }
+    
+    private List<String> backtrack(String s, int start, Set<String> wordSet, Map<Integer, List<String>> memo) {
+        // If we've already solved this subproblem, return the result from memo
+        if (memo.containsKey(start)) {
+            return memo.get(start);
+        }
+        
+        List<String> result = new ArrayList<>();
+        
+        // Base case: If we've reached the end of the string, we return an empty string
+        if (start == s.length()) {
+            result.add("");
+            return result;
+        }
+        
+        // Try every possible end index for the substring starting at `start`
+        for (int i = start + 1; i <= s.length(); i++) {
+            String word = s.substring(start, i);
+            
+            // If the current substring is in the wordDict
+            if (wordSet.contains(word)) {
+                List<String> restOfSentence = backtrack(s, i, wordSet, memo);
+                
+                // For each valid segmentation of the rest of the string, add the current word
+                for (String sentence : restOfSentence) {
+                    result.add(word + (sentence.isEmpty() ? "" : " " + sentence));
+                }
+            }
+        }
+        
+        // Memoize the result for the current start index
+        memo.put(start, result);
+        return result;
+    }
+}
