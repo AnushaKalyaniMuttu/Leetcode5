@@ -1,0 +1,46 @@
+public void reorderList(ListNode head) {
+        if (head == null || head.next == null) {
+            return; // No need to reorder if the list is empty or has only one element
+        }
+
+        // Step 1: Find the middle of the list using slow and fast pointers
+        ListNode slow = head;
+        ListNode fast = head;
+        
+        // Move slow by 1 and fast by 2 steps
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+
+        // Step 2: Reverse the second half of the list
+        ListNode secondHalf = slow.next;
+        slow.next = null; // Split the list into two halves
+        secondHalf = reverseList(secondHalf);
+
+        // Step 3: Merge the two halves
+        ListNode firstHalf = head;
+        while (secondHalf != null) {
+            ListNode temp1 = firstHalf.next;
+            ListNode temp2 = secondHalf.next;
+
+            firstHalf.next = secondHalf; // Link the first half to the second half
+            secondHalf.next = temp1;     // Link the second half back to the first half
+
+            firstHalf = temp1;           // Move the first half pointer forward
+            secondHalf = temp2;          // Move the second half pointer forward
+        }
+    }
+
+    // Helper function to reverse a linked list
+    private ListNode reverseList(ListNode head) {
+        ListNode prev = null;
+        ListNode curr = head;
+        while (curr != null) {
+            ListNode nextNode = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = nextNode;
+        }
+        return prev;
+    }reorder-list
