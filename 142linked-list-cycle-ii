@@ -1,0 +1,40 @@
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) {
+ *         val = x;
+ *         next = null;
+ *     }
+ * }
+ */
+public class Solution {
+    public ListNode detectCycle(ListNode head) {
+        if (head == null || head.next == null) {
+            return null; // No cycle if the list is empty or has only one node
+        }
+
+        ListNode slow = head;
+        ListNode fast = head;
+
+        // Step 1: Detect if there is a cycle using Tortoise and Hare (Floyd's cycle detection)
+        while (fast != null && fast.next != null) {
+            slow = slow.next;          // Move slow by one step
+            fast = fast.next.next;     // Move fast by two steps
+
+            if (slow == fast) {
+                // Cycle detected, now find the starting node of the cycle
+                ListNode entry = head;
+                while (entry != slow) {
+                    entry = entry.next;
+                    slow = slow.next;
+                }
+                return entry; // The entry point of the cycle
+            }
+        }
+
+        // No cycle detected
+        return null;
+    }
+}
