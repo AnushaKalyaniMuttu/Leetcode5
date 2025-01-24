@@ -1,0 +1,18 @@
+class Solution {
+    public int singleNumber(int[] nums) {
+        int ones = 0, twos = 0;
+        
+        for (int num : nums) {
+            // Update twos with bits that are seen twice
+            twos |= ones & num;
+            // Update ones with bits that are seen once
+            ones ^= num;
+            // Remove bits that have appeared three times from ones and twos
+            int threes = ones & twos;
+            ones &= ~threes;
+            twos &= ~threes;
+        }
+        
+        return ones; // The result is stored in ones
+    }
+}
