@@ -1,0 +1,26 @@
+public ListNode insertionSortList(ListNode head) {
+        // Create a dummy node to serve as the new head of the sorted list
+        ListNode dummy = new ListNode(0);
+        
+        // Iterate through the original list
+        ListNode current = head;
+        
+        while (current != null) {
+            // Start at the beginning of the sorted list
+            ListNode prev = dummy;
+            // Find the correct position to insert current node
+            while (prev.next != null && prev.next.val < current.val) {
+                prev = prev.next;
+            }
+            
+            // Insert current node after prev node
+            ListNode nextTemp = current.next;
+            current.next = prev.next;
+            prev.next = current;
+            
+            // Move to the next node in the original list
+            current = nextTemp;
+        }
+        
+        return dummy.next;  // Return the sorted list, skipping the dummy node
+    }
