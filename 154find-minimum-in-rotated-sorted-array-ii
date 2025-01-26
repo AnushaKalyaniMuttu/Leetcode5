@@ -1,0 +1,14 @@
+class Solution {
+     public int findMin(int[] nums) {
+        int min = Integer.MAX_VALUE;
+        
+        // Iterate through the array to find the minimum element
+        for (int num : nums) {
+            if (num < min) {
+                min = num;
+            }
+        }
+        
+        return min;
+    }
+}
