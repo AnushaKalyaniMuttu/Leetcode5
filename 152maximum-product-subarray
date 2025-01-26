@@ -1,0 +1,30 @@
+class Solution {
+   public int maxProduct(int[] nums) {
+        // Edge case: if the array is empty, return 0
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        
+        int maxSoFar = nums[0];  // Maximum product so far
+        int minSoFar = nums[0];  // Minimum product so far
+        int result = nums[0];    // The overall maximum product
+        
+        for (int i = 1; i < nums.length; i++) {
+            // If the current number is negative, swap the max and min
+            if (nums[i] < 0) {
+                int temp = maxSoFar;
+                maxSoFar = minSoFar;
+                minSoFar = temp;
+            }
+            
+            // Update maxSoFar and minSoFar
+            maxSoFar = Math.max(nums[i], maxSoFar * nums[i]);
+            minSoFar = Math.min(nums[i], minSoFar * nums[i]);
+            
+            // Update the result to be the maximum product encountered so far
+            result = Math.max(result, maxSoFar);
+        }
+        
+        return result;
+    }
+}
