@@ -1,0 +1,52 @@
+public class Solution {
+    public int maximumGap(int[] nums) {
+        if (nums == null || nums.length < 2) {
+            return 0;  // If there are fewer than two numbers, return 0
+        }
+
+        int n = nums.length;
+        int min = Integer.MAX_VALUE, max = Integer.MIN_VALUE;
+
+        // Find the minimum and maximum values in the array
+        for (int num : nums) {
+            min = Math.min(min, num);
+            max = Math.max(max, num);
+        }
+
+        // Edge case: If all elements are the same, the maximum gap is 0
+        if (min == max) {
+            return 0;
+        }
+
+        // Calculate the size of the buckets (gap size) and the number of buckets
+        int bucketSize = Math.max(1, (max - min) / (n - 1));  // At least 1 unit per bucket
+        int bucketCount = (max - min) / bucketSize + 1;
+
+        // Create the buckets (each bucket will store the min and max values in that bucket)
+        int[][] buckets = new int[bucketCount][2];  // Each bucket has a min and max value
+        for (int[] bucket : buckets) {
+            bucket[0] = Integer.MAX_VALUE;  // min value
+            bucket[1] = Integer.MIN_VALUE;  // max value
+        }
+
+        // Place each number into its corresponding bucket
+        for (int num : nums) {
+            int index = (num - min) / bucketSize;  // Bucket index
+            buckets[index][0] = Math.min(buckets[index][0], num);  // Update the min value of the bucket
+            buckets[index][1] = Math.max(buckets[index][1], num);  // Update the max value of the bucket
+        }
+
+        // Find the maximum gap between consecutive non-empty buckets
+        int maxGap = 0;
+        int prevMax = min;  // Start with the minimum value outside the buckets
+        for (int[] bucket : buckets) {
+            if (bucket[0] == Integer.MAX_VALUE) {
+                continue;  // Skip empty buckets
+            }
+            maxGap = Math.max(maxGap, bucket[0] - prevMax);  // Calculate gap between previous bucket's max and current bucket's min
+            prevMax = bucket[1];  // Update the previous max to the current bucket's max
+        }
+
+        return maxGap;
+    }
+}
