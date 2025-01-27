@@ -1,0 +1,31 @@
+import java.util.HashMap;
+
+public class TwoSum {
+    private HashMap<Integer, Integer> map;
+
+    // Constructor to initialize the data structure
+    public TwoSum() {
+        map = new HashMap<>();
+    }
+
+    // Insert a number into the data structure
+    public void insert(int num) {
+        map.put(num, map.getOrDefault(num, 0) + 1);
+    }
+
+    // Find if there exists a pair that sums up to the given value
+    public boolean find(int value) {
+        for (int num : map.keySet()) {
+            int complement = value - num;
+            // If complement is the same as num, we need at least two occurrences of num
+            if (complement == num) {
+                if (map.get(num) > 1) {
+                    return true;
+                }
+            } else if (map.containsKey(complement)) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
