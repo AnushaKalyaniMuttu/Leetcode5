@@ -1,0 +1,27 @@
+public class Solution extends Reader4 {
+    private char[] buffer = new char[4];  // To store leftover characters from previous reads
+    private int bufferPointer = 0;        // Pointer to the current character in the buffer
+    private int bufferSize = 0;           // The size of valid characters in the buffer
+
+    public int read(char[] buf, int n) {
+        int totalRead = 0;
+
+        while (totalRead < n) {
+            if (bufferPointer == bufferSize) {
+                // If no characters left in the buffer, read from file using read4
+                bufferSize = read4(buffer);  // Get up to 4 characters from read4
+                bufferPointer = 0;           // Reset the buffer pointer
+                if (bufferSize == 0) {
+                    break;  // No more characters to read, end of file
+                }
+            }
+
+            // Read from the buffer into the buf[]
+            while (totalRead < n && bufferPointer < bufferSize) {
+                buf[totalRead++] = buffer[bufferPointer++];
+            }
+        }
+
+        return totalRead;
+    }
+}
