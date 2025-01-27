@@ -1,0 +1,38 @@
+public class Solution {
+    public boolean isOneEditDistance(String s, String t) {
+        // If the difference in lengths is greater than 1, it's not possible
+        if (Math.abs(s.length() - t.length()) > 1) {
+            return false;
+        }
+
+        // Case 1: Strings are of the same length
+        if (s.length() == t.length()) {
+            int count = 0;
+            // Check for exactly one replacement difference
+            for (int i = 0; i < s.length(); i++) {
+                if (s.charAt(i) != t.charAt(i)) {
+                    count++;
+                    if (count > 1) return false;  // More than one replacement is not allowed
+                }
+            }
+            return count == 1;  // Exactly one replacement is allowed
+        }
+
+        // Case 2: Strings have a length difference of 1
+        if (s.length() > t.length()) {
+            // Swap to ensure s is the shorter string
+            return isOneEditDistance(t, s);
+        }
+
+        // Check if we can insert a character into s or delete from t
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) != t.charAt(i)) {
+                // Try inserting a character in s or deleting from t
+                return s.substring(i).equals(t.substring(i + 1));
+            }
+        }
+
+        // If all characters match, the difference is just one extra character at the end
+        return true;
+    }
+}
