@@ -1,0 +1,26 @@
+public class Solution extends Reader4 {
+    public int read(char[] buf, int n) {
+        int totalRead = 0;
+        char[] tempBuf = new char[4];  // Temporary buffer to store characters read by read4
+
+        while (totalRead < n) {
+            // Read up to 4 characters from the file into tempBuf
+            int bytesRead = read4(tempBuf);
+            
+            // If no characters are read, break (end of file)
+            if (bytesRead == 0) {
+                break;
+            }
+
+            // Determine how many characters to copy into buf (we may not need all of bytesRead)
+            int bytesToCopy = Math.min(bytesRead, n - totalRead);
+
+            // Copy the characters to the final buf
+            for (int i = 0; i < bytesToCopy; i++) {
+                buf[totalRead++] = tempBuf[i];
+            }
+        }
+
+        return totalRead;
+    }
+}
