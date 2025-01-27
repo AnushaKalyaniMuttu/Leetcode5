@@ -1,0 +1,19 @@
+class Solution {
+    public String convertToTitle(int n) {
+        StringBuilder result = new StringBuilder();
+        
+        // While n is greater than 0
+        while (n > 0) {
+            // Adjust n for 1-based index, find the remainder
+            n--;  // Decrease by 1 to shift into 0-based range
+            int remainder = n % 26;
+            // Map the remainder to a character (0 -> 'A', 1 -> 'B', ..., 25 -> 'Z')
+            result.append((char) ('A' + remainder));
+            // Update n for the next iteration
+            n = n / 26;
+        }
+        
+        // Since we've built the result from least significant to most significant, reverse it
+        return result.reverse().toString();
+    }
+}
