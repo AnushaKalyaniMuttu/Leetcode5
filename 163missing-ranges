@@ -1,0 +1,36 @@
+import java.util.ArrayList;
+import java.util.List;
+
+public class Solution {
+    public List<String> findMissingRanges(int[] nums, int lower, int upper) {
+        List<String> result = new ArrayList<>();
+        
+        // Start with the range before the first element
+        if (nums.length == 0 || nums[0] > lower) {
+            addRange(result, lower, nums.length == 0 ? upper : nums[0] - 1);
+        }
+
+        // Check the ranges between elements in nums
+        for (int i = 0; i < nums.length - 1; i++) {
+            if (nums[i] + 1 <= nums[i + 1] - 1) {
+                addRange(result, nums[i] + 1, nums[i + 1] - 1);
+            }
+        }
+
+        // Finally, check the range after the last element
+        if (nums.length == 0 || nums[nums.length - 1] < upper) {
+            addRange(result, nums.length == 0 ? lower : nums[nums.length - 1] + 1, upper);
+        }
+
+        return result;
+    }
+
+    private void addRange(List<String> result, int start, int end) {
+        if (start > end) return;
+        if (start == end) {
+            result.add(String.valueOf(start));
+        } else {
+            result.add(start + "->" + end);
+        }
+    }
+}
