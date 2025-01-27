@@ -1,0 +1,38 @@
+import java.util.HashMap;
+
+public class Solution {
+    public int lengthOfLongestSubstringTwoDistinct(String s) {
+        // Edge case: if string is empty, return 0
+        if (s == null || s.length() == 0) {
+            return 0;
+        }
+
+        // HashMap to store the count of characters in the current window
+        HashMap<Character, Integer> count = new HashMap<>();
+        int left = 0, maxLength = 0;
+
+        // Iterate over the string with the right pointer
+        for (int right = 0; right < s.length(); right++) {
+            // Add the current character to the hash map or update its count
+            count.put(s.charAt(right), count.getOrDefault(s.charAt(right), 0) + 1);
+
+            // If there are more than two distinct characters in the window
+            while (count.size() > 2) {
+                // Shrink the window from the left
+                char leftChar = s.charAt(left);
+                count.put(leftChar, count.get(leftChar) - 1);
+                
+                // Remove the character from the map if its count becomes 0
+                if (count.get(leftChar) == 0) {
+                    count.remove(leftChar);
+                }
+                left++;
+            }
+
+            // Update the maximum length of the window
+            maxLength = Math.max(maxLength, right - left + 1);
+        }
+
+        return maxLength;
+    }
+}
