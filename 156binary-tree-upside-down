@@ -1,0 +1,20 @@
+class Solution {
+    public TreeNode upsideDownBinaryTree(TreeNode root) {
+        if (root == null || root.left == null) {
+            return root;
+        }
+        
+        // Recursively flip the left subtree
+        TreeNode newRoot = upsideDownBinaryTree(root.left);
+        
+        // Make the current node the new right child of its left node
+        root.left.left = root.right; // Set the new left child of the left node to the current right
+        root.left.right = root;      // Set the new right child of the left node to the current node
+        
+        // Nullify the current node's left and right children
+        root.left = null;
+        root.right = null;
+        
+        return newRoot;
+    }
+}
