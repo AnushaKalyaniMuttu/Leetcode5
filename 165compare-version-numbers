@@ -1,0 +1,28 @@
+class Solution {
+   public int compareVersion(String version1, String version2) {
+        // Split version1 and version2 by "."
+        String[] v1 = version1.split("\\.");
+        String[] v2 = version2.split("\\.");
+        
+        // Find the maximum length between the two version arrays
+        int len = Math.max(v1.length, v2.length);
+        
+        // Compare corresponding parts of version1 and version2
+        for (int i = 0; i < len; i++) {
+            // Get the current component of version1 or 0 if it doesn't exist
+            int val1 = i < v1.length ? Integer.parseInt(v1[i]) : 0;
+            // Get the current component of version2 or 0 if it doesn't exist
+            int val2 = i < v2.length ? Integer.parseInt(v2[i]) : 0;
+            
+            // Compare the two components
+            if (val1 > val2) {
+                return 1;  // version1 is greater
+            } else if (val1 < val2) {
+                return -1; // version2 is greater
+            }
+        }
+        
+        // If all components are equal, return 0
+        return 0;
+    }
+}
