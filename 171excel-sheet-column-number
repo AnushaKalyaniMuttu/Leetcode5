@@ -1,0 +1,32 @@
+public String simplifyPath(String path) {
+        // Stack to hold the valid directory names
+        Stack<String> stack = new Stack<>();
+        
+        // Split the path by "/"
+        String[] parts = path.split("/");
+        
+        // Process each part
+        for (String part : parts) {
+            if (part.equals("") || part.equals(".")) {
+                // Ignore empty parts or current directory parts
+                continue;
+            } else if (part.equals("..")) {
+                // If "..", pop from stack (move up one directory)
+                if (!stack.isEmpty()) {
+                    stack.pop();
+                }
+            } else {
+                // Otherwise, push the directory name onto the stack
+                stack.push(part);
+            }
+        }
+        
+        // Rebuild the simplified path
+        StringBuilder simplifiedPath = new StringBuilder();
+        for (String dir : stack) {
+            simplifiedPath.append("/").append(dir);
+        }
+        
+        // If the stack is empty, the simplified path should be "/"
+        return simplifiedPath.length() == 0 ? "/" : simplifiedPath.toString();
+    }
