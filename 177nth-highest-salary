@@ -1,0 +1,23 @@
+CREATE FUNCTION getNthHighestSalary(N INT) RETURNS INT
+BEGIN
+    DECLARE nth_salary INT;
+
+    -- First, check if there are enough distinct salaries
+    IF (SELECT COUNT(DISTINCT Salary) FROM Employee) < N THEN
+        RETURN NULL;  -- Not enough distinct salaries, return NULL
+    END IF;
+
+    -- Now get the Nth highest distinct salary
+    SELECT Salary
+    INTO nth_salary
+    FROM (
+        SELECT DISTINCT Salary
+        FROM Employee
+        ORDER BY Salary DESC
+        LIMIT N
+    ) AS temp
+    ORDER BY Salary ASC
+    LIMIT 1;
+
+    RETURN nth_salary;
+END;
