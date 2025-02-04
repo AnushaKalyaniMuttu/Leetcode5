@@ -1,0 +1,30 @@
+public class Solution {
+    public boolean isHappy(int n) {
+        // Create a set to store previously seen numbers
+        Set<Integer> seen = new HashSet<>();
+        
+        // Keep calculating the sum of squares of digits
+        while (n != 1) {
+            if (seen.contains(n)) {
+                // If we encounter a number we've seen before, it means we are in a cycle
+                return false;
+            }
+            seen.add(n);
+            n = getNext(n);
+        }
+        
+        // If we reach 1, it's a happy number
+        return true;
+    }
+    
+    // Helper function to calculate the sum of squares of digits
+    private int getNext(int n) {
+        int totalSum = 0;
+        while (n > 0) {
+            int digit = n % 10;
+            totalSum += digit * digit;
+            n /= 10;
+        }
+        return totalSum;
+    }
+}
