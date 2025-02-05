@@ -1,0 +1,44 @@
+import java.util.*;
+
+public class Solution {
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+        // Create adjacency list and in-degree array
+        List<Integer>[] adj = new ArrayList[numCourses];
+        for (int i = 0; i < numCourses; i++) {
+            adj[i] = new ArrayList<>();
+        }
+        int[] inDegree = new int[numCourses];
+        
+        // Build graph
+        for (int[] prereq : prerequisites) {
+            int dest = prereq[0];
+            int src = prereq[1];
+            adj[src].add(dest);
+            inDegree[dest]++;
+        }
+        
+        // Queue for courses with no prerequisites
+        Queue<Integer> queue = new LinkedList<>();
+        for (int i = 0; i < numCourses; i++) {
+            if (inDegree[i] == 0) {
+                queue.offer(i);
+            }
+        }
+        
+        int coursesTaken = 0;
+        
+        // Process courses in the queue
+        while (!queue.isEmpty()) {
+            int course = queue.poll();
+            coursesTaken++;
+            for (int neighbor : adj[course]) {
+                inDegree[neighbor]--;
+                if (inDegree[neighbor] == 0) {
+                    queue.offer(neighbor);
+                }
+            }
+        }
+        
+        return coursesTaken == numCourses;
+    }
+}
