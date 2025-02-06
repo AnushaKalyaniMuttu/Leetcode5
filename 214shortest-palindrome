@@ -1,0 +1,33 @@
+public class Solution {
+    public String shortestPalindrome(String s) {
+        // Edge case: If the string is empty or a single character, it's already a palindrome
+        if (s == null || s.length() <= 1) {
+            return s;
+        }
+
+        String rev = new StringBuilder(s).reverse().toString();
+        String combined = s + "#" + rev;
+        
+        int[] lps = new int[combined.length()];
+        
+        // Build the LPS (Longest Prefix Suffix) array using the KMP pattern matching algorithm
+        for (int i = 1; i < combined.length(); i++) {
+            int j = lps[i - 1];
+            while (j > 0 && combined.charAt(i) != combined.charAt(j)) {
+                j = lps[j - 1];
+            }
+            if (combined.charAt(i) == combined.charAt(j)) {
+                j++;
+            }
+            lps[i] = j;
+        }
+        
+        // The length of the palindrome that can be formed starts from the LPS of the combined string
+        int palindromeLen = lps[combined.length() - 1];
+        
+        // The remaining part of the reversed string is the prefix that needs to be added
+        String suffix = rev.substring(0, rev.length() - palindromeLen);
+        
+        return suffix + s;
+    }
+}
