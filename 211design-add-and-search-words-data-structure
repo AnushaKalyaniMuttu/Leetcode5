@@ -1,0 +1,71 @@
+public class WordDictionary {
+
+    private class TrieNode {
+        TrieNode[] children;
+        boolean isWord;
+        
+        public TrieNode() {
+            children = new TrieNode[26];  // Assuming lowercase English letters
+            isWord = false;
+        }
+    }
+
+    private TrieNode root;
+
+    /** Initialize your data structure here. */
+    public WordDictionary() {
+        root = new TrieNode();
+    }
+
+    /** Adds a word into the data structure. */
+    public void addWord(String word) {
+        TrieNode node = root;
+        for (char c : word.toCharArray()) {
+            int index = c - 'a';
+            if (node.children[index] == null) {
+                node.children[index] = new TrieNode();
+            }
+            node = node.children[index];
+        }
+        node.isWord = true;
+    }
+
+    /** Returns if the word is in the data structure. A word could contain the '.' character to represent any letter. */
+    public boolean search(String word) {
+        return searchHelper(word, 0, root);
+    }
+
+    // Helper method to search with the '.' wildcard
+    private boolean searchHelper(String word, int index, TrieNode node) {
+        if (index == word.length()) {
+            return node.isWord;
+        }
+
+        char c = word.charAt(index);
+        
+        if (c == '.') {
+            // If the character is '.', check all possible children at this position
+            for (TrieNode child : node.children) {
+                if (child != null && searchHelper(word, index + 1, child)) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            // If it's a specific character, go down the corresponding path
+            int childIndex = c - 'a';
+            if (node.children[childIndex] == null) {
+                return false;
+            }
+            return searchHelper(word, index + 1, node.children[childIndex]);
+        }
+    }
+}
+
+
+/**
+ * Your WordDictionary object will be instantiated and called as such:
+ * WordDictionary obj = new WordDictionary();
+ * obj.addWord(word);
+ * boolean param_2 = obj.search(word);
+ */
