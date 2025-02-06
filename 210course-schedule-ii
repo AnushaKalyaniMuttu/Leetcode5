@@ -1,0 +1,48 @@
+import java.util.*;
+
+public class Solution {
+    public int[] findOrder(int numCourses, int[][] prerequisites) {
+        int[] result = new int[numCourses];
+        int index = 0;
+        int[] inDegree = new int[numCourses];
+        List<List<Integer>> adjList = new ArrayList<>();
+        
+        // Initialize adjacency list
+        for (int i = 0; i < numCourses; i++) {
+            adjList.add(new ArrayList<>());
+        }
+        
+        // Build the graph and compute the in-degrees
+        for (int[] prereq : prerequisites) {
+            int dest = prereq[0];
+            int src = prereq[1];
+            adjList.get(src).add(dest);
+            inDegree[dest]++;
+        }
+        
+        // Queue for courses with no prerequisites (in-degree 0)
+        Queue<Integer> queue = new LinkedList<>();
+        for (int i = 0; i < numCourses; i++) {
+            if (inDegree[i] == 0) {
+                queue.offer(i);
+            }
+        }
+        
+        // Process the courses in topological order
+        while (!queue.isEmpty()) {
+            int course = queue.poll();
+            result[index++] = course;
+            
+            // Reduce in-degree of neighboring nodes
+            for (int neighbor : adjList.get(course)) {
+                inDegree[neighbor]--;
+                if (inDegree[neighbor] == 0) {
+                    queue.offer(neighbor);
+                }
+            }
+        }
+        
+        // If all courses are processed, return the result, otherwise return an empty array
+        return index == numCourses ? result : new int[0];
+    }
+}
