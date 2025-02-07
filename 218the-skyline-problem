@@ -1,0 +1,41 @@
+import java.util.*;
+
+public class Solution {
+    public List<List<Integer>> getSkyline(int[][] buildings) {
+        List<List<Integer>> result = new ArrayList<>();
+        List<int[]> heights = new ArrayList<>();
+        
+        // Add the start and end points of each building
+        for (int[] building : buildings) {
+            heights.add(new int[]{building[0], -building[2]});  // Start of building
+            heights.add(new int[]{building[1], building[2]});   // End of building
+        }
+
+        // Sort by x-coordinate, then by height (in case of ties, end before start)
+        heights.sort((a, b) -> a[0] != b[0] ? a[0] - b[0] : a[1] - b[1]);
+
+        // Max heap to keep track of the building heights
+        PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());
+        pq.add(0);  // Ground level
+
+        int prevMaxHeight = 0;
+        
+        for (int[] point : heights) {
+            if (point[1] < 0) {
+                // It's the start of a building, add height
+                pq.add(-point[1]);
+            } else {
+                // It's the end of a building, remove height
+                pq.remove(point[1]);
+            }
+
+            int currentMaxHeight = pq.peek();
+            if (currentMaxHeight != prevMaxHeight) {
+                result.add(Arrays.asList(point[0], currentMaxHeight));
+                prevMaxHeight = currentMaxHeight;
+            }
+        }
+
+        return result;
+    }
+}
