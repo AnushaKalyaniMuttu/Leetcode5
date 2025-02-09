@@ -1,0 +1,39 @@
+import java.util.TreeSet;
+
+public class Solution {
+    public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
+        // Edge case: if k or t is non-positive, there cannot be any valid pair
+        if (k <= 0 || t < 0) {
+            return false;
+        }
+        
+        // TreeSet to store the numbers in the window
+        TreeSet<Long> window = new TreeSet<>();
+        
+        // Iterate through the array
+        for (int i = 0; i < nums.length; i++) {
+            // Check if there is any number in the window that is within the range [nums[i] - t, nums[i] + t]
+            Long lower = window.floor((long) nums[i] + t); // Find the largest number <= nums[i] + t
+            Long higher = window.ceiling((long) nums[i] - t); // Find the smallest number >= nums[i] - t
+            
+            // If either number exists in the window, it means the condition is satisfied
+            if (lower != null && lower >= (long) nums[i] - t && lower <= (long) nums[i] + t) {
+                return true;
+            }
+            if (higher != null && higher >= (long) nums[i] - t && higher <= (long) nums[i] + t) {
+                return true;
+            }
+            
+            // Add the current number to the window
+            window.add((long) nums[i]);
+            
+            // Remove the number that is out of the window size k
+            if (window.size() > k) {
+                window.remove((long) nums[i - k]);
+            }
+        }
+        
+        // No such pair found
+        return false;
+    }
+}
