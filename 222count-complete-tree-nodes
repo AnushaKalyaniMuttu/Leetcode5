@@ -1,0 +1,21 @@
+class Solution {
+    public int countNodes(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+
+        // Calculate the height of the left and right subtrees
+        int leftHeight = getHeight(root, true);  // true indicates left subtree
+        int rightHeight = getHeight(root, false); // false indicates right subtree
+
+        // If left and right heights are the same, the tree is complete, and we can count the nodes
+        if (leftHeight == rightHeight) {
+            // Left subtree is a full tree, so we have 2^leftHeight - 1 nodes in the left subtree
+            return (1 << leftHeight) - 1 + countNodes(root.right);  // Recursively count right subtree
+        } else {
+            // If heights are not the same, count nodes in the left subtree and right subtree
+            return (1 << rightHeight) - 1 + countNodes(root.left);  // Recursively count left subtree
+        }
+    }
+
+    // Helper function to calculate the height of
