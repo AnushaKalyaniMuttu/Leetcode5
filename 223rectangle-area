@@ -1,0 +1,17 @@
+class Solution {
+    public int computeArea(int A, int B, int C, int D, int E, int F, int G, int H) {
+        // Calculate the area of both rectangles
+        int area1 = (C - A) * (D - B);  // Area of the first rectangle
+        int area2 = (G - E) * (H - F);  // Area of the second rectangle
+
+        // Find the overlap region (if any)
+        int overlapWidth = Math.max(0, Math.min(C, G) - Math.max(A, E));  // Width of the overlap
+        int overlapHeight = Math.max(0, Math.min(D, H) - Math.max(B, F));  // Height of the overlap
+
+        // The area of the intersection
+        int overlapArea = overlapWidth * overlapHeight;
+
+        // The total area is the sum of both rectangles minus the overlap
+        return area1 + area2 - overlapArea;
+    }
+}
