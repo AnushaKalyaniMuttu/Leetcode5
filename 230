@@ -1,0 +1,52 @@
+public class KthSmallestElementInBST {
+    int count = 0;
+    int result = -1;
+    
+    public int kthSmallest(TreeNode root, int k) {
+        // Inorder traversal to get the kth smallest element
+        inorderTraversal(root, k);
+        return result;
+    }
+    
+    private void inorderTraversal(TreeNode root, int k) {
+        // Base case: if the node is null, return
+        if (root == null) {
+            return;
+        }
+        
+        // Traverse the left subtree
+        inorderTraversal(root.left, k);
+        
+        // Increment the count and check if it equals k
+        count++;
+        if (count == k) {
+            result = root.val;
+            return;
+        }
+        
+        // Traverse the right subtree
+        inorderTraversal(root.right, k);
+    }
+
+    // TreeNode definition
+    public static class TreeNode {
+        int val;
+        TreeNode left;
+        TreeNode right;
+        TreeNode(int val) { this.val = val; }
+    }
+
+    public static void main(String[] args) {
+        // Example usage
+        KthSmallestElementInBST solution = new KthSmallestElementInBST();
+        
+        // Creating the BST manually
+        TreeNode root = new TreeNode(3);
+        root.left = new TreeNode(1);
+        root.right = new TreeNode(4);
+        root.left.right = new TreeNode(2);
+        
+        int k = 1;
+        System.out.println(solution.kthSmallest(root, k)); // Output: 1
+    }
+}
