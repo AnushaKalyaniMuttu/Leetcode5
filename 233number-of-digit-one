@@ -1,0 +1,27 @@
+public class Solution {
+    public int countDigitOne(int n) {
+        int count = 0;
+        long factor = 1; // To keep track of current place (1s, 10s, 100s, ...)
+        
+        while (factor <= n) {
+            // Break down the number into parts
+            long lowerNumbers = n - (n / factor) * factor;
+            long currentDigit = (n / factor) % 10;
+            long higherNumbers = n / (factor * 10);
+            
+            // Count the occurrences of 1 at the current digit position
+            if (currentDigit == 0) {
+                count += higherNumbers * factor;
+            } else if (currentDigit == 1) {
+                count += higherNumbers * factor + lowerNumbers + 1;
+            } else {
+                count += (higherNumbers + 1) * factor;
+            }
+            
+            factor *= 10; // Move to the next place (tens, hundreds, etc.)
+        }
+        
+        return count;
+    }
+
+}
