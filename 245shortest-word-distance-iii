@@ -1,0 +1,24 @@
+import java.util.*;
+
+public class Solution {
+    public int shortestDistance(String[] words, String word1, String word2) {
+        int minDistance = Integer.MAX_VALUE;
+        int lastIndexWord1 = -1, lastIndexWord2 = -1;
+
+        for (int i = 0; i < words.length; i++) {
+            if (words[i].equals(word1)) {
+                lastIndexWord1 = i;
+                if (lastIndexWord2 != -1) {
+                    minDistance = Math.min(minDistance, Math.abs(lastIndexWord1 - lastIndexWord2));
+                }
+            } else if (words[i].equals(word2)) {
+                lastIndexWord2 = i;
+                if (lastIndexWord1 != -1) {
+                    minDistance = Math.min(minDistance, Math.abs(lastIndexWord1 - lastIndexWord2));
+                }
+            }
+        }
+
+        return minDistance;
+    }
+}
