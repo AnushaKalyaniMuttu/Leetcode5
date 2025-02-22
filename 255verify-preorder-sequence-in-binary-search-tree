@@ -1,0 +1,38 @@
+public class Solution {
+    public boolean verifyPreorder(int[] preorder) {
+        return verifyPreorderHelper(preorder, 0, preorder.length - 1, Integer.MIN_VALUE, Integer.MAX_VALUE);
+    }
+
+    private boolean verifyPreorderHelper(int[] preorder, int start, int end, int min, int max) {
+        if (start > end) {
+            return true;
+        }
+
+        int rootVal = preorder[start];
+        
+        // The current node must be between min and max value.
+        if (rootVal <= min || rootVal >= max) {
+            return false;
+        }
+
+        int idx = start + 1;
+        
+        // Find the first node greater than rootVal to start the right subtree.
+        while (idx <= end && preorder[idx] < rootVal) {
+            idx++;
+        }
+
+        // Recursively verify the left and right subtree.
+        return verifyPreorderHelper(preorder, start + 1, idx - 1, min, rootVal) && 
+               verifyPreorderHelper(preorder, idx, end, rootVal, max);
+    }
+
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+        int[] preorder = {8, 5, 1, 7, 10, 12};
+        System.out.println(solution.verifyPreorder(preorder));  // Output: true
+
+        int[] preorder2 = {8, 5, 4, 10, 12};
+        System.out.println(solution.verifyPreorder(preorder2));  // Output: false
+    }
+}
