@@ -1,0 +1,54 @@
+public class Solution {
+    public int strobogrammaticInRange(String low, String high) {
+        int count = 0;
+        
+        // Start from lengths of the low and high strings
+        for (int length = low.length(); length <= high.length(); length++) {
+            List<String> strobogrammatics = generateStrobogrammatic(length);
+            for (String num : strobogrammatics) {
+                // Ensure that the number is within the range [low, high]
+                if (isInRange(num, low, high)) {
+                    count++;
+                }
+            }
+        }
+        
+        return count;
+    }
+    
+    private List<String> generateStrobogrammatic(int length) {
+        List<String> result = new ArrayList<>();
+        if (length == 0) {
+            result.add("");
+            return result;
+        }
+        if (length == 1) {
+            result.add("0");
+            result.add("1");
+            result.add("8");
+            return result;
+        }
+        
+        List<String> smallerNumbers = generateStrobogrammatic(length - 2);
+        for (String num : smallerNumbers) {
+            if (length != 2) {
+                result.add("0" + num + "0");
+            }
+            result.add("1" + num + "1");
+            result.add("6" + num + "9");
+            result.add("8" + num + "8");
+            result.add("9" + num + "6");
+        }
+        
+        return result;
+    }
+    
+    private boolean isInRange(String num, String low, String high) {
+        // Check if num is within the given range [low, high]
+        if (num.length() < low.length() || (num.length() == low.length() && num.compareTo(low) >= 0) && 
+            (num.length() <= high.length() && num.compareTo(high) <= 0)) {
+            return true;
+        }
+        return false;
+    }
+}
