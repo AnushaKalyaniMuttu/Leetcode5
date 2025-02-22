@@ -1,0 +1,27 @@
+import java.util.*;
+
+public class Solution {
+    public List<List<String>> groupStrings(String[] strings) {
+        Map<String, List<String>> map = new HashMap<>();
+        
+        for (String s : strings) {
+            String key = getShiftedKey(s);
+            map.putIfAbsent(key, new ArrayList<>());
+            map.get(key).add(s);
+        }
+        
+        return new ArrayList<>(map.values());
+    }
+
+    private String getShiftedKey(String s) {
+        StringBuilder sb = new StringBuilder();
+        
+        for (int i = 1; i < s.length(); i++) {
+            // Compute the difference and handle the circular shift using modulo 26
+            int diff = (s.charAt(i) - s.charAt(i - 1) + 26) % 26;
+            sb.append(diff).append("#"); // Use "#" as a delimiter between differences
+        }
+        
+        return sb.toString();
+    }
+}
