@@ -1,0 +1,32 @@
+public class Solution {
+    int count = 0;
+
+    public int countUnivalSubtrees(TreeNode root) {
+        isUnivalueSubtree(root);
+        return count;
+    }
+
+    private boolean isUnivalueSubtree(TreeNode node) {
+        if (node == null) {
+            return true; // A null node is considered a univalue subtree
+        }
+
+        // Recursively check the left and right subtrees
+        boolean left = isUnivalueSubtree(node.left);
+        boolean right = isUnivalueSubtree(node.right);
+
+        // Check if the current node is a univalue subtree
+        if (left && right) {
+            if (node.left != null && node.left.val != node.val) {
+                return false; // Left child is not the same value
+            }
+            if (node.right != null && node.right.val != node.val) {
+                return false; // Right child is not the same value
+            }
+            count++; // Current node is a univalue subtree
+            return true;
+        }
+
+        return false; // If either left or right is not a univalue subtree
+    }
+}
