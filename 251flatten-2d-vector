@@ -1,0 +1,30 @@
+import java.util.Iterator;
+import java.util.List;
+
+public class Vector2D implements Iterator<Integer> {
+    private Iterator<List<Integer>> rowIterator;
+    private Iterator<Integer> colIterator;
+
+    public Vector2D(List<List<Integer>> vec2d) {
+        rowIterator = vec2d.iterator();
+        colIterator = null;
+    }
+
+    @Override
+    public Integer next() {
+        // Ensure that the current column iterator is valid
+        if (!colIterator.hasNext()) {
+            colIterator = rowIterator.next().iterator();
+        }
+        return colIterator.next();
+    }
+
+    @Override
+    public boolean hasNext() {
+        // Ensure the column iterator is valid for the current row
+        while ((colIterator == null || !colIterator.hasNext()) && rowIterator.hasNext()) {
+            colIterator = rowIterator.next().iterator();
+        }
+        return colIterator != null && colIterator.hasNext();
+    }
+}
