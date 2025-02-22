@@ -1,0 +1,33 @@
+import java.util.Arrays;
+import java.util.PriorityQueue;
+
+public class Solution {
+    public int minMeetingRooms(int[][] intervals) {
+        if (intervals.length == 0) {
+            return 0;
+        }
+
+        // Step 1: Sort the meetings in increasing order of their start time.
+        Arrays.sort(intervals, (a, b) -> a[0] - b[0]);
+
+        // Step 2: Initialize a priority queue to track the minimum end time of overlapping meetings.
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+
+        // Step 3: Add the first meeting's end time to the priority queue.
+        pq.add(intervals[0][1]);
+
+        // Step 4: For all the remaining meetings:
+        for (int i = 1; i < intervals.length; i++) {
+            // If the meeting room with the earliest end time is free (i.e., the meeting can start after it)
+            if (intervals[i][0] >= pq.peek()) {
+                pq.poll(); // Remove the meeting room as it's no longer needed.
+            }
+
+            // Add the current meeting's end time to the priority queue (a new room may be needed).
+            pq.add(intervals[i][1]);
+        }
+
+        // The size of the priority queue is the number of rooms needed.
+        return pq.size();
+    }
+}
