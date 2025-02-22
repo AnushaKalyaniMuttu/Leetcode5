@@ -1,0 +1,25 @@
+public class Solution {
+    public List<String> findStrobogrammatic(int n) {
+        List<String> result = new ArrayList<>();
+        if (n == 0) {
+            return result;
+        }
+        findStrobogrammaticHelper(n, n, "", result);
+        return result;
+    }
+
+    private void findStrobogrammaticHelper(int n, int length, String current, List<String> result) {
+        if (current.length() == n) {
+            result.add(current);
+            return;
+        }
+
+        for (String[] pair : new String[][]{{"0", "0"}, {"1", "1"}, {"6", "9"}, {"8", "8"}, {"9", "6"}}) {
+            if (current.length() == 0 && pair[0].equals("0") && n != 1) continue; // Avoid leading zero unless n == 1
+            findStrobogrammaticHelper(n, length, pair[0] + current + pair[1], result);
+            if (!pair[0].equals(pair[1])) {
+                findStrobogrammaticHelper(n, length, pair[1] + current + pair[0], result);
+            }
+        }
+    }
+}
