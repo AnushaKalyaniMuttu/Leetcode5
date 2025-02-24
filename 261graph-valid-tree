@@ -1,25 +1,56 @@
+import java.util.*;
+
 public class Solution {
-    public int[] singleNumber(int[] nums) {
-        int xor = 0;
-        
-        // Step 1: XOR all elements, result will be the XOR of the two unique numbers
-        for (int num : nums) {
-            xor ^= num;
+    public boolean validTree(int n, int[][] edges) {
+        // A tree with n nodes has exactly n - 1 edges
+        if (edges.length != n - 1) {
+            return false;
         }
 
-        // Step 2: Find the rightmost set bit in xor
-        int rightmostSetBit = xor & -xor;
+        // Create an adjacency list to represent the graph
+        List<Integer>[] graph = new ArrayList[n];
+        for (int i = 0; i < n; i++) {
+            graph[i] = new ArrayList<>();
+        }
 
-        // Step 3: Divide numbers into two groups based on the rightmost set bit
-        int num1 = 0, num2 = 0;
-        for (int num : nums) {
-            if ((num & rightmostSetBit) == 0) {
-                num1 ^= num;  // Group 1
-            } else {
-                num2 ^= num;  // Group 2
+        // Build the graph from the edges
+        for (int[] edge : edges) {
+            int u = edge[0], v = edge[1];
+            graph[u].add(v);
+            graph[v].add(u);
+        }
+
+        // To keep track of visited nodes
+        boolean[] visited = new boolean[n];
+
+        // Start DFS from node 0
+        if (dfs(0, -1, graph, visited)) {
+            // Check if all nodes are visited (the graph must be connected)
+            for (boolean visit : visited) {
+                if (!visit) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    // DFS function to detect cycle and mark visited nodes
+    private boolean dfs(int node, int parent, List<Integer>[] graph, boolean[] visited) {
+        visited[node] = true;
+        
+        // Traverse all neighbors of the current node
+        for (int neighbor : graph[node]) {
+            if (!visited[neighbor]) {
+                if (!dfs(neighbor, node, graph, visited)) {
+                    return false;
+                }
+            } else if (neighbor != parent) {
+                // If we visit an already visited node that is not the parent, a cycle exists
+                return false;
             }
         }
-
-        return new int[] { num1, num2 };
+        return true;
     }
 }
