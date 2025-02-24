@@ -1,0 +1,73 @@
+import java.util.*;
+
+public class Solution {
+    public String alienOrder(String[] words) {
+        // Step 1: Build graph and in-degree array
+        Map<Character, Set<Character>> graph = new HashMap<>();
+        Map<Character, Integer> inDegree = new HashMap<>();
+        
+        // Initialize in-degree for each character
+        for (String word : words) {
+            for (char c : word.toCharArray()) {
+                inDegree.put(c, 0);
+            }
+        }
+        
+        // Step 2: Build the graph and update in-degrees
+        for (int i = 0; i < words.length - 1; i++) {
+            String word1 = words[i];
+            String word2 = words[i + 1];
+            int len = Math.min(word1.length(), word2.length());
+            
+            for (int j = 0; j < len; j++) {
+                char c1 = word1.charAt(j);
+                char c2 = word2.charAt(j);
+                
+                if (c1 != c2) {
+                    // Add edge from c1 to c2
+                    if (!graph.containsKey(c1)) {
+                        graph.put(c1, new HashSet<>());
+                    }
+                    if (!graph.containsKey(c2)) {
+                        graph.put(c2, new HashSet<>());
+                    }
+                    
+                    if (!graph.get(c1).contains(c2)) {
+                        graph.get(c1).add(c2);
+                        inDegree.put(c2, inDegree.getOrDefault(c2, 0) + 1);
+                    }
+                    break;
+                }
+            }
+        }
+        
+        // Step 3: Kahn's algorithm for topological sorting
+        Queue<Character> queue = new LinkedList<>();
+        for (char c : inDegree.keySet()) {
+            if (inDegree.get(c) == 0) {
+                queue.offer(c);
+            }
+        }
+        
+        StringBuilder result = new StringBuilder();
+        while (!queue.isEmpty()) {
+            char c = queue.poll();
+            result.append(c);
+            
+            for (char neighbor : graph.getOrDefault(c, new HashSet<>())) {
+                inDegree.put(neighbor, inDegree.get(neighbor) - 1);
+                if (inDegree.get(neighbor) == 0) {
+                    queue.offer(neighbor);
+                }
+            }
+        }
+        
+        // If result size is equal to the number of unique characters, return the result
+        if (result.length() == inDegree.size()) {
+            return result.toString();
+        }
+        
+        // There is a cycle, return an empty string
+        return "";
+    }
+}
