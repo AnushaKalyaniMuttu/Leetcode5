@@ -1,0 +1,71 @@
+import java.util.*;
+
+public class Solution {
+    public List<String> generatePalindromes(String s) {
+        List<String> result = new ArrayList<>();
+        if (s == null || s.length() == 0) {
+            return result;
+        }
+        
+        // Count the frequency of characters
+        Map<Character, Integer> freqMap = new HashMap<>();
+        for (char c : s.toCharArray()) {
+            freqMap.put(c, freqMap.getOrDefault(c, 0) + 1);
+        }
+        
+        // Find the odd frequency character
+        StringBuilder half = new StringBuilder();
+        StringBuilder middle = new StringBuilder();
+        
+        for (Map.Entry<Character, Integer> entry : freqMap.entrySet()) {
+            if (entry.getValue() % 2 != 0) {
+                // If more than one odd count character exists, palindrome cannot be formed
+                if (middle.length() > 0) {
+                    return result;
+                }
+                middle.append(entry.getKey());  // The center character in the palindrome
+            }
+            // Append half the characters (dividing frequency by 2)
+            for (int i = 0; i < entry.getValue() / 2; i++) {
+                half.append(entry.getKey());
+            }
+        }
+        
+        // Generate all unique permutations of the first half
+        Set<String> permutations = new HashSet<>();
+        backtrack(half.toString().toCharArray(), 0, permutations);
+        
+        // For each permutation, construct the palindrome
+        for (String perm : permutations) {
+            StringBuilder palindrome = new StringBuilder(perm);
+            palindrome.append(middle);
+            palindrome.append(new StringBuilder(perm).reverse());
+            result.add(palindrome.toString());
+        }
+        
+        return result;
+    }
+    
+    private void backtrack(char[] chars, int start, Set<String> permutations) {
+        if (start == chars.length) {
+            permutations.add(new String(chars));
+            return;
+        }
+        
+        for (int i = start; i < chars.length; i++) {
+            // Skip duplicates to avoid generating the same permutation
+            if (i != start && chars[i] == chars[start]) {
+                continue;
+            }
+            swap(chars, i, start);
+            backtrack(chars, start + 1, permutations);
+            swap(chars, i, start);  // Backtrack
+        }
+    }
+    
+    private void swap(char[] chars, int i, int j) {
+        char temp = chars[i];
+        chars[i] = chars[j];
+        chars[j] = temp;
+    }
+}
