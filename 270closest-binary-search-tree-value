@@ -1,0 +1,22 @@
+public class Solution {
+    public int closestValue(TreeNode root, double target) {
+        int closest = root.val;
+        
+        // Traverse the tree
+        while (root != null) {
+            // Update the closest value if the current node is closer
+            if (Math.abs(root.val - target) < Math.abs(closest - target)) {
+                closest = root.val;
+            }
+            
+            // Move to the left or right subtree based on target value
+            if (target < root.val) {
+                root = root.left;
+            } else {
+                root = root.right;
+            }
+        }
+        
+        return closest;
+    }
+}
