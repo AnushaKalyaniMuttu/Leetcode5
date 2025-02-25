@@ -1,0 +1,44 @@
+import java.util.*;
+
+class TreeNode {
+    int val;
+    TreeNode left, right;
+    TreeNode(int x) { val = x; }
+}
+
+public class ClosestKValues {
+    public List<Integer> closestKValues(TreeNode root, double target, int k) {
+        Deque<Integer> deque = new LinkedList<>();
+        inorder(root, target, k, deque);
+        return new ArrayList<>(deque);
+    }
+
+    private void inorder(TreeNode node, double target, int k, Deque<Integer> deque) {
+        if (node == null) return;
+        
+        inorder(node.left, target, k, deque);
+        
+        if (deque.size() < k) {
+            deque.addLast(node.val);
+        } else if (Math.abs(node.val - target) < Math.abs(deque.peekFirst() - target)) {
+            deque.pollFirst();
+            deque.addLast(node.val);
+        } else {
+            return;  // Stop early if further elements are not closer
+        }
+        
+        inorder(node.right, target, k, deque);
+    }
+
+    // Testing
+    public static void main(String[] args) {
+        TreeNode root = new TreeNode(4);
+        root.left = new TreeNode(2);
+        root.right = new TreeNode(5);
+        root.left.left = new TreeNode(1);
+        root.left.right = new TreeNode(3);
+
+        ClosestKValues solver = new ClosestKValues();
+        System.out.println(solver.closestKValues(root, 3.7, 2));  // Expected output: [3, 4]
+    }
+}
