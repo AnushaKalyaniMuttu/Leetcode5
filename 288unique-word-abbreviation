@@ -1,0 +1,34 @@
+import java.util.*;
+
+class ValidWordAbbr {
+    private Map<String, Set<String>> abbrMap;
+
+    public ValidWordAbbr(String[] dictionary) {
+        abbrMap = new HashMap<>();
+        for (String word : new HashSet<>(Arrays.asList(dictionary))) { // Remove duplicates
+            String abbr = getAbbreviation(word);
+            abbrMap.putIfAbsent(abbr, new HashSet<>());
+            abbrMap.get(abbr).add(word);
+        }
+    }
+
+    public boolean isUnique(String word) {
+        String abbr = getAbbreviation(word);
+        return !abbrMap.containsKey(abbr) || (abbrMap.get(abbr).size() == 1 && abbrMap.get(abbr).contains(word));
+    }
+
+    private String getAbbreviation(String word) {
+        if (word.length() <= 2) return word;
+        return word.charAt(0) + String.valueOf(word.length() - 2) + word.charAt(word.length() - 1);
+    }
+
+    public static void main(String[] args) {
+        String[] dictionary = {"deer", "door", "cake", "card"};
+        ValidWordAbbr vwa = new ValidWordAbbr(dictionary);
+        
+        System.out.println(vwa.isUnique("dear")); // false
+        System.out.println(vwa.isUnique("cart")); // true
+        System.out.println(vwa.isUnique("cane")); // false
+        System.out.println(vwa.isUnique("make")); // true
+    }
+}
