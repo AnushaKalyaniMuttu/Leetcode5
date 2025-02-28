@@ -1,0 +1,49 @@
+import java.util.*;
+
+class Solution {
+    public boolean wordPatternMatch(String pattern, String s) {
+        return backtrack(pattern, 0, s, 0, new HashMap<>(), new HashSet<>());
+    }
+
+    private boolean backtrack(String pattern, int pIndex, String s, int sIndex, 
+                              Map<Character, String> map, Set<String> used) {
+        // If both pattern and s are fully matched, return true
+        if (pIndex == pattern.length() && sIndex == s.length()) return true;
+        if (pIndex == pattern.length() || sIndex == s.length()) return false;
+
+        char ch = pattern.charAt(pIndex);
+
+        // If character is already mapped, check if it matches the corresponding substring
+        if (map.containsKey(ch)) {
+            String expected = map.get(ch);
+            if (!s.startsWith(expected, sIndex)) return false;
+            return backtrack(pattern, pIndex + 1, s, sIndex + expected.length(), map, used);
+        }
+
+        // Try every possible substring for the current character
+        for (int end = sIndex + 1; end <= s.length(); end++) {
+            String candidate = s.substring(sIndex, end);
+            
+            if (used.contains(candidate)) continue; // Skip if the substring is already mapped
+
+            // Assign mapping
+            map.put(ch, candidate);
+            used.add(candidate);
+
+            // Recur with the new mapping
+            if (backtrack(pattern, pIndex + 1, s, end, map, used)) return true;
+
+            // Backtrack
+            map.remove(ch);
+            used.remove(candidate);
+        }
+
+        return false;
+    }
+
+    public static void main(String[] args) {
+        Solution sol = new Solution();
+        System.out.println(sol.wordPatternMatch("abab", "redblueredblue")); // true
+        System.out.println(sol.wordPatternMatch("aaaa", "asdasdasdasd")); // true
+        System.
+}}
