@@ -1,0 +1,45 @@
+class TreeNode {
+    int val;
+    TreeNode left, right;
+    TreeNode(int x) { val = x; }
+}
+
+class Solution {
+    private int maxLen = 0;
+
+    public int longestConsecutive(TreeNode root) {
+        if (root == null) return 0;
+        dfs(root, 0, root.val);
+        return maxLen;
+    }
+
+    private void dfs(TreeNode node, int length, int expected) {
+        if (node == null) return;
+
+        // Check if the node follows the consecutive sequence
+        if (node.val == expected) {
+            length++;
+        } else {
+            length = 1; // Reset sequence
+        }
+
+        // Update global max length
+        maxLen = Math.max(maxLen, length);
+
+        // Recur for left and right children
+        dfs(node.left, length, node.val + 1);
+        dfs(node.right, length, node.val + 1);
+    }
+
+    public static void main(String[] args) {
+        Solution sol = new Solution();
+        
+        TreeNode root = new TreeNode(1);
+        root.right = new TreeNode(3);
+        root.right.left = new TreeNode(2);
+        root.right.right = new TreeNode(4);
+        root.right.right.right = new TreeNode(5);
+
+        System.out.println(sol.longestConsecutive(root)); // Output: 3
+    }
+}
