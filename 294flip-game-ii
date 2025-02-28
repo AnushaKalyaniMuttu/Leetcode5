@@ -1,0 +1,42 @@
+import java.util.*;
+
+class Solution {
+    public boolean canWin(String s) {
+        return canWinHelper(s.toCharArray(), new HashMap<>());
+    }
+
+    private boolean canWinHelper(char[] arr, Map<String, Boolean> memo) {
+        String key = new String(arr);
+        if (memo.containsKey(key)) return memo.get(key);
+
+        for (int i = 0; i < arr.length - 1; i++) {
+            if (arr[i] == '+' && arr[i + 1] == '+') {
+                // Flip "++" to "--"
+                arr[i] = '-';
+                arr[i + 1] = '-';
+
+                // If opponent loses, you win
+                boolean opponentLoses = !canWinHelper(arr, memo);
+
+                // Undo the flip
+                arr[i] = '+';
+                arr[i + 1] = '+';
+
+                if (opponentLoses) {
+                    memo.put(key, true);
+                    return true;
+                }
+            }
+        }
+
+        memo.put(key, false);
+        return false;
+    }
+
+    public static void main(String[] args) {
+        Solution sol = new Solution();
+        System.out.println(sol.canWin("++++")); // true
+        System.out.println(sol.canWin("+")); // false
+        System.out.println(sol.canWin("++-++")); // true
+    }
+}
