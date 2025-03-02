@@ -1,0 +1,58 @@
+import java.util.*;
+
+public class Solution {
+    public List<String> removeInvalidParentheses(String s) {
+        List<String> result = new ArrayList<>();
+        int[] misplacements = getMisplacedCount(s);
+        backtrack(s, 0, misplacements[0], misplacements[1], result);
+        return result;
+    }
+
+    private void backtrack(String s, int index, int leftRem, int rightRem, List<String> result) {
+        if (leftRem == 0 && rightRem == 0 && isValid(s)) {
+            result.add(s);
+            return;
+        }
+
+        for (int i = index; i < s.length(); i++) {
+            if (i > index && s.charAt(i) == s.charAt(i - 1)) continue; // Avoid duplicates
+            
+            if (s.charAt(i) == '(' && leftRem > 0) {
+                backtrack(s.substring(0, i) + s.substring(i + 1), i, leftRem - 1, rightRem, result);
+            } else if (s.charAt(i) == ')' && rightRem > 0) {
+                backtrack(s.substring(0, i) + s.substring(i + 1), i, leftRem, rightRem - 1, result);
+            }
+        }
+    }
+
+    private int[] getMisplacedCount(String s) {
+        int left = 0, right = 0;
+        for (char c : s.toCharArray()) {
+            if (c == '(') left++;
+            else if (c == ')') {
+                if (left > 0) left--;
+                else right++;
+            }
+        }
+        return new int[]{left, right};
+    }
+
+    private boolean isValid(String s) {
+        int count = 0;
+        for (char c : s.toCharArray()) {
+            if (c == '(') count++;
+            else if (c == ')') {
+                if (count == 0) return false;
+                count--;
+            }
+        }
+        return count == 0;
+    }
+
+    public static void main(String[] args) {
+        Solution sol = new Solution();
+        System.out.println(sol.removeInvalidParentheses("()())()"));
+        System.out.println(sol.removeInvalidParentheses("(a)())()"));
+        System.out.println(sol.removeInvalidParentheses(")("));
+    }
+}
