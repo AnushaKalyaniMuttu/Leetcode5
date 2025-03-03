@@ -1,0 +1,35 @@
+import java.util.*;
+
+public class Solution {
+    public int countSmaller(int[] nums) {
+        List<Integer> result = new ArrayList<>();
+        if (nums == null || nums.length == 0) return result;
+        
+        int n = nums.length;
+        Integer[] counts = new Integer[n];
+        Arrays.fill(counts, 0);
+        
+        List<Integer> sortedList = new ArrayList<>();
+        
+        for (int i = n - 1; i >= 0; i--) {
+            int index = binarySearch(sortedList, nums[i]);
+            counts[i] = index;
+            sortedList.add(index, nums[i]);
+        }
+        
+        return Arrays.asList(counts);
+    }
+    
+    private int binarySearch(List<Integer> sortedList, int target) {
+        int left = 0, right = sortedList.size();
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (sortedList.get(mid) >= target) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return left;
+    }
+}
