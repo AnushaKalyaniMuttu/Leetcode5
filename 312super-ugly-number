@@ -1,0 +1,26 @@
+import java.util.PriorityQueue;
+
+class Solution {
+    public int nthSuperUglyNumber(int n, int[] primes) {
+        long[] ugly = new long[n]; 
+        ugly[0] = 1; 
+
+        PriorityQueue<long[]> pq = new PriorityQueue<>((a, b) -> Long.compare(a[0], b[0]));
+
+        for (int prime : primes) {
+            pq.offer(new long[]{prime, prime, 0});
+        }
+
+        for (int i = 1; i < n; i++) {
+            long[] top = pq.peek();
+            ugly[i] = top[0];
+
+            while (!pq.isEmpty() && pq.peek()[0] == ugly[i]) {
+                long[] curr = pq.poll();
+                pq.offer(new long[]{curr[1] * ugly[(int) curr[2] + 1], curr[1], curr[2] + 1});
+            }
+        }
+
+        return (int) ugly[n - 1];
+    }
+}
