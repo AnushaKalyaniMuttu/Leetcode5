@@ -1,0 +1,55 @@
+import java.util.*;
+
+class Solution {
+    public int shortestDistance(int[][] grid) {
+        int rows = grid.length, cols = grid[0].length;
+        int[][] distance = new int[rows][cols];
+        int[][] reach = new int[rows][cols];
+        int totalBuildings = 0;
+        int[] directions = {-1, 0, 1, 0, -1};
+
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                if (grid[r][c] == 1) {
+                    totalBuildings++;
+                    bfs(grid, r, c, distance, reach, directions);
+                }
+            }
+        }
+
+        int minDistance = Integer.MAX_VALUE;
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                if (grid[r][c] == 0 && reach[r][c] == totalBuildings) {
+                    minDistance = Math.min(minDistance, distance[r][c]);
+                }
+            }
+        }
+
+        return minDistance == Integer.MAX_VALUE ? -1 : minDistance;
+    }
+
+    private void bfs(int[][] grid, int row, int col, int[][] distance, int[][] reach, int[] directions) {
+        int rows = grid.length, cols = grid[0].length;
+        boolean[][] visited = new boolean[rows][cols];
+        Queue<int[]> queue = new LinkedList<>();
+        queue.offer(new int[]{row, col, 0});
+        visited[row][col] = true;
+
+        while (!queue.isEmpty()) {
+            int[] curr = queue.poll();
+            int r = curr[0], c = curr[1], dist = curr[2];
+
+            for (int i = 0; i < 4; i++) {
+                int newRow = r + directions[i], newCol = c + directions[i + 1];
+                if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols &&
+                    grid[newRow][newCol] == 0 && !visited[newRow][newCol]) {
+                    visited[newRow][newCol] = true;
+                    distance[newRow][newCol] += dist + 1;
+                    reach[newRow][newCol]++;
+                    queue.offer(new int[]{newRow, newCol, dist + 1});
+                }
+            }
+        }
+    }
+}
