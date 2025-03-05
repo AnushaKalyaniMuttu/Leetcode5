@@ -1,0 +1,24 @@
+import java.util.*;
+
+class Solution {
+    public List<String> generateAbbreviations(String word) {
+        List<String> result = new ArrayList<>();
+        backtrack(result, word, new StringBuilder(), 0, 0);
+        return result;
+    }
+
+    private void backtrack(List<String> result, String word, StringBuilder sb, int pos, int count) {
+        int len = sb.length();
+        if (pos == word.length()) {
+            if (count > 0) sb.append(count);
+            result.add(sb.toString());
+        } else {
+            backtrack(result, word, sb, pos + 1, count + 1);
+
+            if (count > 0) sb.append(count);
+            sb.append(word.charAt(pos));
+            backtrack(result, word, sb, pos + 1, 0);
+        }
+        sb.setLength(len);
+    }
+}
