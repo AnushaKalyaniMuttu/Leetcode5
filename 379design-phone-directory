@@ -1,0 +1,41 @@
+import java.util.*;
+
+class PhoneDirectory {
+    private Queue<Integer> availableNumbers;
+    private Set<Integer> usedNumbers;
+    private int maxNumbers;
+
+    public PhoneDirectory(int maxNumbers) {
+        this.maxNumbers = maxNumbers;
+        this.availableNumbers = new LinkedList<>();
+        this.usedNumbers = new HashSet<>();
+
+        for (int i = 0; i < maxNumbers; i++) {
+            availableNumbers.offer(i);
+        }
+    }
+
+    public int get() {
+        if (availableNumbers.isEmpty()) {
+            return -1; // No available numbers
+        }
+
+        int number = availableNumbers.poll();
+        usedNumbers.add(number);
+        return number;
+    }
+
+    public boolean check(int number) {
+        if (number < 0 || number >= maxNumbers) {
+            return false; // Out of range
+        }
+
+        return !usedNumbers.contains(number);
+    }
+
+    public void release(int number) {
+        if (usedNumbers.remove(number)) {
+            availableNumbers.offer(number);
+        }
+    }
+}
