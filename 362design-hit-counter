@@ -1,0 +1,25 @@
+import java.util.LinkedList;
+import java.util.Queue;
+
+class HitCounter {
+    private Queue<Integer> hits;
+
+    public HitCounter() {
+        hits = new LinkedList<>();
+    }
+
+    public void hit(int timestamp) {
+        // Record the timestamp of the hit
+        hits.offer(timestamp);
+    }
+
+    public int getHits(int timestamp) {
+        // Remove timestamps that are more than 300 seconds old
+        while (!hits.isEmpty() && hits.peek() <= timestamp - 300) {
+            hits.poll();
+        }
+
+        // Return the size of the queue as the number of hits
+        return hits.size();
+    }
+}
