@@ -1,0 +1,46 @@
+class Solution {
+    public ListNode plusOne(ListNode head) {
+        if (head == null) {
+            return new ListNode(1); // If the linked list is empty, return a new node with value 1
+        }
+
+        // Reverse the linked list
+        head = reverseList(head);
+
+        // Add one to the head of the reversed linked list
+        ListNode current = head;
+        int carry = 1; // Start with a carry of 1 (for the "plus one")
+        while (current != null && carry > 0) {
+            int sum = current.val + carry;
+            current.val = sum % 10;
+            carry = sum / 10;
+            if (current.next == null && carry > 0) {
+                current.next = new ListNode(0); // Add a new node to handle the carry
+            }
+            current = current.next;
+        }
+
+        // Reverse the list back to its original order
+        return reverseList(head);
+    }
+
+    private ListNode reverseList(ListNode head) {
+        ListNode prev = null;
+        while (head != null) {
+            ListNode next = head.next;
+            head.next = prev;
+            prev = head;
+            head = next;
+        }
+        return prev;
+    }
+}
+
+// Definition for singly-linked list
+class ListNode {
+    int val;
+    ListNode next;
+    ListNode(int x) {
+        val = x;
+    }
+}
