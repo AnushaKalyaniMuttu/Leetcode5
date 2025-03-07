@@ -1,0 +1,41 @@
+import java.util.TreeSet;
+
+class Solution {
+    public int maxSumSubmatrix(int[][] matrix, int k) {
+        int rows = matrix.length;
+        int cols = matrix[0].length;
+        int maxSum = Integer.MIN_VALUE;
+
+        for (int left = 0; left < cols; left++) {
+            int[] rowSums = new int[rows];
+            
+            for (int right = left; right < cols; right++) {
+                for (int i = 0; i < rows; i++) {
+                    rowSums[i] += matrix[i][right];
+                }
+
+                maxSum = Math.max(maxSum, findMaxSubarraySum(rowSums, k));
+            }
+        }
+        
+        return maxSum;
+    }
+
+    private int findMaxSubarraySum(int[] nums, int k) {
+        TreeSet<Integer> cumulativeSums = new TreeSet<>();
+        cumulativeSums.add(0);
+        int currentSum = 0;
+        int maxSum = Integer.MIN_VALUE;
+
+        for (int num : nums) {
+            currentSum += num;
+            Integer ceiling = cumulativeSums.ceiling(currentSum - k);
+            if (ceiling != null) {
+                maxSum = Math.max(maxSum, currentSum - ceiling);
+            }
+            cumulativeSums.add(currentSum);
+        }
+
+        return maxSum;
+    }
+}
