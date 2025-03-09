@@ -1,0 +1,28 @@
+import java.util.Random;
+
+class Solution {
+    private final int[] original;
+    private int[] shuffled;
+    private final Random rand;
+
+    public Solution(int[] nums) {
+        this.original = nums.clone();
+        this.shuffled = nums.clone();
+        this.rand = new Random();
+    }
+    
+    public int[] reset() {
+        shuffled = original.clone();
+        return shuffled;
+    }
+    
+    public int[] shuffle() {
+        for (int i = shuffled.length - 1; i > 0; i--) {
+            int j = rand.nextInt(i + 1);
+            int temp = shuffled[i];
+            shuffled[i] = shuffled[j];
+            shuffled[j] = temp;
+        }
+        return shuffled;
+    }
+}
