@@ -1,0 +1,20 @@
+class Solution {
+    public int findNthDigit(int n) {
+        long digitCount = 1, rangeSize = 9, start = 1;
+        
+        // Find the range where the nth digit is
+        while (n > digitCount * rangeSize) {
+            n -= digitCount * rangeSize;
+            digitCount++;
+            rangeSize *= 10;
+            start *= 10;
+        }
+
+        // Find the actual number containing the nth digit
+        long num = start + (n - 1) / digitCount;
+        String numStr = Long.toString(num);
+
+        // Find the exact digit
+        return numStr.charAt((int) ((n - 1) % digitCount)) - '0';
+    }
+}
