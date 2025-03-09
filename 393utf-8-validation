@@ -1,0 +1,19 @@
+class Solution {
+    public boolean validUtf8(int[] data) {
+        int remainingBytes = 0;
+
+        for (int num : data) {
+            if (remainingBytes == 0) {
+                if ((num >> 5) == 0b110) remainingBytes = 1; // 2-byte character
+                else if ((num >> 4) == 0b1110) remainingBytes = 2; // 3-byte character
+                else if ((num >> 3) == 0b11110) remainingBytes = 3; // 4-byte character
+                else if ((num >> 7) != 0) return false; // 1-byte character must start with 0
+            } else {
+                if ((num >> 6) != 0b10) return false; // Must start with 10xxxxxx
+                remainingBytes--;
+            }
+        }
+
+        return remainingBytes == 0;
+    }
+}
