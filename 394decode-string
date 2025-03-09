@@ -1,0 +1,32 @@
+import java.util.*;
+
+class Solution {
+    public String decodeString(String s) {
+        Stack<Integer> numStack = new Stack<>();
+        Stack<StringBuilder> strStack = new Stack<>();
+        StringBuilder currString = new StringBuilder();
+        int num = 0;
+
+        for (char c : s.toCharArray()) {
+            if (Character.isDigit(c)) {
+                num = num * 10 + (c - '0'); // Build multi-digit number
+            } else if (c == '[') {
+                numStack.push(num);
+                strStack.push(currString);
+                num = 0;
+                currString = new StringBuilder();
+            } else if (c == ']') {
+                int repeat = numStack.pop();
+                StringBuilder decoded = strStack.pop();
+                for (int i = 0; i < repeat; i++) {
+                    decoded.append(currString);
+                }
+                currString = decoded;
+            } else {
+                currString.append(c);
+            }
+        }
+
+        return currString.toString();
+    }
+}
