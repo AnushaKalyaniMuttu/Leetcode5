@@ -1,0 +1,40 @@
+import java.util.*;
+
+class Solution {
+    public boolean isRectangleCover(int[][] rectangles) {
+        Set<String> corners = new HashSet<>();
+        int x1 = Integer.MAX_VALUE, y1 = Integer.MAX_VALUE;
+        int x2 = Integer.MIN_VALUE, y2 = Integer.MIN_VALUE;
+        int totalArea = 0;
+
+        for (int[] rect : rectangles) {
+            int xLeft = rect[0], yBottom = rect[1];
+            int xRight = rect[2], yTop = rect[3];
+
+            x1 = Math.min(x1, xLeft);
+            y1 = Math.min(y1, yBottom);
+            x2 = Math.max(x2, xRight);
+            y2 = Math.max(y2, yTop);
+
+            totalArea += (xRight - xLeft) * (yTop - yBottom);
+
+            String[] points = {
+                xLeft + "," + yBottom, xLeft + "," + yTop,
+                xRight + "," + yBottom, xRight + "," + yTop
+            };
+
+            for (String point : points) {
+                if (!corners.add(point)) {
+                    corners.remove(point);
+                }
+            }
+        }
+
+        int expectedArea = (x2 - x1) * (y2 - y1);
+        return totalArea == expectedArea && corners.size() == 4 &&
+               corners.contains(x1 + "," + y1) &&
+               corners.contains(x1 + "," + y2) &&
+               corners.contains(x2 + "," + y1) &&
+               corners.contains(x2 + "," + y2);
+    }
+}
