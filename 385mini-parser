@@ -1,0 +1,42 @@
+import java.util.*;
+
+class Solution {
+    public NestedInteger deserialize(String s) {
+        if (s.charAt(0) != '[') {
+            return new NestedInteger(Integer.parseInt(s)); // Single number case
+        }
+
+        Stack<NestedInteger> stack = new Stack<>();
+        NestedInteger curr = null;
+        int num = 0, sign = 1;
+        boolean numStarted = false;
+
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+
+            if (c == '-') {
+                sign = -1;
+            } else if (Character.isDigit(c)) {
+                num = num * 10 + (c - '0');
+                numStarted = true;
+            } else if (c == '[') {
+                if (curr != null) stack.push(curr);
+                curr = new NestedInteger();
+            } else if (c == ',' || c == ']') {
+                if (numStarted) {
+                    curr.add(new NestedInteger(sign * num));
+                    num = 0;
+                    sign = 1;
+                    numStarted = false;
+                }
+                if (c == ']' && !stack.isEmpty()) {
+                    NestedInteger top = stack.pop();
+                    top.add(curr);
+                    curr = top;
+                }
+            }
+        }
+
+        return curr;
+    }
+}
