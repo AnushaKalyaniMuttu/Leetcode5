@@ -1,0 +1,21 @@
+import java.util.*;
+
+class Solution {
+    public int lengthLongestPath(String input) {
+        Map<Integer, Integer> pathLength = new HashMap<>();
+        int maxLen = 0;
+
+        for (String line : input.split("\n")) {
+            int depth = line.lastIndexOf("\t") + 1; // Depth based on tab count
+            int len = line.length() - depth; // Remove tabs from length
+
+            if (line.contains(".")) { // It's a file
+                maxLen = Math.max(maxLen, pathLength.getOrDefault(depth, 0) + len);
+            } else { // It's a directory
+                pathLength.put(depth + 1, pathLength.getOrDefault(depth, 0) + len + 1);
+            }
+        }
+
+        return maxLen;
+    }
+}
