@@ -1,0 +1,62 @@
+import java.util.*;
+
+public class Solution {
+    String result = "";
+    public String minAbbreviation(String target, String[] dictionary) {
+        List<Integer> masks = new ArrayList<>();
+        int n = target.length();
+        
+        for (String word : dictionary) {
+            if (word.length() == n) {
+                int mask = 0;
+                for (int i = 0; i < n; i++) {
+                    if (target.charAt(i) != word.charAt(i)) {
+                        mask |= (1 << i);
+                    }
+                }
+                masks.add(mask);
+            }
+        }
+        
+        if (masks.isEmpty()) return String.valueOf(n);
+        
+        for (int bits = 0; bits < (1 << n); bits++) {
+            String abbr = getAbbreviation(target, bits);
+            boolean valid = true;
+            for (int mask : masks) {
+                if ((bits & mask) == bits) {
+                    valid = false;
+                    break;
+                }
+            }
+            if (valid && (result.isEmpty() || abbr.length() < result.length())) {
+                result = abbr;
+            }
+        }
+        
+        return result;
+    }
+
+    private String getAbbreviation(String word, int mask) {
+        StringBuilder sb = new StringBuilder();
+        int count = 0;
+        for (int i = 0; i < word.length(); i++) {
+            if ((mask & (1 << i)) == 0) {
+                count++;
+            } else {
+                if (count > 0) {
+                    sb.append(count);
+                    count = 0;
+                }
+                sb.append(word.charAt(i));
+            }
+        }
+        if (count > 0) sb.append(count);
+        return sb.toString();
+    }
+
+    public static void main(String[] args) {
+        Solution sol = new Solution();
+        System.out.println(sol.minAbbreviation("apple", new String[]{"blade", "plain", "amber"})); // Output: "a4"
+    }
+}
