@@ -1,0 +1,17 @@
+public class Solution {
+    public String toHex(int num) {
+        if (num == 0) return "0";
+        
+        char[] hexChars = "0123456789abcdef".toCharArray();
+        StringBuilder hex = new StringBuilder();
+        
+        while (num != 0) {
+            hex.append(hexChars[num & 15]); // Get the last 4 bits
+            num >>>= 4; // Unsigned shift to process the next 4 bits
+        }
+        
+        return hex.reverse().toString(); // Reverse to get correct order
+    }
+
+   
+}
