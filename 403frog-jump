@@ -1,0 +1,35 @@
+import java.util.*;
+
+public class Solution {
+    public boolean canCross(int[] stones) {
+        if (stones[1] != 1) return false; // The first jump must be of size 1
+        
+        Set<Integer> stoneSet = new HashSet<>();
+        for (int stone : stones) stoneSet.add(stone);
+        
+        // Memoization map: (position, lastJump) → canReach
+        Map<String, Boolean> memo = new HashMap<>();
+        
+        return dfs(stoneSet, stones[stones.length - 1], 1, 1, memo);
+    }
+    
+    private boolean dfs(Set<Integer> stones, int target, int pos, int jump, Map<String, Boolean> memo) {
+        String key = pos + "," + jump;
+        if (memo.containsKey(key)) return memo.get(key);
+        
+        if (pos == target) return true; // Reached the last stone
+        
+        for (int nextJump : new int[]{jump - 1, jump, jump + 1}) {
+            if (nextJump > 0 && stones.contains(pos + nextJump)) {
+                if (dfs(stones, target, pos + nextJump, nextJump, memo)) {
+                    memo.put(key, true);
+                    return true;
+                }
+            }
+        }
+        
+        memo.put(key, false);
+        return false;
+    }
+
+}
