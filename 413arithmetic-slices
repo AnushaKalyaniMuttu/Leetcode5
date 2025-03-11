@@ -1,0 +1,23 @@
+public class Solution {
+    public int numberOfArithmeticSlices(int[] nums) {
+        if (nums.length < 3) return 0;
+
+        int count = 0, streak = 0;
+
+        for (int i = 2; i < nums.length; i++) {
+            if (nums[i] - nums[i - 1] == nums[i - 1] - nums[i - 2]) {
+                streak++;
+                count += streak;
+            } else {
+                streak = 0;
+            }
+        }
+        return count;
+    }
+
+    public static void main(String[] args) {
+        Solution sol = new Solution();
+        System.out.println(sol.numberOfArithmeticSlices(new int[]{1,2,3,4})); // Output: 3
+        System.out.println(sol.numberOfArithmeticSlices(new int[]{1,3,5,7,9})); // Output: 6
+    }
+}
