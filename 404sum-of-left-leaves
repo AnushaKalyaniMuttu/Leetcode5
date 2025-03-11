@@ -1,0 +1,20 @@
+class TreeNode {
+    int val;
+    TreeNode left, right;
+    TreeNode(int x) { val = x; }
+}
+
+public class Solution {
+    public int sumOfLeftLeaves(TreeNode root) {
+        if (root == null) return 0;
+        int sum = 0;
+        
+        // Check if left child is a leaf
+        if (root.left != null && root.left.left == null && root.left.right == null) {
+            sum += root.left.val;
+        }
+        
+        // Recursively check left and right subtrees
+        return sum + sumOfLeftLeaves(root.left) + sumOfLeftLeaves(root.right);
+    }
+}
