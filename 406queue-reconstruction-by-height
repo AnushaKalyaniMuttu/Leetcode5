@@ -1,0 +1,17 @@
+import java.util.*;
+
+public class Solution {
+    public int[][] reconstructQueue(int[][] people) {
+        // Sort: First by height (descending), then by k (ascending)
+        Arrays.sort(people, (a, b) -> (a[0] == b[0]) ? a[1] - b[1] : b[0] - a[0]);
+
+        List<int[]> result = new LinkedList<>();
+        for (int[] person : people) {
+            result.add(person[1], person); // Insert person at index k
+        }
+
+        return result.toArray(new int[people.length][]);
+    }
+
+   
+}
