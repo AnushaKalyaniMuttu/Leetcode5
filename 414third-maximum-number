@@ -1,0 +1,16 @@
+import java.util.*;
+
+public class Solution {
+    public int thirdMax(int[] nums) {
+        Arrays.sort(nums);
+        int distinct = 1, n = nums.length;
+        
+        for (int i = n - 2; i >= 0; i--) {
+            if (nums[i] != nums[i + 1]) {
+                distinct++;
+                if (distinct == 3) return nums[i];
+            }
+        }
+        return nums[n - 1]; // Return max if third max doesn't exist
+    }
+}
