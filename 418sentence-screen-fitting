@@ -1,0 +1,19 @@
+class Solution {
+    public int wordsTyping(String[] sentence, int rows, int cols) {
+        String s = String.join(" ", sentence) + " ";
+        int len = s.length(), pos = 0;
+
+        for (int i = 0; i < rows; i++) {
+            pos += cols;
+            if (s.charAt(pos % len) == ' ') {
+                pos++; // Move to the next character
+            } else {
+                while (pos > 0 && s.charAt((pos - 1) % len) != ' ') {
+                    pos--; // Backtrack to the beginning of a word
+                }
+            }
+        }
+        
+        return pos / len; // Number of times the sentence fits
+    }
+}
