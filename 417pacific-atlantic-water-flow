@@ -1,0 +1,45 @@
+class Solution {
+    private int[][] directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+    private int rows, cols;
+
+    public List<List<Integer>> pacificAtlantic(int[][] heights) {
+        List<List<Integer>> result = new ArrayList<>();
+        if (heights == null || heights.length == 0) return result;
+
+        rows = heights.length;
+        cols = heights[0].length;
+        boolean[][] pacific = new boolean[rows][cols];
+        boolean[][] atlantic = new boolean[rows][cols];
+
+        // DFS from ocean edges
+        for (int i = 0; i < rows; i++) {
+            dfs(heights, pacific, i, 0);
+            dfs(heights, atlantic, i, cols - 1);
+        }
+        for (int j = 0; j < cols; j++) {
+            dfs(heights, pacific, 0, j);
+            dfs(heights, atlantic, rows - 1, j);
+        }
+
+        // Collect cells that can reach both oceans
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (pacific[i][j] && atlantic[i][j]) {
+                    result.add(Arrays.asList(i, j));
+                }
+            }
+        }
+        return result;
+    }
+
+    private void dfs(int[][] heights, boolean[][] ocean, int i, int j) {
+        ocean[i][j] = true;
+        for (int[] dir : directions) {
+            int ni = i + dir[0], nj = j + dir[1];
+            if (ni >= 0 && ni < rows && nj >= 0 && nj < cols 
+                && !ocean[ni][nj] && heights[ni][nj] >= heights[i][j]) {
+                dfs(heights, ocean, ni, nj);
+            }
+        }
+    }
+}
