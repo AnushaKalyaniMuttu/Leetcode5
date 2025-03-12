@@ -1,0 +1,33 @@
+class Solution {
+    public String originalDigits(String s) {
+        int[] count = new int[26]; // Frequency of each letter
+        for (char c : s.toCharArray()) {
+            count[c - 'a']++;
+        }
+
+        // Count occurrences of each digit based on unique letters
+        int[] digits = new int[10];
+        digits[0] = count['z' - 'a']; // "zero" has unique 'z'
+        digits[2] = count['w' - 'a']; // "two" has unique 'w'
+        digits[4] = count['u' - 'a']; // "four" has unique 'u'
+        digits[6] = count['x' - 'a']; // "six" has unique 'x'
+        digits[8] = count['g' - 'a']; // "eight" has unique 'g'
+
+        // Deduce remaining numbers
+        digits[3] = count['h' - 'a'] - digits[8]; // "three" has 'h' but 'eight' also has 'h'
+        digits[5] = count['f' - 'a'] - digits[4]; // "five" has 'f' but "four" also has 'f'
+        digits[7] = count['s' - 'a'] - digits[6]; // "seven" has 's' but "six" also has 's'
+        digits[9] = count['i' - 'a'] - digits[5] - digits[6] - digits[8]; // "nine" has 'i' but is affected by 5, 6, and 8
+        digits[1] = count['o' - 'a'] - digits[0] - digits[2] - digits[4]; // "one" has 'o' but is affected by 0, 2, and 4
+
+        // Construct the result
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < 10; i++) {
+            while (digits[i]-- > 0) {
+                result.append(i);
+            }
+        }
+        
+        return result.toString();
+    }
+}
