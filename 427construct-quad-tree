@@ -1,0 +1,51 @@
+class Node {
+    public boolean val;
+    public boolean isLeaf;
+    public Node topLeft, topRight, bottomLeft, bottomRight;
+    
+    public Node(boolean val, boolean isLeaf) {
+        this.val = val;
+        this.isLeaf = isLeaf;
+    }
+    
+    public Node(boolean val, boolean isLeaf, Node topLeft, Node topRight, Node bottomLeft, Node bottomRight) {
+        this.val = val;
+        this.isLeaf = isLeaf;
+        this.topLeft = topLeft;
+        this.topRight = topRight;
+        this.bottomLeft = bottomLeft;
+        this.bottomRight = bottomRight;
+    }
+}
+
+class Solution {
+    public Node construct(int[][] grid) {
+        return buildTree(grid, 0, 0, grid.length);
+    }
+    
+    private Node buildTree(int[][] grid, int row, int col, int size) {
+        if (isUniform(grid, row, col, size)) {
+            return new Node(grid[row][col] == 1, true);
+        }
+        
+        int newSize = size / 2;
+        return new Node(
+            true, 
+            false,
+            buildTree(grid, row, col, newSize),
+            buildTree(grid, row, col + newSize, newSize),
+            buildTree(grid, row + newSize, col, newSize),
+            buildTree(grid, row + newSize, col + newSize, newSize)
+        );
+    }
+    
+    private boolean isUniform(int[][] grid, int row, int col, int size) {
+        int val = grid[row][col];
+        for (int i = row; i < row + size; i++) {
+            for (int j = col; j < col + size; j++) {
+                if (grid[i][j] != val) return false;
+            }
+        }
+        return true;
+    }
+}
