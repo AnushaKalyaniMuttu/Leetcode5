@@ -1,0 +1,20 @@
+import java.util.*;
+
+class Solution {
+    public int numberOfBoomerangs(int[][] points) {
+        int boomerangs = 0;
+        for (int[] p : points) {
+            Map<Integer, Integer> distanceCount = new HashMap<>();
+            for (int[] q : points) {
+                int dx = p[0] - q[0];
+                int dy = p[1] - q[1];
+                int dist = dx * dx + dy * dy;
+                
+                int count = distanceCount.getOrDefault(dist, 0);
+                boomerangs += count * 2;
+                distanceCount.put(dist, count + 1);
+            }
+        }
+        return boomerangs;
+    }
+}
