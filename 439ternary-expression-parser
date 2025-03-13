@@ -1,0 +1,24 @@
+import java.util.*;
+
+class Solution {
+    public String parseTernary(String expression) {
+        Deque<Character> stack = new ArrayDeque<>();
+        
+        for (int i = expression.length() - 1; i >= 0; i--) {
+            char c = expression.charAt(i);
+            
+            if (!stack.isEmpty() && stack.peek() == '?') {
+                stack.pop(); // remove '?'
+                char trueVal = stack.pop();
+                stack.pop(); // remove ':'
+                char falseVal = stack.pop();
+                
+                stack.push(c == 'T' ? trueVal : falseVal);
+            } else {
+                stack.push(c);
+            }
+        }
+        
+        return String.valueOf(stack.pop());
+    }
+}
