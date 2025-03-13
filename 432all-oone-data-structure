@@ -1,0 +1,81 @@
+import java.util.*;
+
+class AllOne {
+    private class Node {
+        int count;
+        Set<String> keys;
+        Node prev, next;
+        
+        Node(int count) {
+            this.count = count;
+            this.keys = new LinkedHashSet<>();
+        }
+    }
+    
+    private Map<String, Node> keyMap;
+    private Node head, tail;
+    
+    public AllOne() {
+        keyMap = new HashMap<>();
+        head = new Node(Integer.MIN_VALUE);
+        tail = new Node(Integer.MAX_VALUE);
+        head.next = tail;
+        tail.prev = head;
+    }
+    
+    public void inc(String key) {
+        if (!keyMap.containsKey(key)) {
+            if (head.next.count != 1) {
+                insertNode(new Node(1), head);
+            }
+            head.next.keys.add(key);
+            keyMap.put(key, head.next);
+        } else {
+            moveKey(key, keyMap.get(key), 1);
+        }
+    }
+    
+    public void dec(String key) {
+        Node node = keyMap.get(key);
+        if (node.count == 1) {
+            keyMap.remove(key);
+        } else {
+            moveKey(key, node, -1);
+        }
+        node.keys.remove(key);
+        if (node.keys.isEmpty()) removeNode(node);
+    }
+    
+    public String getMaxKey() {
+        return tail.prev == head ? "" : tail.prev.keys.iterator().next();
+    }
+    
+    public String getMinKey() {
+        return head.next == tail ? "" : head.next.keys.iterator().next();
+    }
+    
+    private void moveKey(String key, Node node, int diff) {
+        int newCount = node.count + diff;
+        Node target = diff == 1 ? node.next : node.prev;
+        if (target.count != newCount) {
+            target = new Node(newCount);
+            insertNode(target, diff == 1 ? node : node.prev);
+        }
+        target.keys.add(key);
+        keyMap.put(key, target);
+        node.keys.remove(key);
+        if (node.keys.isEmpty()) removeNode(node);
+    }
+    
+    private void insertNode(Node newNode, Node prevNode) {
+        newNode.next = prevNode.next;
+        newNode.prev = prevNode;
+        prevNode.next.prev = newNode;
+        prevNode.next = newNode;
+    }
+    
+    private void removeNode(Node node) {
+        node.prev.next = node.next;
+        node.next.prev = node.prev;
+    }
+}
