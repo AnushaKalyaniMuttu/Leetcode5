@@ -1,0 +1,59 @@
+import java.util.*;
+
+class Solution {
+    class TrieNode {
+        Map<Character, TrieNode> children = new HashMap<>();
+        List<String> words = new ArrayList<>();
+    }
+    
+    private void insertWord(TrieNode root, String word) {
+        TrieNode node = root;
+        for (char c : word.toCharArray()) {
+            node.children.putIfAbsent(c, new TrieNode());
+            node = node.children.get(c);
+            node.words.add(word);
+        }
+    }
+    
+    private List<String> getWordsWithPrefix(TrieNode root, String prefix) {
+        TrieNode node = root;
+        for (char c : prefix.toCharArray()) {
+            if (!node.children.containsKey(c)) return new ArrayList<>();
+            node = node.children.get(c);
+        }
+        return node.words;
+    }
+    
+    public List<List<String>> wordSquares(String[] words) {
+        List<List<String>> result = new ArrayList<>();
+        if (words == null || words.length == 0) return result;
+        
+        TrieNode root = new TrieNode();
+        for (String word : words) insertWord(root, word);
+        
+        List<String> square = new ArrayList<>();
+        for (String word : words) {
+            square.add(word);
+            backtrack(result, root, square, word.length());
+            square.remove(square.size() - 1);
+        }
+        return result;
+    }
+    
+    private void backtrack(List<List<String>> result, TrieNode root, List<String> square, int length) {
+        if (square.size() == length) {
+            result.add(new ArrayList<>(square));
+            return;
+        }
+        
+        StringBuilder prefix = new StringBuilder();
+        int index = square.size();
+        for (String word : square) prefix.append(word.charAt(index));
+        
+        for (String nextWord : getWordsWithPrefix(root, prefix.toString())) {
+            square.add(nextWord);
+            backtrack(result, root, square, length);
+            square.remove(square.size() - 1);
+        }
+    }
+}
