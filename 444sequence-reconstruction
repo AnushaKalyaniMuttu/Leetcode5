@@ -1,0 +1,44 @@
+import java.util.*;
+
+class Solution {
+    public boolean sequenceReconstruction(int[] nums, List<List<Integer>> sequences) {
+        int n = nums.length;
+        int[] inDegree = new int[n + 1];
+        Map<Integer, Set<Integer>> graph = new HashMap<>();
+        
+        for (int i = 1; i <= n; i++) {
+            graph.put(i, new HashSet<>());
+        }
+        
+        for (List<Integer> seq : sequences) {
+            for (int i = 1; i < seq.size(); i++) {
+                int u = seq.get(i - 1), v = seq.get(i);
+                if (graph.get(u).add(v)) {
+                    inDegree[v]++;
+                }
+            }
+        }
+        
+        Queue<Integer> queue = new LinkedList<>();
+        for (int i = 1; i <= n; i++) {
+            if (inDegree[i] == 0) {
+                queue.offer(i);
+            }
+        }
+        
+        int index = 0;
+        while (!queue.isEmpty()) {
+            if (queue.size() > 1) return false;
+            int curr = queue.poll();
+            if (nums[index++] != curr) return false;
+            
+            for (int next : graph.get(curr)) {
+                if (--inDegree[next] == 0) {
+                    queue.offer(next);
+                }
+            }
+        }
+        
+        return index == n;
+    }
+}
