@@ -1,0 +1,43 @@
+import java.util.HashMap;
+import java.util.Map;
+
+class Solution {
+    private Map<Integer, Boolean> memo = new HashMap<>();
+    private boolean[] used;
+    
+    public boolean canIWin(int maxChoosableInteger, int desiredTotal) {
+        int sum = (maxChoosableInteger * (maxChoosableInteger + 1)) / 2;
+        if (sum < desiredTotal) return false; // Impossible to reach desiredTotal
+        if (desiredTotal <= 0) return true;  // First player wins immediately
+        
+        used = new boolean[maxChoosableInteger + 1];
+        return dfs(desiredTotal);
+    }
+
+    private boolean dfs(int target) {
+        int key = format(used);
+        if (memo.containsKey(key)) return memo.get(key);
+
+        for (int i = 1; i < used.length; i++) {
+            if (!used[i]) {
+                used[i] = true;
+                if (target - i <= 0 || !dfs(target - i)) { 
+                    memo.put(key, true);
+                    used[i] = false;
+                    return true;
+                }
+                used[i] = false;
+            }
+        }
+        memo.put(key, false);
+        return false;
+    }
+
+    private int format(boolean[] used) {
+        int num = 0;
+        for (boolean b : used) {
+            num = (num << 1) | (b ? 1 : 0);
+        }
+        return num;
+    }
+}
