@@ -1,0 +1,17 @@
+/**
+ * The rand7() API is already defined in the parent class SolBase.
+ * public int rand7();
+ * @return a random integer in the range 1 to 7
+ */
+class Solution extends SolBase {
+    public int rand10() {
+        int num;
+        do {
+            int row = rand7();
+            int col = rand7();
+            num = (row - 1) * 7 + col; // Map to [1, 49]
+        } while (num > 40); // Reject numbers >40 to ensure uniformity
+
+        return (num - 1) % 10 + 1;
+    }
+}
