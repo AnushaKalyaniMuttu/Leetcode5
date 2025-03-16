@@ -1,0 +1,25 @@
+import java.util.*;
+
+class Solution {
+    public int fourSumCount(int[] A, int[] B, int[] C, int[] D) {
+        Map<Integer, Integer> sumAB = new HashMap<>();
+        
+        // Step 1: Compute all sums of A[i] + B[j] and store in hashmap
+        for (int a : A) {
+            for (int b : B) {
+                sumAB.put(a + b, sumAB.getOrDefault(a + b, 0) + 1);
+            }
+        }
+
+        int count = 0;
+        
+        // Step 2: Compute all sums of C[k] + D[l] and check for -(C[k] + D[l]) in hashmap
+        for (int c : C) {
+            for (int d : D) {
+                count += sumAB.getOrDefault(-(c + d), 0);
+            }
+        }
+        
+        return count;
+    }
+}
