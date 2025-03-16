@@ -1,0 +1,27 @@
+class Solution {
+    public int getMaxRepetitions(String s1, int n1, String s2, int n2) {
+        if (n1 == 0) return 0;
+        
+        int s1Count = 0, s2Count = 0, index = 0;
+        int[] repeatCount = new int[s2.length()];
+        int[] indexMap = new int[s2.length()];
+        
+        while (s1Count < n1) {
+            for (char c : s1.toCharArray()) {
+                if (c == s2.charAt(index)) {
+                    index++;
+                    if (index == s2.length()) {
+                        s2Count++;
+                        index = 0;
+                    }
+                }
+            }
+            s1Count++;
+
+            if (indexMap[index] != 0) { // Cycle detected
+                int cycleLength = s1Count - indexMap[index];
+                int cycleS2Count = s2Count - repeatCount[index];
+
+                int remainingCycles = (n1 - s1Count) / cycleLength;
+                s1Count += remainingCycles * cycleLength;
+                s2Count += remainingCycles * cycleS2Count
