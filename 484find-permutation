@@ -1,0 +1,33 @@
+public class Solution {
+    public int[] findPermutation(String s) {
+        int n = s.length();
+        int[] perm = new int[n + 1];
+        for (int i = 0; i <= n; i++) {
+            perm[i] = i + 1;
+        }
+        int i = 0;
+        while (i < n) {
+            if (s.charAt(i) == 'D') {
+                int j = i;
+                while (j < n && s.charAt(j) == 'D') {
+                    j++;
+                }
+                reverse(perm, i, j);
+                i = j;
+            } else {
+                i++;
+            }
+        }
+        return perm;
+    }
+
+    private void reverse(int[] perm, int start, int end) {
+        while (start < end) {
+            int temp = perm[start];
+            perm[start] = perm[end];
+            perm[end] = temp;
+            start++;
+            end--;
+        }
+    }
+}
