@@ -1,0 +1,58 @@
+import java.util.*;
+
+public class Solution {
+    private int[][] rects;
+    private int[] areas;
+    private int totalArea;
+    private Random rand;
+
+    public Solution(int[][] rects) {
+        this.rects = rects;
+        this.areas = new int[rects.length];
+        this.totalArea = 0;
+        this.rand = new Random();
+
+        // Calculate the area of each rectangle and the total area
+        for (int i = 0; i < rects.length; i++) {
+            int width = rects[i][2] - rects[i][0] + 1;
+            int height = rects[i][3] - rects[i][1] + 1;
+            int area = width * height;
+            this.totalArea += area;
+            this.areas[i] = this.totalArea;
+        }
+    }
+
+    public int[] pick() {
+        int target = rand.nextInt(totalArea);
+        int rectIndex = binarySearch(target);
+        int[] rect = rects[rectIndex];
+
+        int x = rect[0] + rand.nextInt(rect[2] - rect[0] + 1);
+        int y = rect[1] + rand.nextInt(rect[3] - rect[1] + 1);
+
+        return new int[]{x, y};
+    }
+
+    private int binarySearch(int target) {
+        int low = 0;
+        int high = areas.length - 1;
+
+        while (low < high) {
+            int mid = low + (high - low) / 2;
+            if (areas[mid] > target) {
+                high = mid;
+            } else {
+                low = mid + 1;
+            }
+        }
+
+        return low;
+    }
+}
+
+
+/**
+ * Your Solution object will be instantiated and called as such:
+ * Solution obj = new Solution(rects);
+ * int[] param_1 = obj.pick();
+ */
