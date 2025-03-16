@@ -1,0 +1,40 @@
+class Solution {
+    public String encode(String s) {
+        int n = s.length();
+        String[][] dp = new String[n][n];
+
+        for (int len = 1; len <= n; len++) {
+            for (int i = 0; i + len - 1 < n; i++) {
+                int j = i + len - 1;
+                String substr = s.substring(i, j + 1);
+                dp[i][j] = substr;
+
+                if (len < 5) continue; // No need to encode short strings
+
+                for (int k = i; k < j; k++) {
+                    if (dp[i][k].length() + dp[k + 1][j].length() < dp[i][j].length()) {
+                        dp[i][j] = dp[i][k] + dp[k + 1][j];
+                    }
+                }
+
+                String encoded = encodePattern(substr);
+                if (encoded.length() < dp[i][j].length()) {
+                    dp[i][j] = encoded;
+                }
+            }
+        }
+
+        return dp[0][n - 1];
+    }
+
+    private String encodePattern(String s) {
+        int len = s.length();
+        for (int k = 1; k < len; k++) {
+            String pattern = s.substring(0, k);
+            if (len % k == 0 && s.replace(pattern, "").isEmpty()) {
+                return (len / k) + "[" + encode(pattern) + "]";
+            }
+        }
+        return s;
+    }
+}
