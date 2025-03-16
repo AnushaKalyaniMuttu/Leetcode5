@@ -1,0 +1,22 @@
+public class Solution {
+    public int largestPalindrome(int n) {
+        if (n == 1) return 9;
+        int upper = (int) Math.pow(10, n) - 1;
+        int lower = upper / 10;
+        for (int i = upper; i > lower; --i) {
+            long candidate = createPalindrome(i);
+            for (long j = upper; j * j >= candidate; --j) {
+                if (candidate % j == 0 && candidate / j <= upper) {
+                    return (int) (candidate % 1337);
+                }
+            }
+        }
+        return 9;
+    }
+
+    private long createPalindrome(int num) {
+        String str = Integer.toString(num);
+        StringBuilder sb = new StringBuilder(str);
+        return Long.parseLong(str + sb.reverse().toString());
+    }
+}
