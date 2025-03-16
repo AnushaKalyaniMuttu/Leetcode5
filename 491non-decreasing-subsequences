@@ -1,0 +1,27 @@
+import java.util.*;
+
+public class Solution {
+    public List<List<Integer>> findSubsequences(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        backtrack(nums, 0, new ArrayList<>(), result);
+        return result;
+    }
+
+    private void backtrack(int[] nums, int start, List<Integer> tempList, List<List<Integer>> result) {
+        if (tempList.size() > 1) {
+            result.add(new ArrayList<>(tempList));
+        }
+        Set<Integer> used = new HashSet<>();
+        for (int i = start; i < nums.length; i++) {
+            if (used.contains(nums[i])) {
+                continue;
+            }
+            if (tempList.isEmpty() || nums[i] >= tempList.get(tempList.size() - 1)) {
+                used.add(nums[i]);
+                tempList.add(nums[i]);
+                backtrack(nums, i + 1, tempList, result);
+                tempList.remove(tempList.size() - 1);
+            }
+        }
+    }
+}
