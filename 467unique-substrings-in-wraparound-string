@@ -1,0 +1,22 @@
+class Solution {
+    public int findSubstringInWraproundString(String s) {
+        int[] dp = new int[26]; // dp[i] stores max unique substrings ending with 'a' + i
+        int maxLength = 0;
+
+        for (int i = 0; i < s.length(); i++) {
+            if (i > 0 && (s.charAt(i) - s.charAt(i - 1) == 1 || s.charAt(i - 1) - s.charAt(i) == 25)) {
+                maxLength++;
+            } else {
+                maxLength = 1;
+            }
+            dp[s.charAt(i) - 'a'] = Math.max(dp[s.charAt(i) - 'a'], maxLength);
+        }
+
+        int result = 0;
+        for (int count : dp) {
+            result += count;
+        }
+
+        return result;
+    }
+}
