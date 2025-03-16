@@ -1,0 +1,82 @@
+import java.util.*;
+
+public class Solution {
+    private TreeMap<Integer, Integer> low;
+    private TreeMap<Integer, Integer> high;
+    private int lowSize;
+    private int highSize;
+
+    public Solution() {
+        low = new TreeMap<>(Collections.reverseOrder());
+        high = new TreeMap<>();
+        lowSize = 0;
+        highSize = 0;
+    }
+
+    public double[] medianSlidingWindow(int[] nums, int k) {
+        if (nums == null || nums.length == 0 || k == 0) return new double[0];
+
+        int n = nums.length;
+        double[] result = new double[n - k + 1];
+
+        for (int i = 0; i < n; i++) {
+            addNum(nums[i]);
+            if (i >= k - 1) {
+                result[i - k + 1] = findMedian();
+                removeNum(nums[i - k + 1]);
+            }
+        }
+
+        return result;
+    }
+
+    private void addNum(int num) {
+        if (lowSize == 0 || num <= low.firstKey()) {
+            low.put(num, low.getOrDefault(num, 0) + 1);
+            lowSize++;
+        } else {
+            high.put(num, high.getOrDefault(num, 0) + 1);
+            highSize++;
+        }
+        balanceHeaps();
+    }
+
+    private void removeNum(int num) {
+        if (low.containsKey(num)) {
+            low.put(num, low.get(num) - 1);
+            if (low.get(num) == 0) low.remove(num);
+            lowSize--;
+        } else {
+            high.put(num, high.get(num) - 1);
+            if (high.get(num) == 0) high.remove(num);
+            highSize--;
+        }
+        balanceHeaps();
+    }
+
+    private void balanceHeaps() {
+        if (lowSize > highSize + 1) {
+            int move = low.firstKey();
+            low.put(move, low.get(move) - 1);
+            if (low.get(move) == 0) low.remove(move);
+            lowSize--;
+            high.put(move, high.getOrDefault(move, 0) + 1);
+            highSize++;
+        } else if (highSize > lowSize) {
+            int move = high.firstKey();
+            high.put(move, high.get(move) - 1);
+            if (high.get(move) == 0) high.remove(move);
+            highSize--;
+            low.put(move, low.getOrDefault(move, 0) + 1);
+            lowSize++;
+        }
+    }
+
+    private double findMedian() {
+        if (lowSize > highSize) {
+            return low.firstKey();
+        } else {
+            return ((double) low.firstKey() + high.firstKey()) / 2.0;
+        }
+    }
+}
