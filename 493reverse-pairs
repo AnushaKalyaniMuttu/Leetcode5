@@ -1,0 +1,62 @@
+import java.util.*;
+
+public class Solution {
+    public int reversePairs(int[] nums) {
+        int n = nums.length;
+        if (n < 2) return 0;
+        
+        // Copy and sort the array to get the ranks
+        int[] sorted = nums.clone();
+        Arrays.sort(sorted);
+        
+        // Map each number to its rank
+        Map<Long, Integer> ranks = new HashMap<>();
+        int rank = 0;
+        for (int num : sorted) {
+            if (!ranks.containsKey((long) num)) {
+                ranks.put((long) num, ++rank);
+            }
+        }
+        
+        // Initialize BIT
+        BIT bit = new BIT(rank);
+        int count = 0;
+        
+        // Traverse the array from right to left
+        for (int i = n - 1; i >= 0; i--) {
+            // Count elements less than nums[i] / 2
+            count += bit.query(ranks.getOrDefault((long) nums[i] / 2, 0));
+            // Update BIT with the rank of nums[i]
+            bit.update(ranks.get((long) nums[i]), 1);
+        }
+        
+        return count;
+    }
+    
+    // Binary Indexed Tree (Fenwick Tree) implementation
+    class BIT {
+        private int[] tree;
+        private int n;
+        
+        public BIT(int n) {
+            this.n = n;
+            this.tree = new int[n + 1];
+        }
+        
+        public void update(int i, int delta) {
+            while (i <= n) {
+                tree[i] += delta;
+                i += i & -i;
+            }
+        }
+        
+        public int query(int i) {
+            int sum = 0;
+            while (i > 0) {
+                sum += tree[i];
+                i -= i & -i;
+            }
+            return sum;
+        }
+    }
+}
