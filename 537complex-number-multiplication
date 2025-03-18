@@ -1,0 +1,16 @@
+class Solution {
+    public String complexNumberMultiply(String num1, String num2) {
+        String[] parts1 = num1.split("\\+|i");
+        String[] parts2 = num2.split("\\+|i");
+        
+        int real1 = Integer.parseInt(parts1[0]);
+        int imaginary1 = Integer.parseInt(parts1[1]);
+        int real2 = Integer.parseInt(parts2[0]);
+        int imaginary2 = Integer.parseInt(parts2[1]);
+        
+        int realPart = real1 * real2 - imaginary1 * imaginary2;
+        int imaginaryPart = real1 * imaginary2 + imaginary1 * real2;
+        
+        return realPart + "+" + imaginaryPart + "i";
+    }
+}
