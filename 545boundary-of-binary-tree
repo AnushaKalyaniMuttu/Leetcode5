@@ -1,0 +1,57 @@
+import java.util.*;
+
+class Solution {
+    public List<Integer> boundaryOfBinaryTree(TreeNode root) {
+        List<Integer> result = new ArrayList<>();
+        if (root == null) return result;
+
+        if (!isLeaf(root)) result.add(root.val);
+        TreeNode curr = root.left;
+
+        // Add left boundary
+        while (curr != null) {
+            if (!isLeaf(curr)) result.add(curr.val);
+            curr = (curr.left != null) ? curr.left : curr.right;
+        }
+
+        // Add leaves
+        addLeaves(root, result);
+
+        // Add right boundary in reverse
+        Stack<Integer> stack = new Stack<>();
+        curr = root.right;
+        while (curr != null) {
+            if (!isLeaf(curr)) stack.push(curr.val);
+            curr = (curr.right != null) ? curr.right : curr.left;
+        }
+        while (!stack.isEmpty()) {
+            result.add(stack.pop());
+        }
+
+        return result;
+    }
+
+    private boolean isLeaf(TreeNode node) {
+        return node.left == null && node.right == null;
+    }
+
+    private void addLeaves(TreeNode node, List<Integer> result) {
+        if (node == null) return;
+        if (isLeaf(node)) {
+            result.add(node.val);
+        } else {
+            addLeaves(node.left, result);
+            addLeaves(node.right, result);
+        }
+    }
+}
+
+class TreeNode {
+    int val;
+    TreeNode left;
+    TreeNode right;
+
+    TreeNode(int x) {
+        val = x;
+    }
+}
