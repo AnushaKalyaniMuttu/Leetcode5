@@ -1,0 +1,32 @@
+import java.util.*;
+
+class TreeNode {
+    int val;
+    TreeNode left, right;
+    TreeNode(int x) { val = x; }
+}
+
+public class Solution {
+    private Map<Integer, Integer> countMap = new HashMap<>();
+    private int maxCount = 0;
+
+    public int[] findMode(TreeNode root) {
+        if (root == null) return new int[0];
+        inorder(root);
+        List<Integer> modes = new ArrayList<>();
+        for (var entry : countMap.entrySet()) {
+            if (entry.getValue() == maxCount) {
+                modes.add(entry.getKey());
+            }
+        }
+        return modes.stream().mapToInt(i -> i).toArray();
+    }
+
+    private void inorder(TreeNode node) {
+        if (node == null) return;
+        inorder(node.left);
+        countMap.put(node.val, countMap.getOrDefault(node.val, 0) + 1);
+        maxCount = Math.max(maxCount, countMap.get(node.val));
+        inorder(node.right);
+    }
+}
