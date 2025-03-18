@@ -1,0 +1,26 @@
+import java.util.*;
+
+class Solution {
+    public int findMinDifference(List<String> timePoints) {
+        Collections.sort(timePoints);
+        int minDiff = Integer.MAX_VALUE;
+        int prevMinutes = getMinutes(timePoints.get(0));
+        int firstMinutes = prevMinutes;
+
+        for (int i = 1; i < timePoints.size(); i++) {
+            int currentMinutes = getMinutes(timePoints.get(i));
+            minDiff = Math.min(minDiff, currentMinutes - prevMinutes);
+            prevMinutes = currentMinutes;
+        }
+        
+        // Compare the first and last time points (accounting for the day wrap-around)
+        minDiff = Math.min(minDiff, 1440 - prevMinutes + firstMinutes);
+
+        return minDiff;
+    }
+
+    private int getMinutes(String time) {
+        String[] parts = time.split(":");
+        return Integer.parseInt(parts[0]) * 60 + Integer.parseInt(parts[1]);
+    }
+}
