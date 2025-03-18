@@ -1,0 +1,27 @@
+import java.util.*;
+
+class Solution {
+    int rows, cols, total;
+    Map<Integer, Integer> map;
+    Random rand;
+
+    public Solution(int m, int n) {
+        rows = m;
+        cols = n;
+        total = m * n;
+        map = new HashMap<>();
+        rand = new Random();
+    }
+
+    public int[] flip() {
+        int idx = rand.nextInt(total--);
+        int pos = map.getOrDefault(idx, idx);
+        map.put(idx, map.getOrDefault(total, total));
+        return new int[]{pos / cols, pos % cols};
+    }
+
+    public void reset() {
+        total = rows * cols;
+        map.clear();
+    }
+}
