@@ -1,0 +1,44 @@
+import java.util.*;
+
+public class Solution {
+    public List<String> wordsAbbreviation(List<String> words) {
+        int n = words.size();
+        String[] result = new String[n];
+        int[] prefix = new int[n];
+        Arrays.fill(prefix, 1);
+        
+        for (int i = 0; i < n; i++) {
+            result[i] = abbreviate(words.get(i), prefix[i]);
+        }
+        
+        for (int i = 0; i < n; i++) {
+            while (true) {
+                Set<Integer> duplicates = new HashSet<>();
+                for (int j = i + 1; j < n; j++) {
+                    if (result[i].equals(result[j])) {
+                        duplicates.add(j);
+                    }
+                }
+                
+                if (duplicates.isEmpty()) {
+                    break;
+                }
+                
+                duplicates.add(i);
+                for (int k : duplicates) {
+                    result[k] = abbreviate(words.get(k), ++prefix[k]);
+                }
+            }
+        }
+        
+        return Arrays.asList(result);
+    }
+    
+    private String abbreviate(String word, int prefix) {
+        int len = word.length();
+        if (len - prefix <= 2) {
+            return word;
+        }
+        return word.substring(0, prefix) + (len - prefix - 1) + word.charAt(len - 1);
+    }
+}
