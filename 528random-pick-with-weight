@@ -1,0 +1,29 @@
+import java.util.Random;
+
+class Solution {
+    private int[] prefixSums;
+    private Random random;
+
+    public Solution(int[] w) {
+        prefixSums = new int[w.length];
+        prefixSums[0] = w[0];
+        for (int i = 1; i < w.length; i++) {
+            prefixSums[i] = prefixSums[i - 1] + w[i];
+        }
+        random = new Random();
+    }
+
+    public int pickIndex() {
+        int target = random.nextInt(prefixSums[prefixSums.length - 1]) + 1;
+        int low = 0, high = prefixSums.length - 1;
+        while (low < high) {
+            int mid = low + (high - low) / 2;
+            if (prefixSums[mid] < target) {
+                low = mid + 1;
+            } else {
+                high = mid;
+            }
+        }
+        return low;
+    }
+}
