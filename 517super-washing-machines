@@ -1,0 +1,20 @@
+class Solution {
+    public int findMinMoves(int[] machines) {
+        int totalDresses = 0;
+        for (int dresses : machines) totalDresses += dresses;
+        
+        int n = machines.length;
+        if (totalDresses % n != 0) return -1; // Impossible case
+        
+        int avg = totalDresses / n;
+        int moves = 0, load = 0, maxLoad = 0;
+
+        for (int dresses : machines) {
+            int diff = dresses - avg;  // Surplus or deficit
+            load += diff;  // Track net load at each step
+            moves = Math.max(moves, Math.max(Math.abs(load), diff));
+        }
+
+        return moves;
+    }
+}
