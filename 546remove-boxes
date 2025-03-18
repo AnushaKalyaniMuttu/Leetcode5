@@ -1,0 +1,30 @@
+class Solution {
+    public int removeBoxes(int[] boxes) {
+        int n = boxes.length;
+        int[][][] dp = new int[n][n][n];
+        return calculatePoints(boxes, dp, 0, n - 1, 0);
+    }
+
+    private int calculatePoints(int[] boxes, int[][][] dp, int left, int right, int count) {
+        if (left > right) return 0;
+        if (dp[left][right][count] != 0) return dp[left][right][count];
+
+        int originalLeft = left, originalCount = count;
+        while (left + 1 <= right && boxes[left] == boxes[left + 1]) {
+            left++;
+            count++;
+        }
+
+        int points = (count + 1) * (count + 1) + calculatePoints(boxes, dp, left + 1, right, 0);
+
+        for (int mid = left + 1; mid <= right; mid++) {
+            if (boxes[mid] == boxes[originalLeft]) {
+                points = Math.max(points, calculatePoints(boxes, dp, left + 1, mid - 1, 0) +
+                                          calculatePoints(boxes, dp, mid, right, originalCount + 1));
+            }
+        }
+
+        dp[originalLeft][right][originalCount] = points;
+        return points;
+    }
+}
