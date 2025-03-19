@@ -1,0 +1,51 @@
+import java.util.*;
+
+class FileSystem {
+    class File {
+        boolean isFile = false;
+        Map<String, File> children = new HashMap<>();
+        StringBuilder content = new StringBuilder();
+    }
+
+    private File root;
+
+    public FileSystem() {
+        root = new File();
+    }
+
+    public List<String> ls(String path) {
+        File node = traverse(path);
+        if (node.isFile) {
+            return Arrays.asList(path.substring(path.lastIndexOf("/") + 1));
+        }
+        List<String> result = new ArrayList<>(node.children.keySet());
+        Collections.sort(result);
+        return result;
+    }
+
+    public void mkdir(String path) {
+        traverse(path);
+    }
+
+    public void addContentToFile(String filePath, String content) {
+        File node = traverse(filePath);
+        node.isFile = true;
+        node.content.append(content);
+    }
+
+    public String readContentFromFile(String filePath) {
+        return traverse(filePath).content.toString();
+    }
+
+    private File traverse(String path) {
+        File node = root;
+        if (path.equals("/")) return node;
+        String[] parts = path.split("/");
+        for (String part : parts) {
+            if (part.isEmpty()) continue;
+            node.children.putIfAbsent(part, new File());
+            node = node.children.get(part);
+        }
+        return node;
+    }
+}
