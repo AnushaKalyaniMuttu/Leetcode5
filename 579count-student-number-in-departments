@@ -1,0 +1,3 @@
+SELECT Id, Month, Salary, 
+       SUM(Salary) OVER (PARTITION BY Id ORDER BY Month) AS CumulativeSalary
+FROM Employee;
