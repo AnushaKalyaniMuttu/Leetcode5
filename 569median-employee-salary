@@ -1,0 +1,6 @@
+SELECT 
+    EmployeeId 
+FROM 
+    Employee 
+WHERE 
+    Salary = (SELECT DISTINCT Salary FROM Employee ORDER BY Salary LIMIT 1 OFFSET 1);
