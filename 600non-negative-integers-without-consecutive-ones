@@ -1,0 +1,29 @@
+class Solution {
+    public int findIntegers(int n) {
+        int[] fib = new int[31];
+        fib[0] = 1;
+        fib[1] = 2;
+
+        // Precompute Fibonacci sequence for binary positions
+        for (int i = 2; i < 31; i++) {
+            fib[i] = fib[i - 1] + fib[i - 2];
+        }
+
+        int prevBit = 0, result = 0;
+
+        // Process bits from highest to lowest
+        for (int i = 30; i >= 0; i--) {
+            if ((n & (1 << i)) != 0) {  // If bit at position i is set
+                result += fib[i];
+                if (prevBit == 1) {
+                    return result;  // Found consecutive ones, return result early
+                }
+                prevBit = 1;
+            } else {
+                prevBit = 0;
+            }
+        }
+
+        return result + 1; // Include n itself if valid
+    }
+}
