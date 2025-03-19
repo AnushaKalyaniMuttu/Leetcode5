@@ -1,0 +1,4 @@
+SELECT Name AS Candidate
+FROM Candidate
+GROUP BY Name
+HAVING COUNT(*) = (SELECT MAX(vote_count) FROM (SELECT COUNT(*) AS vote_count FROM Candidate GROUP BY Name) AS votes);
