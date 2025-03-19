@@ -1,0 +1,5 @@
+SELECT 
+    IFNULL(ROUND(
+        (SELECT COUNT(*) FROM RequestAccepted) / 
+        (SELECT COUNT(*) FROM FriendRequest) * 100, 2), 0) 
+    AS accept_rate;
