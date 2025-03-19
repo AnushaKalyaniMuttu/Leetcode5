@@ -1,0 +1,10 @@
+WITH OrderedNums AS (
+    SELECT Number, Frequency,
+           SUM(Frequency) OVER (ORDER BY Number) AS RunningSum,
+           SUM(Frequency) OVER () AS TotalCount
+    FROM Numbers
+)
+SELECT AVG(Number) AS Median
+FROM OrderedNums
+WHERE RunningSum >= TotalCount / 2.0
+AND RunningSum - Frequency < TotalCount / 2.0;
