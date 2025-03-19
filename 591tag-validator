@@ -1,0 +1,31 @@
+import java.util.*;
+
+class Solution {
+    public boolean isValid(String code) {
+        Stack<String> stack = new Stack<>();
+        for (int i = 0; i < code.length(); i++) {
+            if (i > 0 && stack.isEmpty()) return false; // All tags must be within a root tag
+
+            if (code.startsWith("<![CDATA[", i)) { 
+                int j = i + 9; // Skip "<![CDATA["
+                i = code.indexOf("]]>", j);
+                if (i == -1) return false; // Invalid CDATA
+                i += 2; // Move to end of "]]>"
+            } else if (code.startsWith("</", i)) { 
+                int j = i + 2;
+                i = code.indexOf(">", j);
+                if (i == -1 || j == i || i - j > 9) return false; // Invalid closing tag
+                String tag = code.substring(j, i);
+                if (stack.isEmpty() || !stack.pop().equals(tag)) return false; // Tag mismatch
+            } else if (code.startsWith("<", i)) { 
+                int j = i + 1;
+                i = code.indexOf(">", j);
+                if (i == -1 || j == i || i - j > 9) return false; // Invalid opening tag
+                String tag = code.substring(j, i);
+                if (!tag.matches("[A-Z]+")) return false; // Only uppercase letters allowed
+                stack.push(tag);
+            }
+        }
+        return stack.isEmpty();
+    }
+}
