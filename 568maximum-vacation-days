@@ -1,0 +1,32 @@
+import java.util.Arrays;
+
+class Solution {
+    public int maxVacationDays(int[][] flights, int[][] days) {
+        int cities = flights.length, weeks = days[0].length;
+        int[] dp = new int[cities];
+        Arrays.fill(dp, Integer.MIN_VALUE);
+        dp[0] = 0; // Start from city 0
+
+        for (int week = 0; week < weeks; week++) {
+            int[] temp = new int[cities];
+            Arrays.fill(temp, Integer.MIN_VALUE);
+
+            for (int city = 0; city < cities; city++) {
+                if (dp[city] == Integer.MIN_VALUE) continue; // Skip unreachable cities
+                
+                for (int nextCity = 0; nextCity < cities; nextCity++) {
+                    if (city == nextCity || flights[city][nextCity] == 1) {
+                        temp[nextCity] = Math.max(temp[nextCity], dp[city] + days[nextCity][week]);
+                    }
+                }
+            }
+            dp = temp;
+        }
+
+        int maxVacations = 0;
+        for (int vacation : dp) {
+            maxVacations = Math.max(maxVacations, vacation);
+        }
+        return maxVacations;
+    }
+}
