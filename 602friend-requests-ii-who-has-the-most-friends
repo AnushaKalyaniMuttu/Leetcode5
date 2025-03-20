@@ -1,0 +1,9 @@
+SELECT id, COUNT(DISTINCT user2_id) AS num
+FROM (
+    SELECT requester_id AS id, accepter_id AS user2_id FROM RequestAccepted
+    UNION ALL
+    SELECT accepter_id AS id, requester_id AS user2_id FROM RequestAccepted
+) temp
+GROUP BY id
+ORDER BY num DESC
+LIMIT 1;
