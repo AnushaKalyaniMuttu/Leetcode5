@@ -1,0 +1,13 @@
+# Write your MySQL query statement below
+SELECT id, visit_date, people
+FROM (
+    SELECT id, visit_date, people,
+           LEAD(people, 1) OVER (ORDER BY visit_date) AS next1,
+           LEAD(people, 2) OVER (ORDER BY visit_date) AS next2,
+           LAG(people, 1) OVER (ORDER BY visit_date) AS prev1,
+           LAG(people, 2) OVER (ORDER BY visit_date) AS prev2
+    FROM Stadium
+) temp
+WHERE (people >= 100 AND next1 >= 100 AND next2 >= 100)
+   OR (people >= 100 AND prev1 >= 100 AND next1 >= 100)
+   OR (people >= 100 AND prev1 >= 100 AND prev2 >= 100);
