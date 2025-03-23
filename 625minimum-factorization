@@ -1,0 +1,17 @@
+class Solution {
+    public int smallestFactorization(int num) {
+        if (num < 2) return num;
+        
+        long result = 0, place = 1;
+        
+        for (int d = 9; d >= 2; d--) {
+            while (num % d == 0) {
+                num /= d;
+                result = place * d + result;
+                place *= 10;
+            }
+        }
+        
+        return (num == 1 && result <= Integer.MAX_VALUE) ? (int) result : 0;
+    }
+}
