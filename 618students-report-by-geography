@@ -1,0 +1,3 @@
+SELECT continent, COUNT(*) AS student_count
+FROM Student
+GROUP BY continent;
