@@ -1,0 +1,5 @@
+SELECT DISTINCT f1.followee AS follower
+FROM Follow f1
+JOIN Follow f2 
+ON f1.follower = f2.followee
+WHERE f1.followee != f2.follower;
