@@ -1,0 +1,22 @@
+class Solution {
+    public int kInversePairs(int n, int k) {
+        int MOD = 1_000_000_007;
+        int[] dp = new int[k + 1];
+        dp[0] = 1; // Base case
+
+        for (int i = 1; i <= n; i++) {
+            int[] newDp = new int[k + 1];
+            for (int j = 0; j <= k; j++) {
+                newDp[j] = dp[j];
+                if (j > 0) {
+                    newDp[j] = (newDp[j] + newDp[j - 1]) % MOD;
+                }
+                if (j >= i) {
+                    newDp[j] = (newDp[j] - dp[j - i] + MOD) % MOD;
+                }
+            }
+            dp = newDp;
+        }
+        return dp[k];
+    }
+}
