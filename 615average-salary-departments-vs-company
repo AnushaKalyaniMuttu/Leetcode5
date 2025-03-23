@@ -1,0 +1,12 @@
+WITH CompanyAvg AS (
+    SELECT AVG(salary) AS company_avg
+    FROM Employee
+), DepartmentAvg AS (
+    SELECT e.departmentId, d.name AS department_name, AVG(e.salary) AS department_avg
+    FROM Employee e
+    JOIN Department d ON e.departmentId = d.id
+    GROUP BY e.departmentId, d.name
+)
+SELECT d.department_name
+FROM DepartmentAvg d, CompanyAvg c
+WHERE d.department_avg > c.company_avg;
