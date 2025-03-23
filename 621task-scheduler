@@ -1,0 +1,37 @@
+import java.util.*;
+
+class Solution {
+    public int leastInterval(char[] tasks, int n) {
+        // Step 1: Count frequency of each task
+        Map<Character, Integer> freqMap = new HashMap<>();
+        for (char task : tasks) {
+            freqMap.put(task, freqMap.getOrDefault(task, 0) + 1);
+        }
+
+        // Step 2: Use a max heap (PriorityQueue with descending order)
+        PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Collections.reverseOrder());
+        maxHeap.addAll(freqMap.values());
+
+        int time = 0;
+        Queue<int[]> cooldownQueue = new LinkedList<>();
+
+        // Step 3: Simulate the scheduling
+        while (!maxHeap.isEmpty() || !cooldownQueue.isEmpty()) {
+            time++;
+
+            if (!maxHeap.isEmpty()) {
+                int remaining = maxHeap.poll() - 1;
+                if (remaining > 0) {
+                    cooldownQueue.add(new int[]{remaining, time + n});
+                }
+            }
+
+            // Check if any task has completed its cooldown
+            if (!cooldownQueue.isEmpty() && cooldownQueue.peek()[1] == time) {
+                maxHeap.add(cooldownQueue.poll()[0]);
+            }
+        }
+
+        return time;
+    }
+}
