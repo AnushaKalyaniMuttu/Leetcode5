@@ -1,0 +1,42 @@
+import java.util.*;
+
+public class AddBoldTag {
+    public static String addBoldTag(String s, String[] dict) {
+        boolean[] bold = new boolean[s.length()];
+
+        // Mark the bold ranges
+        for (String word : dict) {
+            int start = s.indexOf(word);
+            while (start != -1) {
+                for (int i = start; i < start + word.length(); i++) {
+                    bold[i] = true;
+                }
+                start = s.indexOf(word, start + 1); // Find next occurrence
+            }
+        }
+
+        // Build the result with bold tags
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < s.length(); i++) {
+            if (bold[i] && (i == 0 || !bold[i - 1])) {
+                result.append("<b>");
+            }
+            result.append(s.charAt(i));
+            if (bold[i] && (i == s.length() - 1 || !bold[i + 1])) {
+                result.append("</b>");
+            }
+        }
+
+        return result.toString();
+    }
+
+    public static void main(String[] args) {
+        String s1 = "abcxyz123";
+        String[] dict1 = {"abc", "123"};
+        System.out.println(addBoldTag(s1, dict1)); // Output: "<b>abc</b>xyz<b>123</b>"
+
+        String s2 = "aaabbcc";
+        String[] dict2 = {"aaa", "aab", "bc"};
+        System.out.println(addBoldTag(s2, dict2)); // Output: "<b>aaabbc</b>c"
+    }
+}
