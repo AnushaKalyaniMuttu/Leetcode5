@@ -1,0 +1,5 @@
+SELECT * 
+FROM Cinema
+WHERE id % 2 = 1  -- Select only odd-numbered IDs
+AND description <> 'boring'  -- Exclude movies with 'boring' description
+ORDER BY rating DESC;  -- Sort results by rating in descending order
