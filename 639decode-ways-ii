@@ -1,0 +1,40 @@
+class Solution {
+    public int numDecodings(String s) {
+        int MOD = 1_000_000_007;
+        int n = s.length();
+        long[] dp = new long[n + 1];
+        dp[0] = 1;
+        dp[1] = ways(s.charAt(0));
+
+        for (int i = 2; i <= n; i++) {
+            char first = s.charAt(i - 1);
+            char second = s.charAt(i - 2);
+
+            dp[i] = (dp[i] + dp[i - 1] * ways(first)) % MOD;
+            dp[i] = (dp[i] + dp[i - 2] * ways(second, first)) % MOD;
+        }
+
+        return (int) dp[n];
+    }
+
+    private int ways(char c) {
+        if (c == '*') return 9; // '*' can be 1-9
+        if (c == '0') return 0; // '0' alone is invalid
+        return 1; // '1' to '9' are valid single characters
+    }
+
+    private int ways(char first, char second) {
+        if (first == '*' && second == '*') return 15; // '**' can be 11-19 and 21-26
+        if (first == '*') {
+            if (second >= '0' && second <= '6') return 2; // '*0' - '*6' can be 10-16, 20-26
+            return 1; // '*7' - '*9' can be 17-19
+        }
+        if (second == '*') {
+            if (first == '1') return 9; // '1*' can be 11-19
+            if (first == '2') return 6; // '2*' can be 21-26
+            return 0; // '3*' and above are invalid
+        }
+        int num = (first - '0') * 10 + (second - '0');
+        return (num >= 10 && num <= 26) ? 1 : 0;
+    }
+}
