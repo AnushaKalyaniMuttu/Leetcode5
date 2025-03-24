@@ -1,0 +1,43 @@
+import java.util.*;
+
+class Solution {
+    public int shoppingOffers(List<Integer> price, List<List<Integer>> special, List<Integer> needs) {
+        return dfs(price, special, needs, new HashMap<>());
+    }
+
+    private int dfs(List<Integer> price, List<List<Integer>> special, List<Integer> needs, Map<List<Integer>, Integer> memo) {
+        if (memo.containsKey(needs)) return memo.get(needs);
+
+        // Calculate cost without any offers (buying individually)
+        int minCost = directPurchase(price, needs);
+
+        // Try each special offer
+        for (List<Integer> offer : special) {
+            List<Integer> newNeeds = new ArrayList<>();
+            boolean validOffer = true;
+
+            for (int i = 0; i < needs.size(); i++) {
+                if (needs.get(i) < offer.get(i)) {
+                    validOffer = false;
+                    break;
+                }
+                newNeeds.add(needs.get(i) - offer.get(i));
+            }
+
+            if (validOffer) {
+                minCost = Math.min(minCost, offer.get(needs.size()) + dfs(price, special, newNeeds, memo));
+            }
+        }
+
+        memo.put(needs, minCost);
+        return minCost;
+    }
+
+    private int directPurchase(List<Integer> price, List<Integer> needs) {
+        int cost = 0;
+        for (int i = 0; i < needs.size(); i++) {
+            cost += needs.get(i) * price.get(i);
+        }
+        return cost;
+    }
+}
