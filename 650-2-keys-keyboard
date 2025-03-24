@@ -1,0 +1,17 @@
+class Solution {
+    public int minSteps(int n) {
+        int steps = 0;
+        // Iterate over possible divisors
+        for (int d = 2; d * d <= n; d++) {
+            while (n % d == 0) {
+                steps += d;
+                n /= d;
+            }
+        }
+        // If n is still greater than 1, then n is prime.
+        if (n > 1) {
+            steps += n;
+        }
+        return steps;
+    }
+}
