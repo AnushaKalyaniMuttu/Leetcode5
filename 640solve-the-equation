@@ -1,0 +1,43 @@
+class Solution {
+    public String solveEquation(String equation) {
+        String[] sides = equation.split("=");
+        int[] left = parseSide(sides[0]);
+        int[] right = parseSide(sides[1]);
+
+        int coeffX = left[0] - right[0];
+        int constant = right[1] - left[1];
+
+        if (coeffX == 0) {
+            return constant == 0 ? "Infinite solutions" : "No solution";
+        }
+
+        return "x=" + (constant / coeffX);
+    }
+
+    private int[] parseSide(String expr) {
+        int coeffX = 0, constant = 0, num = 0, sign = 1;
+        boolean hasNum = false;
+        
+        for (int i = 0; i <= expr.length(); i++) {
+            char c = (i < expr.length()) ? expr.charAt(i) : '+'; // Append `+` for final evaluation
+
+            if (c == '+' || c == '-' || i == expr.length()) {
+                if (hasNum) {
+                    constant += sign * num;
+                }
+                num = 0;
+                hasNum = false;
+                sign = (c == '-') ? -1 : 1;
+            } else if (Character.isDigit(c)) {
+                num = num * 10 + (c - '0');
+                hasNum = true;
+            } else if (c == 'x') {
+                coeffX += sign * (hasNum ? num : 1); // Handle cases like "x" or "-x"
+                num = 0;
+                hasNum = false;
+            }
+        }
+
+        return new int[]{coeffX, constant};
+    }
+}
