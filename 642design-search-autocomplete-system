@@ -1,0 +1,85 @@
+import java.util.*;
+
+class AutocompleteSystem {
+    
+    // Trie node definition.
+    class TrieNode {
+        Map<Character, TrieNode> children;
+        // Map sentence -> frequency.
+        Map<String, Integer> counts;
+        
+        public TrieNode() {
+            children = new HashMap<>();
+            counts = new HashMap<>();
+        }
+    }
+    
+    private TrieNode root;
+    private StringBuilder currentInput;
+
+    public AutocompleteSystem(String[] sentences, int[] times) {
+        root = new TrieNode();
+        currentInput = new StringBuilder();
+        for (int i = 0; i < sentences.length; i++) {
+            addSentence(sentences[i], times[i]);
+        }
+    }
+    
+    // Inserts the sentence into the Trie, updating frequency counts.
+    private void addSentence(String sentence, int count) {
+        TrieNode node = root;
+        for (char c : sentence.toCharArray()) {
+            node.children.putIfAbsent(c, new TrieNode());
+            node = node.children.get(c);
+            node.counts.put(sentence, node.counts.getOrDefault(sentence, 0) + count);
+        }
+    }
+    
+    public List<String> input(char c) {
+        List<String> result = new ArrayList<>();
+        // When '#' is input, add the sentence to Trie.
+        if (c == '#') {
+            addSentence(currentInput.toString(), 1);
+            currentInput = new StringBuilder();
+            return result;
+        }
+        
+        // Append the current character to the input string.
+        currentInput.append(c);
+        TrieNode node = root;
+        
+        // Traverse the Trie with the current prefix.
+        for (char ch : currentInput.toString().toCharArray()) {
+            if (!node.children.containsKey(ch)) {
+                return result; // no sentences with the current prefix.
+            }
+            node = node.children.get(ch);
+        }
+        
+        // Use a min-heap (priority queue) to extract top 3 sentences.
+        PriorityQueue<Map.Entry<String, Integer>> pq = new PriorityQueue<>(
+            (a, b) -> {
+                // If frequencies are equal, sort lexicographically in reverse order 
+                // so that lower lex order comes later in min-heap.
+                if (a.getValue().equals(b.getValue()))
+                    return b.getKey().compareTo(a.getKey());
+                return a.getValue() - b.getValue();
+            }
+        );
+        
+        for (Map.Entry<String, Integer> entry : node.counts.entrySet()) {
+            pq.offer(entry);
+            if (pq.size() > 3) {
+                pq.poll();
+            }
+        }
+        
+        // Retrieve results from the priority queue in proper order.
+        LinkedList<String> temp = new LinkedList<>();
+        while (!pq.isEmpty()) {
+            temp.addFirst(pq.poll().getKey());
+        }
+        result.addAll(temp);
+        return result;
+    }
+}
