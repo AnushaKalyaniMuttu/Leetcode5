@@ -1,0 +1,70 @@
+import java.util.*;
+
+class Excel {
+    private int[][] grid;
+    private Map<String, Map<String, Integer>> formulas;
+
+    public Excel(int height, char width) {
+        grid = new int[height][width - 'A' + 1];
+        formulas = new HashMap<>();
+    }
+
+    public void set(int row, char column, int value) {
+        String key = row + ":" + column;
+        grid[row - 1][column - 'A'] = value;
+        formulas.remove(key);  // Clear any existing formula in this cell
+    }
+
+    public int get(int row, char column) {
+        String key = row + ":" + column;
+        if (!formulas.containsKey(key)) {
+            return grid[row - 1][column - 'A'];
+        }
+        return getValue(row, column);
+    }
+
+    public int sum(int row, char column, String[] numbers) {
+        String key = row + ":" + column;
+        formulas.put(key, new HashMap<>());
+
+        for (String num : numbers) {
+            if (num.contains(":")) {
+                String[] parts = num.split(":");
+                int startRow = Integer.parseInt(parts[0].substring(1));
+                int startCol = parts[0].charAt(0) - 'A';
+                int endRow = Integer.parseInt(parts[1].substring(1));
+                int endCol = parts[1].charAt(0) - 'A';
+
+                for (int r = startRow; r <= endRow; r++) {
+                    for (int c = startCol; c <= endCol; c++) {
+                        String refKey = r + ":" + (char) ('A' + c);
+                        formulas.get(key).put(refKey, formulas.get(key).getOrDefault(refKey, 0) + 1);
+                    }
+                }
+            } else {
+                int refRow = Integer.parseInt(num.substring(1));
+                char refCol = num.charAt(0);
+                String refKey = refRow + ":" + refCol;
+                formulas.get(key).put(refKey, formulas.get(key).getOrDefault(refKey, 0) + 1);
+            }
+        }
+
+        return getValue(row, column);
+    }
+
+    private int getValue(int row, char column) {
+        String key = row + ":" + column;
+        if (!formulas.containsKey(key)) {
+            return grid[row - 1][column - 'A'];
+        }
+
+        int sum = 0;
+        for (Map.Entry<String, Integer> entry : formulas.get(key).entrySet()) {
+            String[] parts = entry.getKey().split(":");
+            int refRow = Integer.parseInt(parts[0]);
+            char refCol = parts[1].charAt(0);
+            sum += entry.getValue() * get(refRow, refCol);
+        }
+        return sum;
+    }
+}
