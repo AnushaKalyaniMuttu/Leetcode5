@@ -1,0 +1,21 @@
+class Solution {
+    public boolean checkPossibility(int[] nums) {
+        int n = nums.length;
+        int count = 0; // Counter for modifications
+
+        for (int i = 1; i < n; i++) {
+            if (nums[i] < nums[i - 1]) {
+                count++;
+                if (count > 1) return false; // More than one modification needed
+
+                // Adjust nums[i - 1] or nums[i] to preserve non-decreasing order
+                if (i - 2 < 0 || nums[i - 2] <= nums[i]) {
+                    nums[i - 1] = nums[i]; // Modify nums[i - 1]
+                } else {
+                    nums[i] = nums[i - 1]; // Modify nums[i]
+                }
+            }
+        }
+        return true;
+    }
+}
