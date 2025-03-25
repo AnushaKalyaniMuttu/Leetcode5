@@ -1,0 +1,39 @@
+import java.util.*;
+
+public class CoinPath {
+    public List<Integer> cheapestJump(int[] A, int B) {
+        int n = A.length;
+        int[] dp = new int[n]; // Min cost to reach the end from i
+        int[] next = new int[n]; // Stores next index to jump to
+        Arrays.fill(dp, Integer.MAX_VALUE);
+        Arrays.fill(next, -1);
+        
+        dp[n - 1] = A[n - 1] >= 0 ? A[n - 1] : Integer.MAX_VALUE;
+        
+        for (int i = n - 2; i >= 0; i--) {
+            if (A[i] == -1) continue;
+            for (int j = i + 1; j <= Math.min(i + B, n - 1); j++) {
+                if (dp[j] != Integer.MAX_VALUE && A[i] + dp[j] < dp[i]) {
+                    dp[i] = A[i] + dp[j];
+                    next[i] = j;
+                }
+            }
+        }
+        
+        List<Integer> path = new ArrayList<>();
+        if (dp[0] == Integer.MAX_VALUE) return path;
+        
+        for (int i = 0; i != -1; i = next[i]) {
+            path.add(i + 1);
+        }
+        
+        return path;
+    }
+
+    public static void main(String[] args) {
+        CoinPath cp = new CoinPath();
+        int[] A = {1, 2, 4, -1, 2};
+        int B = 2;
+        System.out.println(cp.cheapestJump(A, B));
+    }
+}
