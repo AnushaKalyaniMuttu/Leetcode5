@@ -1,0 +1,23 @@
+class Solution {
+    public int[] constructArray(int n, int k) {
+        int[] result = new int[n];
+        int left = 1, right = k + 1;
+        int index = 0;
+
+        // Create the first k+1 elements with alternating high and low values
+        while (left <= right) {
+            if (index % 2 == 0) {
+                result[index++] = left++;
+            } else {
+                result[index++] = right--;
+            }
+        }
+
+        // Fill the remaining elements sequentially
+        for (int i = k + 2; i <= n; i++) {
+            result[index++] = i;
+        }
+
+        return result;
+    }
+}
