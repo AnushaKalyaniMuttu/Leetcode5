@@ -1,0 +1,36 @@
+import java.util.*;
+
+class Solution {
+    private Map<Integer, Integer> tree = new HashMap<>();
+    private int totalSum = 0;
+
+    public int pathSum(int[] nums) {
+        for (int num : nums) {
+            int level = num / 100;
+            int position = (num / 10) % 10;
+            int value = num % 10;
+            int key = level * 10 + position;
+            tree.put(key, value);
+        }
+        dfs(11, 0); // Start DFS from the root (encoded as 11 for level 1, position 1)
+        return totalSum;
+    }
+
+    private void dfs(int node, int currentSum) {
+        if (!tree.containsKey(node)) return;
+
+        currentSum += tree.get(node);
+        int level = node / 10;
+        int position = node % 10;
+
+        int leftChild = (level + 1) * 10 + position * 2 - 1;
+        int rightChild = (level + 1) * 10 + position * 2;
+
+        if (!tree.containsKey(leftChild) && !tree.containsKey(rightChild)) {
+            totalSum += currentSum; // Leaf node, add the path sum
+        } else {
+            dfs(leftChild, currentSum);
+            dfs(rightChild, currentSum);
+        }
+    }
+}
