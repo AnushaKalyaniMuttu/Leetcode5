@@ -1,0 +1,34 @@
+import java.util.*;
+
+class Solution {
+    public int numDistinctIslands(int[][] grid) {
+        int rows = grid.length, cols = grid[0].length;
+        Set<String> uniqueIslands = new HashSet<>();
+        boolean[][] visited = new boolean[rows][cols];
+
+        for (int r = 0; r < rows; r++) {
+            for (int c = 0; c < cols; c++) {
+                if (grid[r][c] == 1 && !visited[r][c]) {
+                    List<String> shape = new ArrayList<>();
+                    dfs(grid, r, c, r, c, visited, shape);
+                    uniqueIslands.add(String.join(",", shape));
+                }
+            }
+        }
+        return uniqueIslands.size();
+    }
+
+    private void dfs(int[][] grid, int r, int c, int baseR, int baseC, boolean[][] visited, List<String> shape) {
+        if (r < 0 || c < 0 || r >= grid.length || c >= grid[0].length || visited[r][c] || grid[r][c] == 0) {
+            return;
+        }
+
+        visited[r][c] = true;
+        shape.add((r - baseR) + "_" + (c - baseC)); // Encode relative position
+
+        dfs(grid, r + 1, c, baseR, baseC, visited, shape);
+        dfs(grid, r - 1, c, baseR, baseC, visited, shape);
+        dfs(grid, r, c + 1, baseR, baseC, visited, shape);
+        dfs(grid, r, c - 1, baseR, baseC, visited, shape);
+    }
+}
