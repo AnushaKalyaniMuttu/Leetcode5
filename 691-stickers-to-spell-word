@@ -1,0 +1,42 @@
+import java.util.*;
+
+class Solution {
+    public int minStickers(String[] stickers, String target) {
+        int n = target.length();
+        int[] dp = new int[1 << n]; 
+        Arrays.fill(dp, -1);
+        dp[0] = 0; 
+        
+        int result = dfs(stickers, target, dp, (1 << n) - 1);
+        return result == Integer.MAX_VALUE ? -1 : result;
+    }
+
+    private int dfs(String[] stickers, String target, int[] dp, int state) {
+        if (state == 0) return 0;
+        if (dp[state] != -1) return dp[state];
+
+        int res = Integer.MAX_VALUE;
+        for (String sticker : stickers) {
+            int newState = state;
+            int[] count = new int[26];
+
+            for (char c : sticker.toCharArray()) count[c - 'a']++;
+
+            char[] targetArr = target.toCharArray();
+            for (int i = 0; i < targetArr.length; i++) {
+                if (((state >> i) & 1) == 1 && count[targetArr[i] - 'a'] > 0) {
+                    count[targetArr[i] - 'a']--;
+                    newState &= ~(1 << i);
+                }
+            }
+            
+            if (newState != state) {
+                int next = dfs(stickers, target, dp, newState);
+                if (next != Integer.MAX_VALUE) res = Math.min(res, 1 + next);
+            }
+        }
+        
+        dp[state] = res;
+        return res;
+    }
+}
