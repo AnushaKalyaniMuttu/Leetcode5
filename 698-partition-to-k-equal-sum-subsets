@@ -1,0 +1,32 @@
+import java.util.Arrays;
+
+class Solution {
+    public boolean canPartitionKSubsets(int[] nums, int k) {
+        int sum = Arrays.stream(nums).sum();
+        if (sum % k != 0) return false;
+        
+        int target = sum / k;
+        Arrays.sort(nums);
+        int n = nums.length;
+        if (nums[n - 1] > target) return false; // Early check
+        
+        boolean[] used = new boolean[n];
+        return backtrack(nums, used, k, 0, 0, target);
+    }
+
+    private boolean backtrack(int[] nums, boolean[] used, int k, int startIndex, int currSum, int target) {
+        if (k == 0) return true;  // All subsets found
+        if (currSum == target) 
+            return backtrack(nums, used, k - 1, 0, 0, target);  // Start new subset
+        
+        for (int i = startIndex; i < nums.length; i++) {
+            if (used[i] || currSum + nums[i] > target) continue;
+            
+            used[i] = true;
+            if (backtrack(nums, used, k, i + 1, currSum + nums[i], target)) 
+                return true;
+            used[i] = false;  // Backtrack
+        }
+        return false;
+    }
+}
