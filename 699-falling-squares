@@ -1,0 +1,35 @@
+import java.util.*;
+
+class Solution {
+    public List<Integer> fallingSquares(int[][] positions) {
+        List<Integer> result = new ArrayList<>();
+        TreeMap<Integer, Integer> heightMap = new TreeMap<>();
+        heightMap.put(0, 0); // Initial ground level
+        
+        int maxHeight = 0;
+        
+        for (int[] pos : positions) {
+            int left = pos[0], sideLength = pos[1];
+            int right = left + sideLength;
+            
+            // Find the highest existing height in range [left, right)
+            int start = heightMap.floorKey(left);
+            int end = heightMap.floorKey(right);
+            int baseHeight = 0;
+
+            for (int key : heightMap.subMap(start, true, end, true).keySet()) {
+                baseHeight = Math.max(baseHeight, heightMap.get(key));
+            }
+
+            int newHeight = baseHeight + sideLength;
+            maxHeight = Math.max(maxHeight, newHeight);
+            result.add(maxHeight);
+
+            // Update heightMap with new height range
+            heightMap.put(left, newHeight);
+            heightMap.put(right, heightMap.getOrDefault(right, baseHeight));
+        }
+        
+        return result;
+    }
+}
