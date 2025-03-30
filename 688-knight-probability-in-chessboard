@@ -1,0 +1,36 @@
+class Solution {
+    private static final int[][] MOVES = {
+        {2, 1}, {2, -1}, {-2, 1}, {-2, -1}, 
+        {1, 2}, {1, -2}, {-1, 2}, {-1, -2}
+    };
+
+    public double knightProbability(int n, int k, int row, int column) {
+        double[][][] dp = new double[k + 1][n][n];
+        dp[0][row][column] = 1.0; // Start position probability is 1
+
+        for (int step = 1; step <= k; step++) {
+            for (int r = 0; r < n; r++) {
+                for (int c = 0; c < n; c++) {
+                    if (dp[step - 1][r][c] > 0) {
+                        for (int[] move : MOVES) {
+                            int newRow = r + move[0];
+                            int newCol = c + move[1];
+                            if (newRow >= 0 && newRow < n && newCol >= 0 && newCol < n) {
+                                dp[step][newRow][newCol] += dp[step - 1][r][c] / 8.0;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        double probability = 0;
+        for (int r = 0; r < n; r++) {
+            for (int c = 0; c < n; c++) {
+                probability += dp[k][r][c];
+            }
+        }
+
+        return probability;
+    }
+}
