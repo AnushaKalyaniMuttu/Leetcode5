@@ -1,0 +1,32 @@
+import java.util.TreeSet;
+
+class Solution {
+    public String nextClosestTime(String time) {
+        TreeSet<Integer> digits = new TreeSet<>();
+        for (char c : time.toCharArray()) {
+            if (c != ':') digits.add(c - '0');
+        }
+
+        int[] timeParts = { (time.charAt(0) - '0') * 10 + (time.charAt(1) - '0'),
+                            (time.charAt(3) - '0') * 10 + (time.charAt(4) - '0') };
+
+        while (true) {
+            timeParts[1]++;
+            if (timeParts[1] == 60) {
+                timeParts[1] = 0;
+                timeParts[0]++;
+                if (timeParts[0] == 24) timeParts[0] = 0;
+            }
+
+            String newTime = String.format("%02d:%02d", timeParts[0], timeParts[1]);
+            if (isValid(newTime, digits)) return newTime;
+        }
+    }
+
+    private boolean isValid(String time, TreeSet<Integer> digits) {
+        for (char c : time.toCharArray()) {
+            if (c != ':' && !digits.contains(c - '0')) return false;
+        }
+        return true;
+    }
+}
