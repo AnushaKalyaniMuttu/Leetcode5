@@ -1,0 +1,61 @@
+import java.util.LinkedList;
+
+class MyHashMap {
+    private static final int SIZE = 1000;
+    private LinkedList<Entry>[] map;
+
+    public MyHashMap() {
+        map = new LinkedList[SIZE];
+    }
+
+    public void put(int key, int value) {
+        int index = hash(key);
+        if (map[index] == null) map[index] = new LinkedList<>();
+
+        for (Entry entry : map[index]) {
+            if (entry.key == key) {
+                entry.value = value; // Update existing key
+                return;
+            }
+        }
+        map[index].add(new Entry(key, value)); // Add new key-value pair
+    }
+
+    public int get(int key) {
+        int index = hash(key);
+        if (map[index] != null) {
+            for (Entry entry : map[index]) {
+                if (entry.key == key) return entry.value;
+            }
+        }
+        return -1; // Key not found
+    }
+
+    public void remove(int key) {
+        int index = hash(key);
+        if (map[index] != null) {
+            map[index].removeIf(entry -> entry.key == key);
+        }
+    }
+
+    private int hash(int key) {
+        return key % SIZE;
+    }
+
+    private static class Entry {
+        int key, value;
+        Entry(int key, int value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
+}
+
+
+/**
+ * Your MyHashMap object will be instantiated and called as such:
+ * MyHashMap obj = new MyHashMap();
+ * obj.put(key,value);
+ * int param_2 = obj.get(key);
+ * obj.remove(key);
+ */
