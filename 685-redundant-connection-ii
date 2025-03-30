@@ -1,0 +1,55 @@
+class Solution {
+    public int[] findRedundantDirectedConnection(int[][] edges) {
+        int n = edges.length;
+        
+        // Step 1: Find a node with two parents
+        int[] parent = new int[n + 1];
+        int[] ufParent = new int[n + 1];
+        int[] cand1 = null, cand2 = null;
+        
+        // Track the parent of each node
+        for (int[] edge : edges) {
+            int u = edge[0], v = edge[1];
+            
+            if (parent[v] != 0) { // Node v already has a parent
+                cand1 = new int[]{parent[v], v}; // First conflicting edge
+                cand2 = edge; // Second conflicting edge
+                break;
+            }
+            parent[v] = u;
+        }
+
+        // Step 2: Union-Find to detect cycles
+        for (int i = 1; i <= n; i++) {
+            ufParent[i] = i; // Initialize each node as its own parent
+        }
+
+        // Step 3: Check edges and apply Union-Find to detect cycles
+        for (int[] edge : edges) {
+            if (cand2 != null && edge == cand2) {
+                continue; // Skip cand2 to check if graph is valid
+            }
+
+            int u = edge[0], v = edge[1];
+            
+            if (find(ufParent, u) == find(ufParent, v)) { // Cycle detected
+                if (cand1 != null) return cand1; // If two parents exist, return cand1
+                return edge; // Otherwise, return edge that creates cycle
+            }
+            union(ufParent, u, v);
+        }
+
+        return cand2; // If no cycle is found, return the second conflicting edge
+    }
+
+    private int find(int[] parent, int node) {
+        if (parent[node] != node) {
+            parent[node] = find(parent, parent[node]);
+        }
+        return parent[node];
+    }
+
+    private void union(int[] parent, int u, int v) {
+        parent[find(parent, u)] = find(parent, v);
+    }
+}
