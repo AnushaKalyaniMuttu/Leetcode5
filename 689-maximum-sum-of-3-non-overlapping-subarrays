@@ -1,0 +1,54 @@
+class Solution {
+    public int[] maxSumOfThreeSubarrays(int[] nums, int k) {
+        int n = nums.length;
+        int[] sum = new int[n + 1]; // Prefix sum array
+        for (int i = 0; i < n; i++) {
+            sum[i + 1] = sum[i] + nums[i]; // Compute prefix sums
+        }
+
+        int[] left = new int[n];  // Best index for the left subarray
+        int[] right = new int[n]; // Best index for the right subarray
+
+        // Step 1: Compute best left interval index for each position
+        int maxLeftSum = sum[k] - sum[0]; 
+        left[k - 1] = 0;
+        for (int i = k; i < n; i++) {
+            int currentSum = sum[i + 1] - sum[i + 1 - k];
+            if (currentSum > maxLeftSum) {
+                maxLeftSum = currentSum;
+                left[i] = i + 1 - k;
+            } else {
+                left[i] = left[i - 1];
+            }
+        }
+
+        // Step 2: Compute best right interval index for each position
+        int maxRightSum = sum[n] - sum[n - k];
+        right[n - k] = n - k;
+        for (int i = n - k - 1; i >= 0; i--) {
+            int currentSum = sum[i + k] - sum[i];
+            if (currentSum >= maxRightSum) { // Prefer later index in case of tie
+                maxRightSum = currentSum;
+                right[i] = i;
+            } else {
+                right[i] = right[i + 1];
+            }
+        }
+
+        // Step 3: Find the maximum sum by checking the middle interval
+        int maxSum = 0;
+        int[] result = new int[3];
+        for (int mid = k; mid <= n - 2 * k; mid++) {
+            int l = left[mid - 1]; // Best left index before `mid`
+            int r = right[mid + k]; // Best right index after `mid`
+            int total = (sum[l + k] - sum[l]) + (sum[mid + k] - sum[mid]) + (sum[r + k] - sum[r]);
+
+            if (total > maxSum) {
+                maxSum = total;
+                result = new int[]{l, mid, r};
+            }
+        }
+
+        return result;
+    }
+}
