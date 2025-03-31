@@ -1,0 +1,41 @@
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+
+class Solution {
+    private Map<Integer, Integer> map;
+    private int bound;
+    private Random rand;
+
+    public Solution(int n, int[] blacklist) {
+        map = new HashMap<>();
+        rand = new Random();
+        bound = n - blacklist.length;
+
+        // Mark all blacklist numbers in the range [0, bound)
+        for (int b : blacklist) {
+            map.put(b, -1);
+        }
+
+        int last = n - 1;
+        for (int b : blacklist) {
+            if (b >= bound) continue; // No need to map numbers outside [0, bound)
+            while (map.containsKey(last)) {
+                last--; // Find a valid number to map to
+            }
+            map.put(b, last);
+            last--;
+        }
+    }
+
+    public int pick() {
+        int num = rand.nextInt(bound);
+        return map.getOrDefault(num, num);
+    }
+}
+
+/**
+ * Your Solution object will be instantiated and called as such:
+ * Solution obj = new Solution(n, blacklist);
+ * int param_1 = obj.pick();
+ */
