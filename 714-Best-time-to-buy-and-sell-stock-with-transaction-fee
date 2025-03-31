@@ -1,0 +1,14 @@
+class Solution {
+   public int maxProfit(int[] prices, int fee) {
+        int n = prices.length;
+        int cash = 0, hold = -prices[0];
+
+        for (int i = 1; i < n; i++) {
+            // Update cash and hold for each day
+            cash = Math.max(cash, hold + prices[i] - fee);  // Sell stock
+            hold = Math.max(hold, cash - prices[i]);  // Buy stock
+
+        }
+        return cash;
+    }
+}
