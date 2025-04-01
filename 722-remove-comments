@@ -1,0 +1,32 @@
+import java.util.*;
+
+class Solution {
+    public List<String> removeComments(String[] source) {
+        List<String> result = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+        boolean inBlock = false;
+
+        for (String line : source) {
+            int i = 0;
+            if (!inBlock) sb.setLength(0);
+            while (i < line.length()) {
+                if (!inBlock && i + 1 < line.length() && line.charAt(i) == '/' && line.charAt(i + 1) == '*') {
+                    inBlock = true;
+                    i++;
+                } else if (inBlock && i + 1 < line.length() && line.charAt(i) == '*' && line.charAt(i + 1) == '/') {
+                    inBlock = false;
+                    i++;
+                } else if (!inBlock && i + 1 < line.length() && line.charAt(i) == '/' && line.charAt(i + 1) == '/') {
+                    break;
+                } else if (!inBlock) {
+                    sb.append(line.charAt(i));
+                }
+                i++;
+            }
+            if (!inBlock && sb.length() > 0) {
+                result.add(sb.toString());
+            }
+        }
+        return result;
+    }
+}
