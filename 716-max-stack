@@ -1,0 +1,62 @@
+import java.util.*;
+
+class MaxStack {
+    private TreeMap<Integer, List<Node>> map;
+    private Deque<Node> stack;
+
+    private static class Node {
+        int val;
+        boolean removed;
+        Node(int val) {
+            this.val = val;
+            this.removed = false;
+        }
+    }
+
+    public MaxStack() {
+        map = new TreeMap<>();
+        stack = new ArrayDeque<>();
+    }
+
+    public void push(int x) {
+        Node node = new Node(x);
+        stack.push(node);
+        map.putIfAbsent(x, new ArrayList<>());
+        map.get(x).add(node);
+    }
+
+    public int pop() {
+        while (!stack.isEmpty() && stack.peek().removed) {
+            stack.pop();
+        }
+        Node node = stack.pop();
+        List<Node> nodes = map.get(node.val);
+        nodes.remove(nodes.size() - 1);
+        if (nodes.isEmpty()) {
+            map.remove(node.val);
+        }
+        return node.val;
+    }
+
+    public int top() {
+        while (!stack.isEmpty() && stack.peek().removed) {
+            stack.pop();
+        }
+        return stack.peek().val;
+    }
+
+    public int peekMax() {
+        return map.lastKey();
+    }
+
+    public int popMax() {
+        int max = map.lastKey();
+        List<Node> nodes = map.get(max);
+        Node node = nodes.remove(nodes.size() - 1);
+        node.removed = true;
+        if (nodes.isEmpty()) {
+            map.remove(max);
+        }
+        return max;
+    }
+}
