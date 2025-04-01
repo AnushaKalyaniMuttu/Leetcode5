@@ -1,0 +1,47 @@
+class RangeModule {
+    private TreeMap<Integer, Integer> intervals;
+
+    public RangeModule() {
+        intervals = new TreeMap<>();
+    }
+
+    public void addRange(int left, int right) {
+        Integer start = intervals.floorKey(left);
+        if (start == null) start = left;
+        else if (intervals.get(start) < left) start = left;
+
+        Integer end = intervals.floorKey(right);
+        if (end == null) end = right;
+        else if (intervals.get(end) > right) end = intervals.get(end);
+        else end = right;
+
+        intervals.put(start, end);
+        intervals.subMap(start, false, end, true).clear();
+    }
+
+    public boolean queryRange(int left, int right) {
+        Integer start = intervals.floorKey(left);
+        return start != null && intervals.get(start) >= right;
+    }
+
+    public void removeRange(int left, int right) {
+        Integer start = intervals.floorKey(left);
+        if (start == null) start = left;
+
+        Integer end = intervals.floorKey(right);
+        if (end == null) end = right;
+        else end = intervals.get(end);
+
+        TreeMap<Integer, Integer> temp = new TreeMap<>();
+        for (var entry : intervals.entrySet()) {
+            int s = entry.getKey(), e = entry.getValue();
+            if (e <= left || s >= right) {
+                temp.put(s, e);
+            } else {
+                if (s < left) temp.put(s, left);
+                if (e > right) temp.put(right, e);
+            }
+        }
+        intervals = temp;
+    }
+}
