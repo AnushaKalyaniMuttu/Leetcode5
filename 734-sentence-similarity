@@ -1,0 +1,26 @@
+import java.util.*;
+
+public class SentenceSimilarity {
+    public boolean areSentencesSimilar(String[] sentence1, String[] sentence2, List<List<String>> similarPairs) {
+        if (sentence1.length != sentence2.length) return false;
+
+        Map<String, Set<String>> similarityMap = new HashMap<>();
+
+        for (List<String> pair : similarPairs) {
+            String a = pair.get(0), b = pair.get(1);
+            similarityMap.computeIfAbsent(a, k -> new HashSet<>()).add(b);
+            similarityMap.computeIfAbsent(b, k -> new HashSet<>()).add(a);
+        }
+
+        for (int i = 0; i < sentence1.length; i++) {
+            String word1 = sentence1[i];
+            String word2 = sentence2[i];
+            if (!word1.equals(word2) &&
+                (!similarityMap.containsKey(word1) || !similarityMap.get(word1).contains(word2))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
