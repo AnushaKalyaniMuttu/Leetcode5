@@ -1,0 +1,29 @@
+class MyCalendarThree {
+
+    private TreeMap<Integer, Integer> timeline;
+    private int maxBookings;
+
+    public MyCalendarThree() {
+        timeline = new TreeMap<>();
+        maxBookings = 0;
+    }
+
+    public int book(int start, int end) {
+        timeline.put(start, timeline.getOrDefault(start, 0) + 1);
+        timeline.put(end, timeline.getOrDefault(end, 0) - 1);
+
+        int active = 0;
+        for (Map.Entry<Integer, Integer> entry : timeline.entrySet()) {
+            active += entry.getValue();
+            maxBookings = Math.max(maxBookings, active);
+        }
+
+        return maxBookings;
+    }
+}
+
+/**
+ * Your MyCalendarThree object will be instantiated and called as such:
+ * MyCalendarThree obj = new MyCalendarThree();
+ * int param_1 = obj.book(startTime,endTime);
+ */
