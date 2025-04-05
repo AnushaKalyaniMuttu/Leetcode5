@@ -1,0 +1,42 @@
+
+import java.util.*;
+
+public class SentenceSimilarityII {
+    private Map<String, String> parent = new HashMap<>();
+
+    private String find(String word) {
+        parent.putIfAbsent(word, word);
+        if (!parent.get(word).equals(word)) {
+            parent.put(word, find(parent.get(word))); // Path compression
+        }
+        return parent.get(word);
+    }
+
+    private void union(String word1, String word2) {
+        String root1 = find(word1);
+        String root2 = find(word2);
+        if (!root1.equals(root2)) {
+            parent.put(root1, root2);
+        }
+    }
+
+    public boolean areSentencesSimilarTwo(String[] sentence1, String[] sentence2, List<List<String>> similarPairs) {
+        if (sentence1.length != sentence2.length) return false;
+
+        for (List<String> pair : similarPairs) {
+            union(pair.get(0), pair.get(1));
+        }
+
+        for (int i = 0; i < sentence1.length; i++) {
+            String w1 = sentence1[i];
+            String w2 = sentence2[i];
+
+            if (w1.equals(w2)) continue;
+            if (!find(w1).equals(find(w2))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
