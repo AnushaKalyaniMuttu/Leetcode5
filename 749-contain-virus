@@ -1,0 +1,80 @@
+import java.util.*;
+
+public class Solution {
+    public int containVirus(int[][] isInfected) {
+        int m = isInfected.length, n = isInfected[0].length;
+        int totalWalls = 0;
+
+        while (true) {
+            List<Set<Integer>> regions = new ArrayList<>();
+            List<Set<Integer>> fronts = new ArrayList<>();
+            List<Integer> walls = new ArrayList<>();
+            boolean[][] visited = new boolean[m][n];
+
+            // Step 1: find all regions
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (isInfected[i][j] == 1 && !visited[i][j]) {
+                        Set<Integer> region = new HashSet<>();
+                        Set<Integer> front = new HashSet<>();
+                        int[] wall = new int[1];
+                        dfs(i, j, visited, region, front, wall, isInfected, m, n);
+                        regions.add(region);
+                        fronts.add(front);
+                        walls.add(wall[0]);
+                    }
+                }
+            }
+
+            if (regions.isEmpty()) break;
+
+            // Step 2: choose the most dangerous region
+            int maxFront = 0, index = -1;
+            for (int i = 0; i < fronts.size(); i++) {
+                if (fronts.get(i).size() > maxFront) {
+                    maxFront = fronts.get(i).size();
+                    index = i;
+                }
+            }
+
+            if (index == -1) break;
+
+            totalWalls += walls.get(index);
+
+            // Step 3: quarantine the chosen region
+            for (int i = 0; i < regions.size(); i++) {
+                if (i == index) {
+                    for (int code : regions.get(i)) {
+                        int x = code / n, y = code % n;
+                        isInfected[x][y] = -1;
+                    }
+                } else {
+                    for (int code : fronts.get(i)) {
+                        int x = code / n, y = code % n;
+                        if (isInfected[x][y] == 0) isInfected[x][y] = 1;
+                    }
+                }
+            }
+        }
+
+        return totalWalls;
+    }
+
+    private void dfs(int x, int y, boolean[][] visited, Set<Integer> region, Set<Integer> front, int[] wall, int[][] grid, int m, int n) {
+        visited[x][y] = true;
+        region.add(x * n + y);
+
+        int[][] dirs = {{0,1},{1,0},{0,-1},{-1,0}};
+        for (int[] d : dirs) {
+            int nx = x + d[0], ny = y + d[1];
+            if (nx >= 0 && ny >= 0 && nx < m && ny < n) {
+                if (grid[nx][ny] == 0) {
+                    wall[0]++;
+                    front.add(nx * n + ny);
+                } else if (grid[nx][ny] == 1 && !visited[nx][ny]) {
+                    dfs(nx, ny, visited, region, front, wall, grid, m, n);
+                }
+            }
+        }
+    }
+}
