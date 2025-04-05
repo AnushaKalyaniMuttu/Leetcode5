@@ -1,0 +1,21 @@
+public class Solution {
+    public int countCornerRectangles(int[][] grid) {
+        int rows = grid.length, cols = grid[0].length;
+        int count = 0;
+
+        for (int i = 0; i < rows - 1; i++) {
+            for (int j = i + 1; j < rows; j++) {
+                int colsWithOnes = 0;
+                for (int k = 0; k < cols; k++) {
+                    if (grid[i][k] == 1 && grid[j][k] == 1) {
+                        colsWithOnes++;
+                    }
+                }
+                // Choose any 2 columns: C(n, 2) = n * (n - 1) / 2
+                count += colsWithOnes * (colsWithOnes - 1) / 2;
+            }
+        }
+
+        return count;
+    }
+}
