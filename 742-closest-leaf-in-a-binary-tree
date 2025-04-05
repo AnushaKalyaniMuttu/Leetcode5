@@ -1,0 +1,53 @@
+import java.util.*;
+
+public class ClosestLeafInABinaryTree {
+    static class TreeNode {
+        int val;
+        TreeNode left, right;
+        TreeNode(int x) { val = x; }
+    }
+
+    public int findClosestLeaf(TreeNode root, int k) {
+        Map<TreeNode, List<TreeNode>> graph = new HashMap<>();
+        TreeNode target = buildGraph(root, null, k, graph);
+
+        Queue<TreeNode> queue = new LinkedList<>();
+        Set<TreeNode> visited = new HashSet<>();
+        queue.offer(target);
+        visited.add(target);
+
+        while (!queue.isEmpty()) {
+            TreeNode node = queue.poll();
+            if (node.left == null && node.right == null) {
+                return node.val; // Found the closest leaf
+            }
+
+            for (TreeNode neighbor : graph.getOrDefault(node, new ArrayList<>())) {
+                if (!visited.contains(neighbor)) {
+                    visited.add(neighbor);
+                    queue.offer(neighbor);
+                }
+            }
+        }
+
+        return -1;
+    }
+
+    private TreeNode buildGraph(TreeNode node, TreeNode parent, int k, Map<TreeNode, List<TreeNode>> graph) {
+        if (node == null) return null;
+
+        if (parent != null) {
+            graph.computeIfAbsent(node, x -> new ArrayList<>()).add(parent);
+            graph.computeIfAbsent(parent, x -> new ArrayList<>()).add(node);
+        }
+
+        if (node.val == k) {
+            return node;
+        }
+
+        TreeNode left = buildGraph(node.left, node, k, graph);
+        if (left != null) return left;
+
+        return buildGraph(node.right, node, k, graph);
+    }
+}
