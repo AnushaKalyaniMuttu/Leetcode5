@@ -1,0 +1,123 @@
+import java.util.*;
+
+public class Solution {
+
+    public long minOperations(int[] nums, int x, int k) {
+        int n = nums.length;
+        long[] cost = new long[n];
+
+        SlidingMedian window = new SlidingMedian(x);
+
+        for (int i = 0; i < n; i++) {
+            window.add(nums[i]);
+            if (i >= x) {
+                window.remove(nums[i - x]);
+            }
+            if (i >= x - 1) {
+                cost[i - x + 1] = window.getCost();
+            }
+        }
+
+        // DP
+        long[][] dp = new long[n + 1][k + 1];
+        for (long[] row : dp) Arrays.fill(row, Long.MAX_VALUE / 2);
+        dp[0][0] = 0;
+
+        for (int i = 0; i <= n; i++) {
+            for (int j = 0; j <= k; j++) {
+                if (dp[i][j] >= Long.MAX_VALUE / 2) continue;
+
+                // Skip index
+                if (i + 1 <= n) {
+                    dp[i + 1][j] = Math.min(dp[i + 1][j], dp[i][j]);
+                }
+
+                // Take subarray starting at i
+                if (j + 1 <= k && i + x <= n) {
+                    dp[i + x][j + 1] = Math.min(dp[i + x][j + 1], dp[i][j] + cost[i]);
+                }
+            }
+        }
+
+        return dp[n][k];
+    }
+
+    // Helper class for sliding window median with cost tracking
+    static class SlidingMedian {
+        PriorityQueue<Integer> lo = new PriorityQueue<>(Collections.reverseOrder());
+        PriorityQueue<Integer> hi = new PriorityQueue<>();
+        Map<Integer, Integer> delayed = new HashMap<>();
+        long loSum = 0, hiSum = 0;
+        int loSize = 0, hiSize = 0;
+        int windowSize;
+
+        SlidingMedian(int windowSize) {
+            this.windowSize = windowSize;
+        }
+
+        void add(int num) {
+            if (lo.isEmpty() || num <= lo.peek()) {
+                lo.offer(num);
+                loSum += num;
+                loSize++;
+            } else {
+                hi.offer(num);
+                hiSum += num;
+                hiSize++;
+            }
+            rebalance();
+        }
+
+        void remove(int num) {
+            delayed.put(num, delayed.getOrDefault(num, 0) + 1);
+            if (!lo.isEmpty() && num <= lo.peek()) {
+                loSize--;
+                loSum -= num;
+            } else {
+                hiSize--;
+                hiSum -= num;
+            }
+            cleanTop(lo);
+            cleanTop(hi);
+            rebalance();
+        }
+
+        void rebalance() {
+            // Balance sizes
+            while (loSize > hiSize + 1) {
+                int move = lo.poll();
+                cleanTop(lo);
+                loSum -= move;
+                loSize--;
+                hi.offer(move);
+                hiSum += move;
+                hiSize++;
+            }
+            while (loSize < hiSize) {
+                int move = hi.poll();
+                cleanTop(hi);
+                hiSum -= move;
+                hiSize--;
+                lo.offer(move);
+                loSum += move;
+                loSize++;
+            }
+        }
+
+        void cleanTop(PriorityQueue<Integer> heap) {
+            while (!heap.isEmpty() && delayed.getOrDefault(heap.peek(), 0) > 0) {
+                int top = heap.poll();
+                delayed.put(top, delayed.get(top) - 1);
+                if (delayed.get(top) == 0) delayed.remove(top);
+            }
+        }
+
+        long getCost() {
+            int median = lo.peek();
+            long left = (long) median * loSize - loSum;
+            long right = hiSum - (long) median * hiSize;
+            return left + right;
+        }
+    }
+  
+}
