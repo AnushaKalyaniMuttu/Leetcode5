@@ -1,0 +1,37 @@
+import java.util.*;
+
+public class IpToCidr {
+    public List<String> ipToCIDR(String ip, int n) {
+        long x = ipToLong(ip);
+        List<String> result = new ArrayList<>();
+
+        while (n > 0) {
+            long step = x & -x;
+            while (step > n) {
+                step /= 2;
+            }
+            result.add(longToIp(x) + "/" + (32 - (int)(Math.log(step) / Math.log(2))));
+            x += step;
+            n -= step;
+        }
+
+        return result;
+    }
+
+    private long ipToLong(String ip) {
+        String[] parts = ip.split("\\.");
+        long res = 0;
+        for (String part : parts) {
+            res = res * 256 + Integer.parseInt(part);
+        }
+        return res;
+    }
+
+    private String longToIp(long x) {
+        return String.format("%d.%d.%d.%d",
+            (x >> 24) & 255,
+            (x >> 16) & 255,
+            (x >> 8) & 255,
+            x & 255);
+    }
+}
