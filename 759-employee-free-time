@@ -1,0 +1,40 @@
+import java.util.*;
+
+class Interval {
+    public int start;
+    public int end;
+    public Interval() {}
+    public Interval(int s, int e) { start = s; end = e; }
+}
+
+public class EmployeeFreeTime {
+    public List<Interval> employeeFreeTime(List<List<Interval>> schedule) {
+        List<Interval> all = new ArrayList<>();
+        for (List<Interval> employee : schedule) {
+            all.addAll(employee);
+        }
+
+        all.sort(Comparator.comparingInt(a -> a.start));
+
+        List<Interval> merged = new ArrayList<>();
+        Interval prev = all.get(0);
+
+        for (int i = 1; i < all.size(); i++) {
+            Interval curr = all.get(i);
+            if (curr.start <= prev.end) {
+                prev.end = Math.max(prev.end, curr.end);
+            } else {
+                merged.add(prev);
+                prev = curr;
+            }
+        }
+        merged.add(prev);
+
+        List<Interval> result = new ArrayList<>();
+        for (int i = 1; i < merged.size(); i++) {
+            result.add(new Interval(merged.get(i - 1).end, merged.get(i).start));
+        }
+
+        return result;
+    }
+}
