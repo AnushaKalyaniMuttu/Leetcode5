@@ -1,0 +1,33 @@
+class Solution {
+    StringBuilder result;
+    Set<String> seen;
+    int k;
+    int total;
+
+    public String crackSafe(int n, int k) {
+        this.k = k;
+        this.total = (int) Math.pow(k, n);
+        this.seen = new HashSet<>();
+        this.result = new StringBuilder();
+
+        StringBuilder start = new StringBuilder();
+        for (int i = 0; i < n - 1; i++) {
+            start.append('0');
+        }
+
+        dfs(start.toString());
+        result.append(start);
+        return result.toString();
+    }
+
+    private void dfs(String node) {
+        for (int i = 0; i < k; i++) {
+            String next = node + i;
+            if (!seen.contains(next)) {
+                seen.add(next);
+                dfs(next.substring(1));
+                result.append(i);
+            }
+        }
+    }
+}
