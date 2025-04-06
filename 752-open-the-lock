@@ -1,0 +1,54 @@
+import java.util.*;
+
+public class Solution {
+    public int openLock(String[] deadends, String target) {
+        Set<String> dead = new HashSet<>(Arrays.asList(deadends));
+        Set<String> visited = new HashSet<>();
+        Queue<String> queue = new LinkedList<>();
+
+        String start = "0000";
+        if (dead.contains(start)) return -1;
+
+        queue.offer(start);
+        visited.add(start);
+        int steps = 0;
+
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+
+            for (int i = 0; i < size; i++) {
+                String curr = queue.poll();
+                if (curr.equals(target)) return steps;
+
+                for (String next : getNextStates(curr)) {
+                    if (!dead.contains(next) && visited.add(next)) {
+                        queue.offer(next);
+                    }
+                }
+            }
+
+            steps++;
+        }
+
+        return -1;
+    }
+
+    private List<String> getNextStates(String state) {
+        List<String> result = new ArrayList<>();
+        char[] chars = state.toCharArray();
+
+        for (int i = 0; i < 4; i++) {
+            char old = chars[i];
+            // Turn up
+            chars[i] = old == '9' ? '0' : (char)(old + 1);
+            result.add(new String(chars));
+            // Turn down
+            chars[i] = old == '0' ? '9' : (char)(old - 1);
+            result.add(new String(chars));
+            // Restore
+            chars[i] = old;
+        }
+
+        return result;
+    }
+}
