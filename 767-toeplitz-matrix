@@ -1,0 +1,35 @@
+class Solution {
+     public boolean isToeplitzMatrix(int[][] matrix) {
+        int rows = matrix.length;
+        int cols = matrix[0].length;
+
+        // Check diagonals starting from the first row
+        for (int col = 0; col < cols; col++) {
+            if (!checkDiagonal(matrix, 0, col)) {
+                return false;
+            }
+        }
+
+        // Check diagonals starting from the first column (excluding [0][0], already checked)
+        for (int row = 1; row < rows; row++) {
+            if (!checkDiagonal(matrix, row, 0)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean checkDiagonal(int[][] matrix, int row, int col) {
+        int value = matrix[row][col];
+        int rows = matrix.length;
+        int cols = matrix[0].length;
+
+        while (++row < rows && ++col < cols) {
+            if (matrix[row][col] != value) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
