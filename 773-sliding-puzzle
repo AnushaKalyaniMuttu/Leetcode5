@@ -1,0 +1,52 @@
+class Solution {
+   public int slidingPuzzle(int[][] board) {
+        String target = "123450";
+        StringBuilder sb = new StringBuilder();
+        for (int[] row : board) {
+            for (int val : row) {
+                sb.append(val);
+            }
+        }
+        String start = sb.toString();
+
+        Queue<String> queue = new LinkedList<>();
+        Set<String> visited = new HashSet<>();
+        queue.offer(start);
+        visited.add(start);
+
+        int[][] neighbors = {
+            {1, 3},        // index 0
+            {0, 2, 4},     // index 1
+            {1, 5},        // index 2
+            {0, 4},        // index 3
+            {1, 3, 5},     // index 4
+            {2, 4}         // index 5
+        };
+
+        int moves = 0;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int k = 0; k < size; k++) {
+                String curr = queue.poll();
+                if (curr.equals(target)) return moves;
+
+                int zeroIndex = curr.indexOf('0');
+                for (int nei : neighbors[zeroIndex]) {
+                    char[] chars = curr.toCharArray();
+                    char temp = chars[zeroIndex];
+                    chars[zeroIndex] = chars[nei];
+                    chars[nei] = temp;
+
+                    String next = new String(chars);
+                    if (!visited.contains(next)) {
+                        visited.add(next);
+                        queue.offer(next);
+                    }
+                }
+            }
+            moves++;
+        }
+
+        return -1;
+    }
+}
