@@ -1,0 +1,162 @@
+import java.util.*;
+
+public class Solution {
+    public List<String> basicCalculatorIV(String expression, String[] evalvars, int[] evalints) {
+        Map<String, Integer> evalMap = new HashMap<>();
+        for (int i = 0; i < evalvars.length; ++i) {
+            evalMap.put(evalvars[i], evalints[i]);
+        }
+        return parse(expression).evaluate(evalMap).toList();
+    }
+
+    static class Poly {
+        Map<List<String>, Integer> map;
+
+        Poly() {
+            this.map = new HashMap<>();
+        }
+
+        Poly(String term, int coeff) {
+            this.map = new HashMap<>();
+            List<String> key = new ArrayList<>();
+            if (!term.isEmpty()) key.add(term);
+            this.map.put(key, coeff);
+        }
+
+        Poly add(Poly other) {
+            Poly res = new Poly();
+            res.map.putAll(this.map);
+            for (Map.Entry<List<String>, Integer> e : other.map.entrySet()) {
+                res.map.put(e.getKey(), res.map.getOrDefault(e.getKey(), 0) + e.getValue());
+            }
+            return res;
+        }
+
+        Poly subtract(Poly other) {
+            Poly res = new Poly();
+            res.map.putAll(this.map);
+            for (Map.Entry<List<String>, Integer> e : other.map.entrySet()) {
+                res.map.put(e.getKey(), res.map.getOrDefault(e.getKey(), 0) - e.getValue());
+            }
+            return res;
+        }
+
+        Poly multiply(Poly other) {
+            Poly res = new Poly();
+            for (Map.Entry<List<String>, Integer> e1 : this.map.entrySet()) {
+                for (Map.Entry<List<String>, Integer> e2 : other.map.entrySet()) {
+                    List<String> newKey = new ArrayList<>(e1.getKey());
+                    newKey.addAll(e2.getKey());
+                    Collections.sort(newKey);
+                    int newVal = e1.getValue() * e2.getValue();
+                    res.map.put(newKey, res.map.getOrDefault(newKey, 0) + newVal);
+                }
+            }
+            return res;
+        }
+
+        Poly evaluate(Map<String, Integer> evalMap) {
+            Poly res = new Poly();
+            for (Map.Entry<List<String>, Integer> e : map.entrySet()) {
+                int coeff = e.getValue();
+                List<String> key = new ArrayList<>();
+                for (String var : e.getKey()) {
+                    if (evalMap.containsKey(var)) {
+                        coeff *= evalMap.get(var);
+                    } else {
+                        key.add(var);
+                    }
+                }
+                res.map.put(key, res.map.getOrDefault(key, 0) + coeff);
+            }
+            return res;
+        }
+
+        List<String> toList() {
+            List<Map.Entry<List<String>, Integer>> entries = new ArrayList<>(map.entrySet());
+            entries.removeIf(e -> e.getValue() == 0);
+            entries.sort((a, b) -> {
+                if (a.getKey().size() != b.getKey().size()) {
+                    return b.getKey().size() - a.getKey().size();
+                }
+                return String.join("*", a.getKey()).compareTo(String.join("*", b.getKey()));
+            });
+
+            List<String> result = new ArrayList<>();
+            for (Map.Entry<List<String>, Integer> e : entries) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(e.getValue());
+                for (String var : e.getKey()) {
+                    sb.append("*").append(var);
+                }
+                result.add(sb.toString());
+            }
+            return result;
+        }
+    }
+
+    private int index;
+    private String expr;
+
+    private Poly parse(String expression) {
+        this.index = 0;
+        this.expr = expression;
+        return parseExpression();
+    }
+
+    private Poly parseExpression() {
+        Poly res = parseTerm();
+        while (index < expr.length()) {
+            char c = expr.charAt(index);
+            if (c == ' ') {
+                index++;
+            } else if (c == '+') {
+                index++;
+                res = res.add(parseTerm());
+            } else if (c == '-') {
+                index++;
+                res = res.subtract(parseTerm());
+            } else {
+                break;
+            }
+        }
+        return res;
+    }
+
+    private Poly parseTerm() {
+        Poly res = parseFactor();
+        while (index < expr.length()) {
+            char c = expr.charAt(index);
+            if (c == ' ') {
+                index++;
+            } else if (c == '*') {
+                index++;
+                res = res.multiply(parseFactor());
+            } else {
+                break;
+            }
+        }
+        return res;
+    }
+
+    private Poly parseFactor() {
+        while (index < expr.length() && expr.charAt(index) == ' ') index++;
+        if (expr.charAt(index) == '(') {
+            index++; // skip '('
+            Poly res = parseExpression();
+            index++; // skip ')'
+            return res;
+        }
+
+        int start = index;
+        while (index < expr.length() && Character.isLetterOrDigit(expr.charAt(index))) {
+            index++;
+        }
+        String token = expr.substring(start, index);
+        if (Character.isDigit(token.charAt(0))) {
+            return new Poly("", Integer.parseInt(token));
+        } else {
+            return new Poly(token, 1);
+        }
+    }
+}
