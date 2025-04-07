@@ -1,0 +1,26 @@
+public class MinimizeMaxDistanceToGasStation {
+    public double minmaxGasDist(int[] stations, int k) {
+        double left = 0, right = stations[stations.length - 1] - stations[0];
+        double epsilon = 1e-6;
+
+        while (right - left > epsilon) {
+            double mid = (left + right) / 2.0;
+            if (canPlace(stations, k, mid)) {
+                right = mid;
+            } else {
+                left = mid;
+            }
+        }
+
+        return left;
+    }
+
+    private boolean canPlace(int[] stations, int k, double maxDist) {
+        int count = 0;
+        for (int i = 1; i < stations.length; i++) {
+            double dist = stations[i] - stations[i - 1];
+            count += (int) (dist / maxDist);
+        }
+        return count <= k;
+    }
+}
