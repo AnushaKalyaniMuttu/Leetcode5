@@ -1,0 +1,18 @@
+class Solution {
+    public boolean escapeGhosts(int[][] ghosts, int[] target) {
+        int myDist = manhattanDistance(0, 0, target[0], target[1]);
+
+        for (int[] ghost : ghosts) {
+            int ghostDist = manhattanDistance(ghost[0], ghost[1], target[0], target[1]);
+            if (ghostDist <= myDist) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private int manhattanDistance(int x1, int y1, int x2, int y2) {
+        return Math.abs(x1 - x2) + Math.abs(y1 - y2);
+    }
+}
