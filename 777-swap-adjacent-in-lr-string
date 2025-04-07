@@ -1,0 +1,28 @@
+class Solution {
+   public boolean canTransform(String start, String end) {
+        if (!start.replace("X", "").equals(end.replace("X", ""))) {
+            return false;
+        }
+
+        int i = 0, j = 0;
+        while (i < start.length() && j < end.length()) {
+            while (i < start.length() && start.charAt(i) == 'X') i++;
+            while (j < end.length() && end.charAt(j) == 'X') j++;
+
+            if (i == start.length() && j == end.length()) return true;
+            if (i == start.length() || j == end.length()) return false;
+
+            char c1 = start.charAt(i);
+            char c2 = end.charAt(j);
+            if (c1 != c2) return false;
+
+            if (c1 == 'L' && i < j) return false;
+            if (c1 == 'R' && i > j) return false;
+
+            i++;
+            j++;
+        }
+
+        return true;
+    }
+}
