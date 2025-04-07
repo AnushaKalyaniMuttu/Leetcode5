@@ -1,0 +1,14 @@
+public class SimilarRgbColor {
+    public String similarRGB(String color) {
+        return "#" + closest(color.substring(1, 3))
+                   + closest(color.substring(3, 5))
+                   + closest(color.substring(5, 7));
+    }
+
+    private String closest(String comp) {
+        int val = Integer.parseInt(comp, 16);
+        int best = val / 17;
+        int hex = best * 17;
+        return String.format("%02x", hex);
+    }
+}
