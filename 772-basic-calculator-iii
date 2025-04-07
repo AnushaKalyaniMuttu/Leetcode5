@@ -1,0 +1,38 @@
+import java.util.*;
+
+public class BasicCalculatorIII {
+    public int calculate(String s) {
+        return helper(new LinkedList<>(Arrays.asList(s.replaceAll(" ", "").split(""))));
+    }
+
+    private int helper(Queue<String> tokens) {
+        Stack<Integer> stack = new Stack<>();
+        int num = 0;
+        char sign = '+';
+
+        while (!tokens.isEmpty()) {
+            String token = tokens.poll();
+
+            if (Character.isDigit(token.charAt(0))) {
+                num = num * 10 + Integer.parseInt(token);
+            } else if (token.equals("(")) {
+                num = helper(tokens);
+            }
+
+            if (!Character.isDigit(token.charAt(0)) || tokens.isEmpty()) {
+                if (sign == '+') stack.push(num);
+                else if (sign == '-') stack.push(-num);
+                else if (sign == '*') stack.push(stack.pop() * num);
+                else if (sign == '/') stack.push(stack.pop() / num);
+
+                if (token.equals(")")) break;
+                sign = token.charAt(0);
+                num = 0;
+            }
+        }
+
+        int result = 0;
+        for (int n : stack) result += n;
+        return result;
+    }
+}
