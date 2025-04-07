@@ -1,0 +1,43 @@
+public class Solution {
+    public int numMatchingSubseq(String s, String[] words) {
+        int count = 0;
+        Map<Character, Queue<Node>> map = new HashMap<>();
+
+        // Initialize queues for each starting character
+        for (char c = 'a'; c <= 'z'; c++) {
+            map.put(c, new LinkedList<>());
+        }
+
+        // Fill map with word iterators
+        for (String word : words) {
+            map.get(word.charAt(0)).offer(new Node(word, 0));
+        }
+
+        // Iterate through main string
+        for (char c : s.toCharArray()) {
+            Queue<Node> queue = map.get(c);
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                Node node = queue.poll();
+                node.index++;
+                if (node.index == node.word.length()) {
+                    count++;
+                } else {
+                    map.get(node.word.charAt(node.index)).offer(node);
+                }
+            }
+        }
+
+        return count;
+    }
+
+    static class Node {
+        String word;
+        int index;
+
+        Node(String word, int index) {
+            this.word = word;
+            this.index = index;
+        }
+    }
+}
