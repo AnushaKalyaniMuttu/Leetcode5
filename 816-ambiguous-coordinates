@@ -1,0 +1,53 @@
+import java.util.*;
+
+public class Solution {
+    public List<String> ambiguousCoordinates(String s) {
+        List<String> result = new ArrayList<>();
+        s = s.substring(1, s.length() - 1); // Remove the surrounding parentheses
+
+        // Split the string into two parts: one for the x-coordinate and one for the y-coordinate
+        for (int i = 1; i < s.length(); i++) {
+            List<String> left = generateValidNumbers(s.substring(0, i));
+            List<String> right = generateValidNumbers(s.substring(i));
+
+            // Combine each valid x-coordinate with each valid y-coordinate
+            for (String x : left) {
+                for (String y : right) {
+                    result.add("(" + x + ", " + y + ")");
+                }
+            }
+        }
+        return result;
+    }
+
+    private List<String> generateValidNumbers(String s) {
+        List<String> validNumbers = new ArrayList<>();
+
+        // If the string is empty or has leading and trailing zeros, it's invalid
+        if (s.isEmpty() || (s.length() > 1 && s.charAt(0) == '0' && s.charAt(s.length() - 1) == '0')) {
+            return validNumbers;
+        }
+
+        // If the string ends with '0', it's valid as an integer
+        if (s.charAt(s.length() - 1) == '0') {
+            validNumbers.add(s);
+            return validNumbers;
+        }
+
+        // If the string starts with '0', it's valid as a decimal number
+        if (s.charAt(0) == '0') {
+            validNumbers.add("0." + s.substring(1));
+            return validNumbers;
+        }
+
+        // Add the number as is
+        validNumbers.add(s);
+
+        // Try inserting a decimal point at each possible position
+        for (int i = 1; i < s.length(); i++) {
+            validNumbers.add(s.substring(0, i) + "." + s.substring(i));
+        }
+
+        return validNumbers;
+    }
+}
