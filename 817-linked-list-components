@@ -1,24 +1,42 @@
-class Solution {
-    public int racecar(int target) {
-        int[] dp = new int[target + 1];
-        Arrays.fill(dp, -1);
-        return racecar(target, dp);
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+import java.util.HashSet;
+import java.util.Set;
+
+public class Solution {
+    public int numComponents(ListNode head, int[] nums) {
+        // Step 1: Convert the nums array to a Set for O(1) lookup
+        Set<Integer> numSet = new HashSet<>();
+        for (int num : nums) {
+            numSet.add(num);
+        }
+
+        // Step 2: Traverse the linked list and count components
+        int components = 0;
+        boolean inComponent = false; // Flag to track if we are in a component
+        
+        while (head != null) {
+            if (numSet.contains(head.val)) {
+                // If we're not already in a component, it means we've found the start of a new component
+                if (!inComponent) {
+                    components++;
+                    inComponent = true;  // Mark that we are in a component
+                }
+            } else {
+                inComponent = false; // We are no longer in a component
+            }
+            head = head.next;  // Move to the next node
+        }
+        
+        return components;
     }
 
-    private int racecar(int i, int[] dp) {
-        if (dp[i] >= 0)
-            return dp[i];
-
-        int res = Integer.MAX_VALUE;
-        int x = 1;            // xA := (2^x - 1) unit distance
-        int j = (1 << x) - 1; // j = 2^x - 1, k = 2^y - 1
-
-        // (xA + 1R) + (yA + 1R) + racecar(i - (j - k))
-        for (; j < i; j = (1 << ++x) - 1)
-            for (int y = 0, k = 0; k < j; k = (1 << ++y) - 1)
-                res = Math.min(res, (x + 1) + (y + 1) + racecar(i - (j - k), dp));
-
-        // xA || (xA + 1R) + racecar(j - i)
-        return dp[i] = Math.min(res, i == j ? x : x + 1 + racecar(j - i, dp));
-    }
 }
