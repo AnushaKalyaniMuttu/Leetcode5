@@ -1,0 +1,18 @@
+public class Solution {
+    public int[] numberOfLines(int[] widths, String S) {
+        int lines = 1; // Start with one line
+        int currentWidth = 0;
+
+        for (char c : S.toCharArray()) {
+            int charWidth = widths[c - 'a'];
+            if (currentWidth + charWidth > 100) {
+                lines++;
+                currentWidth = charWidth; // Start a new line with the current character
+            } else {
+                currentWidth += charWidth;
+            }
+        }
+
+        return new int[]{lines, currentWidth};
+    }
+}
