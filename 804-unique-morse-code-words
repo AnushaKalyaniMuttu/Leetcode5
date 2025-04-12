@@ -1,0 +1,31 @@
+import java.util.HashSet;
+
+public class Solution {
+    public int uniqueMorseRepresentations(String[] words) {
+        // Morse code mapping for each letter 'a' to 'z'
+        String[] morse = new String[]{
+            ".-", "-...", "-.-.", "-..", ".", "..-.", "--.", "....", "..", ".---",
+            "-.-", ".-..", "--", "-.", "---", ".--.", "--.-", ".-.", "...", "-",
+            "..-", "...-", ".--", "-..-", "-.--", "--.."
+        };
+
+        // HashSet to store unique Morse code transformations
+        HashSet<String> transformations = new HashSet<>();
+
+        // Iterate through each word
+        for (String word : words) {
+            StringBuilder morseWord = new StringBuilder();
+
+            // Convert each character in the word to Morse code
+            for (char c : word.toCharArray()) {
+                morseWord.append(morse[c - 'a']);
+            }
+
+            // Add the Morse code transformation to the set
+            transformations.add(morseWord.toString());
+        }
+
+        // The size of the set represents the number of unique transformations
+        return transformations.size();
+    }
+}
