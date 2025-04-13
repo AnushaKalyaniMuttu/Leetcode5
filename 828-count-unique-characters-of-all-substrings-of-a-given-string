@@ -1,0 +1,32 @@
+import java.util.*;
+
+class Solution {
+    public int uniqueLetterString(String s) {
+        int n = s.length();
+        int[][] index = new int[26][2]; // [prev, last] positions for each char
+        for (int[] row : index) {
+            Arrays.fill(row, -1);
+        }
+
+        int res = 0;
+
+        for (int i = 0; i < n; i++) {
+            int c = s.charAt(i) - 'A';
+            int prev = index[c][0];
+            int last = index[c][1];
+
+            res += (i - last) * (last - prev);
+            index[c][0] = last;
+            index[c][1] = i;
+        }
+
+        // Final contributions after the loop
+        for (int c = 0; c < 26; c++) {
+            int prev = index[c][0];
+            int last = index[c][1];
+            res += (n - last) * (last - prev);
+        }
+
+        return res;
+    }
+}
