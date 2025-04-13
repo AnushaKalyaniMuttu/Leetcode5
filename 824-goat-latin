@@ -1,0 +1,22 @@
+class Solution {
+    public String toGoatLatin(String sentence) {
+        StringBuilder result = new StringBuilder();
+        String vowels = "aeiouAEIOU";
+        String[] words = sentence.split(" ");
+        int index = 1;
+
+        for (String word : words) {
+            if (index > 1) {
+                result.append(" ");
+            }
+            if (vowels.indexOf(word.charAt(0)) != -1) {
+                result.append(word);
+            } else {
+                result.append(word.substring(1)).append(word.charAt(0));
+            }
+            result.append("ma").append("a".repeat(index++));
+        }
+
+        return result.toString();
+    }
+}
