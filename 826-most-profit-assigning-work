@@ -1,0 +1,27 @@
+import java.util.Arrays;
+
+class Solution {
+    public int maxProfitAssignment(int[] difficulty, int[] profit, int[] worker) {
+        int n = 100000;
+        int[] maxProfit = new int[n + 1];
+
+        // Map each difficulty level to the maximum profit
+        for (int i = 0; i < difficulty.length; i++) {
+            maxProfit[difficulty[i]] = Math.max(maxProfit[difficulty[i]], profit[i]);
+        }
+
+        // Update maxProfit array to ensure each level i contains the maximum profit
+        // achievable by a worker with ability i
+        for (int i = 1; i <= n; i++) {
+            maxProfit[i] = Math.max(maxProfit[i], maxProfit[i - 1]);
+        }
+
+        // Calculate the total profit by summing up the maximum profit for each worker's ability
+        int totalProfit = 0;
+        for (int ability : worker) {
+            totalProfit += maxProfit[ability];
+        }
+
+        return totalProfit;
+    }
+}
