@@ -1,0 +1,56 @@
+public class Solution {
+    public List<Integer> splitIntoFibonacci(String S) {
+        List<Integer> result = new ArrayList<>();
+        int n = S.length();
+        
+        // Try all pairs of starting numbers in the string
+        for (int i = 1; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                // Extract the two starting numbers
+                String first = S.substring(0, i);
+                String second = S.substring(i, j);
+                
+                // Skip leading zeroes
+                if ((first.length() > 1 && first.charAt(0) == '0') || 
+                    (second.length() > 1 && second.charAt(0) == '0')) {
+                    continue;
+                }
+                
+                long num1 = Long.parseLong(first);
+                long num2 = Long.parseLong(second);
+                
+                // Create a list to store the Fibonacci sequence
+                result.clear();
+                result.add((int) num1);
+                result.add((int) num2);
+                
+                // Try to build the Fibonacci sequence
+                if (buildFibonacci(S, num1, num2, result)) {
+                    return result;
+                }
+            }
+        }
+        return result;
+    }
+
+    private boolean buildFibonacci(String S, long num1, long num2, List<Integer> result) {
+        int n = S.length();
+        int idx = String.valueOf(num1).length() + String.valueOf(num2).length();
+        
+        while (idx < n) {
+            long sum = num1 + num2;
+            String sumStr = String.valueOf(sum);
+            if (!S.startsWith(sumStr, idx)) {
+                return false;
+            }
+            
+            // Add the sum to the result and update num1 and num2
+            result.add((int) sum);
+            num1 = num2;
+            num2 = sum;
+            idx += sumStr.length();
+        }
+        
+        return idx == n;
+    }
+}
