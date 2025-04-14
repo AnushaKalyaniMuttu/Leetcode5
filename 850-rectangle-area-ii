@@ -1,0 +1,76 @@
+import java.util.*;
+
+public class Solution {
+    public int rectangleArea(int[][] rectangles) {
+        final int MOD = 1_000_000_007;
+        
+        // Step 1: Collect all unique y-coordinates and compress them
+        Set<Integer> yCoordinates = new HashSet<>();
+        for (int[] rect : rectangles) {
+            yCoordinates.add(rect[1]);
+            yCoordinates.add(rect[3]);
+        }
+        
+        // Compress the y-coordinates into a map
+        List<Integer> sortedY = new ArrayList<>(yCoordinates);
+        Collections.sort(sortedY);
+        Map<Integer, Integer> yIndexMap = new HashMap<>();
+        for (int i = 0; i < sortedY.size(); i++) {
+            yIndexMap.put(sortedY.get(i), i);
+        }
+        
+        // Step 2: Prepare events for sweep line algorithm
+        List<int[]> events = new ArrayList<>();
+        for (int[] rect : rectangles) {
+            int x1 = rect[0], y1 = rect[1], x2 = rect[2], y2 = rect[3];
+            
+            // For each rectangle, create two events: one for entering and one for leaving
+            events.add(new int[]{x1, y1, y2, 1}); // Enter event
+            events.add(new int[]{x2, y1, y2, -1}); // Exit event
+        }
+        
+        // Step 3: Sort the events by x-coordinate
+        events.sort((a, b) -> a[0] != b[0] ? a[0] - b[0] : b[3] - a[3]);
+        
+        // Step 4: Sweep line algorithm to calculate area
+        long area = 0;
+        int prevX = events.get(0)[0];
+        
+        // A list to track active y-intervals
+        int[] active = new int[sortedY.size() + 1];  // Store the active intervals count
+        
+        // Step 5: Process each event
+        for (int[] event : events) {
+            int x = event[0], y1 = event[1], y2 = event[2], type = event[3];
+            
+            // Calculate the area of the previous strip (between prevX and current x)
+            long verticalCoverage = getVerticalCoverage(active, sortedY);
+            area += verticalCoverage * (x - prevX);
+            area %= MOD;
+            
+            // Update the active intervals based on the event type
+            for (int i = yIndexMap.get(y1); i < yIndexMap.get(y2); i++) {
+                active[i] += type;
+            }
+            
+            // Update the previous x-coordinate
+            prevX = x;
+        }
+        
+        // Step 6: Return the area modulo 10^9 + 7
+        return (int) area;
+    }
+
+    // Function to calculate the total covered vertical length
+    private long getVerticalCoverage(int[] active, List<Integer> sortedY) {
+        long totalLength = 0;
+        for (int i = 0; i < sortedY.size() - 1; i++) {
+            if (active[i] > 0) {
+                totalLength += sortedY.get(i + 1) - sortedY.get(i);
+            }
+        }
+        return totalLength;
+    }
+
+   
+}
