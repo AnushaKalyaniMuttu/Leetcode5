@@ -1,0 +1,46 @@
+public class Solution {
+    public boolean backspaceCompare(String s, String t) {
+        // Use two pointers to process both strings
+        int i = s.length() - 1;
+        int j = t.length() - 1;
+        
+        while (i >= 0 || j >= 0) {
+            // Process the string s
+            int skipS = 0;
+            while (i >= 0 && (s.charAt(i) == '#' || skipS > 0)) {
+                if (s.charAt(i) == '#') {
+                    skipS++;
+                } else {
+                    skipS--;
+                }
+                i--;
+            }
+            
+            // Process the string t
+            int skipT = 0;
+            while (j >= 0 && (t.charAt(j) == '#' || skipT > 0)) {
+                if (t.charAt(j) == '#') {
+                    skipT++;
+                } else {
+                    skipT--;
+                }
+                j--;
+            }
+            
+            // If both strings have finished processing or the current characters match
+            if (i >= 0 && j >= 0 && s.charAt(i) != t.charAt(j)) {
+                return false;
+            }
+            
+            // If one string has finished but the other hasn't, return false
+            if ((i >= 0) != (j >= 0)) {
+                return false;
+            }
+            
+            i--;
+            j--;
+        }
+        
+        return true;
+    }
+}
