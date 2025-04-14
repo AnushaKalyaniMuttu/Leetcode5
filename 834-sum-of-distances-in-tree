@@ -1,0 +1,41 @@
+import java.util.*;
+
+class Solution {
+    public int[] sumOfDistancesInTree(int n, int[][] edges) {
+        List<Set<Integer>> tree = new ArrayList<>();
+        for (int i = 0; i < n; i++) tree.add(new HashSet<>());
+        for (int[] edge : edges) {
+            tree.get(edge[0]).add(edge[1]);
+            tree.get(edge[1]).add(edge[0]);
+        }
+
+        int[] res = new int[n];      // Final answer: distance sums
+        int[] count = new int[n];    // Number of nodes in each subtree (including the node itself)
+        Arrays.fill(count, 1);       // Every node counts as size 1 (itself)
+
+        // 1st DFS: post-order
+        postOrder(0, -1, tree, res, count);
+
+        // 2nd DFS: pre-order
+        preOrder(0, -1, tree, res, count, n);
+
+        return res;
+    }
+
+    private void postOrder(int node, int parent, List<Set<Integer>> tree, int[] res, int[] count) {
+        for (int child : tree.get(node)) {
+            if (child == parent) continue;
+            postOrder(child, node, tree, res, count);
+            count[node] += count[child];
+            res[node] += res[child] + count[child];
+        }
+    }
+
+    private void preOrder(int node, int parent, List<Set<Integer>> tree, int[] res, int[] count, int n) {
+        for (int child : tree.get(node)) {
+            if (child == parent) continue;
+            res[child] = res[node] - count[child] + (n - count[child]);
+            preOrder(child, node, tree, res, count, n);
+        }
+    }
+}
