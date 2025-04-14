@@ -1,27 +1,27 @@
 import java.util.*;
 
 class Solution {
-    public String findReplaceString(String s, int[] indexes, String[] sources, String[] targets) {
-        Map<Integer, String[]> map = new HashMap<>();
-        for (int i = 0; i < indexes.length; i++) {
-            int index = indexes[i];
-            map.put(index, new String[]{sources[i], targets[i]});
+    public String findReplaceString(String s, int[] indices, String[] sources, String[] targets) {
+        int n = s.length();
+        int[] match = new int[n];
+        Arrays.fill(match, -1);
+        
+        for (int i = 0; i < indices.length; i++) {
+            int idx = indices[i];
+            if (s.startsWith(sources[i], idx)) {
+                match[idx] = i;
+            }
         }
 
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < s.length(); i++) {
-            if (map.containsKey(i)) {
-                String source = map.get(i)[0];
-                String target = map.get(i)[1];
-
-                if (s.substring(i, i + source.length()).equals(source)) {
-                    sb.append(target);
-                    i += source.length() - 1;
-                } else {
-                    sb.append(s.charAt(i));
-                }
+        int i = 0;
+        while (i < n) {
+            if (match[i] >= 0) {
+                sb.append(targets[match[i]]);
+                i += sources[match[i]].length();
             } else {
                 sb.append(s.charAt(i));
+                i++;
             }
         }
 
