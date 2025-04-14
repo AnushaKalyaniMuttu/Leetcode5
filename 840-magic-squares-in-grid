@@ -1,0 +1,51 @@
+public class Solution {
+    public int numMagicSquaresInside(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        int count = 0;
+
+        // Iterate over all possible 3x3 subgrids
+        for (int i = 0; i < m - 2; i++) {
+            for (int j = 0; j < n - 2; j++) {
+                if (isMagicSquare(grid, i, j)) {
+                    count++;
+                }
+            }
+        }
+
+        return count;
+    }
+
+    private boolean isMagicSquare(int[][] grid, int x, int y) {
+        Set<Integer> seen = new HashSet<>();
+        int sum = 0;
+
+        // Check the 3x3 subgrid
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                int val = grid[x + i][y + j];
+                if (val < 1 || val > 9 || !seen.add(val)) {
+                    return false; // Value is out of range or duplicated
+                }
+                if (i == 0) sum += val; // Sum the first row
+            }
+        }
+
+        // Check rows, columns, and diagonals
+        for (int i = 0; i < 3; i++) {
+            int rowSum = 0;
+            int colSum = 0;
+            for (int j = 0; j < 3; j++) {
+                rowSum += grid[x + i][y + j];
+                colSum += grid[x + j][y + i];
+            }
+            if (rowSum != sum || colSum != sum) {
+                return false;
+            }
+        }
+
+        int diag1 = grid[x][y] + grid[x + 1][y + 1] + grid[x + 2][y + 2];
+        int diag2 = grid[x + 2][y] + grid[x + 1][y + 1] + grid[x][y + 2];
+        return diag1 == sum && diag2 == sum;
+    }
+}
