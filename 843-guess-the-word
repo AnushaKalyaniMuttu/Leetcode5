@@ -1,0 +1,73 @@
+import java.util.List;
+import java.util.ArrayList;
+
+public class Solution {
+    public void findSecretWord(String[] wordlist, Master master) {
+        // Convert the wordlist to a list of words for easier manipulation
+        List<String> words = new ArrayList<>();
+        for (String word : wordlist) {
+            words.add(word);
+        }
+        
+        // Try to guess the word with at most 10 attempts
+        for (int attempts = 0; attempts < 10; attempts++) {
+            String guessWord = getBestGuess(words);
+            int matchCount = master.guess(guessWord);
+            
+            // If the guess is correct (6 matches), exit the loop
+            if (matchCount == 6) {
+                return;
+            }
+            
+            // Prune the list of possible words based on the feedback
+            List<String> newWords = new ArrayList<>();
+            for (String word : words) {
+                if (getMatchCount(guessWord, word) == matchCount) {
+                    newWords.add(word);
+                }
+            }
+            words = newWords;
+        }
+    }
+    
+    // Helper function to get the match count between two words
+    private int getMatchCount(String word1, String word2) {
+        int matchCount = 0;
+        for (int i = 0; i < word1.length(); i++) {
+            if (word1.charAt(i) == word2.charAt(i)) {
+                matchCount++;
+            }
+        }
+        return matchCount;
+    }
+    
+    // Helper function to select the best guess word based on current possibilities
+    private String getBestGuess(List<String> words) {
+        int maxMatchCount = Integer.MIN_VALUE;
+        String bestGuess = "";
+        
+        for (String guessWord : words) {
+            int[] matchCounts = new int[7]; // Stores how many words match with each possible feedback value (0 to 6)
+            
+            // For each word in the current list, calculate the match count with the current guess word
+            for (String word : words) {
+                int matchCount = getMatchCount(guessWord, word);
+                matchCounts[matchCount]++;
+            }
+            
+            // Minimize the worst-case scenario (maximize the reduction of possible words)
+            int maxReduction = Integer.MIN_VALUE;
+            for (int count : matchCounts) {
+                maxReduction = Math.max(maxReduction, count);
+            }
+            
+            // Choose the guess word that gives the most "information"
+            if (maxReduction < maxMatchCount) {
+                maxMatchCount = maxReduction;
+                bestGuess = guessWord;
+            }
+        }
+        
+        return bestGuess;
+    }
+}
