@@ -1,0 +1,54 @@
+public class Solution {
+    public int numSimilarGroups(String[] strs) {
+        int n = strs.length;
+        int[] parent = new int[n];
+        for (int i = 0; i < n; ++i) {
+            parent[i] = i;
+        }
+
+        for (int i = 0; i < n; ++i) {
+            for (int j = i + 1; j < n; ++j) {
+                if (isSimilar(strs[i], strs[j])) {
+                    union(i, j, parent);
+                }
+            }
+        }
+
+        int groups = 0;
+        for (int i = 0; i < n; ++i) {
+            if (parent[i] == i) {
+                groups++;
+            }
+        }
+
+        return groups;
+    }
+
+    private boolean isSimilar(String a, String b) {
+        int diffCount = 0;
+        for (int i = 0; i < a.length(); ++i) {
+            if (a.charAt(i) != b.charAt(i)) {
+                diffCount++;
+                if (diffCount > 2) {
+                    return false;
+                }
+            }
+        }
+        return diffCount == 2 || diffCount == 0;
+    }
+
+    private void union(int x, int y, int[] parent) {
+        int rootX = find(x, parent);
+        int rootY = find(y, parent);
+        if (rootX != rootY) {
+            parent[rootX] = rootY;
+        }
+    }
+
+    private int find(int x, int[] parent) {
+        if (parent[x] != x) {
+            parent[x] = find(parent[x], parent);
+        }
+        return parent[x];
+    }
+}
