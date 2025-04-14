@@ -1,0 +1,34 @@
+import java.util.*;
+
+public class Solution {
+    public boolean isNStraightHand(int[] hand, int W) {
+        // If the length of the hand is not divisible by W, return false
+        if (hand.length % W != 0) {
+            return false;
+        }
+        
+        // Step 1: Count the frequency of each card
+        Map<Integer, Integer> countMap = new TreeMap<>();
+        for (int card : hand) {
+            countMap.put(card, countMap.getOrDefault(card, 0) + 1);
+        }
+        
+        // Step 2: Try to form sequences starting from the smallest card
+        for (int card : countMap.keySet()) {
+            int count = countMap.get(card);
+            if (count > 0) {
+                // Try to form a group starting from 'card'
+                for (int i = 0; i < W; i++) {
+                    int nextCard = card + i;
+                    int nextCount = countMap.getOrDefault(nextCard, 0);
+                    if (nextCount < count) {
+                        return false; // If we don't have enough of 'nextCard', return false
+                    }
+                    countMap.put(nextCard, nextCount - count); // Reduce the count
+                }
+            }
+        }
+        
+        return true;
+    }
+}
