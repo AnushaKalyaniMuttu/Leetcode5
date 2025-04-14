@@ -1,0 +1,33 @@
+public class Solution {
+    public int longestMountain(int[] A) {
+        int n = A.length;
+        if (n < 3) {
+            return 0;
+        }
+        
+        int maxLength = 0;
+        
+        // Traverse the array to find all peaks
+        for (int i = 1; i < n - 1; i++) {
+            // Check if A[i] is a peak
+            if (A[i] > A[i - 1] && A[i] > A[i + 1]) {
+                // Expand left
+                int left = i - 1;
+                while (left >= 0 && A[left] < A[left + 1]) {
+                    left--;
+                }
+                
+                // Expand right
+                int right = i + 1;
+                while (right < n && A[right] < A[right - 1]) {
+                    right++;
+                }
+                
+                // Calculate the length of the mountain
+                maxLength = Math.max(maxLength, right - left - 1);
+            }
+        }
+        
+        return maxLength;
+    }
+}
