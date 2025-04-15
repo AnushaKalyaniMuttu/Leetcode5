@@ -1,0 +1,43 @@
+import java.util.*;
+
+public class Solution {
+    public int[] loudAndRich(int[][] richer, int[] quiet) {
+        int n = quiet.length;
+        List<Integer>[] graph = new List[n];
+        for (int i = 0; i < n; i++) {
+            graph[i] = new ArrayList<>();
+        }
+
+        // Build the graph: richer[i][1] -> richer[i][0]
+        for (int[] pair : richer) {
+            graph[pair[1]].add(pair[0]);
+        }
+
+        int[] answer = new int[n];
+        Arrays.fill(answer, -1);
+
+        // Perform DFS for each person
+        for (int i = 0; i < n; i++) {
+            dfs(i, graph, quiet, answer);
+        }
+
+        return answer;
+    }
+
+    private int dfs(int node, List<Integer>[] graph, int[] quiet, int[] answer) {
+        if (answer[node] != -1) {
+            return answer[node];
+        }
+
+        answer[node] = node;
+
+        for (int neighbor : graph[node]) {
+            int candidate = dfs(neighbor, graph, quiet, answer);
+            if (quiet[candidate] < quiet[answer[node]]) {
+                answer[node] = candidate;
+            }
+        }
+
+        return answer[node];
+    }
+}
