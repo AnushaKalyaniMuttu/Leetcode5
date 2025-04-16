@@ -1,0 +1,20 @@
+class Solution {
+    public int peakIndexInMountainArray(int[] arr) {
+        int left = 0, right = arr.length - 1;
+
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+
+            if (arr[mid] < arr[mid + 1]) {
+                // We're in the increasing part, so move right
+                left = mid + 1;
+            } else {
+                // We're in the decreasing part, so move left
+                right = mid;
+            }
+        }
+
+        // At the end, left == right, pointing to the peak index
+        return left;
+    }
+}
