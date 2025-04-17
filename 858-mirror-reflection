@@ -1,0 +1,18 @@
+public class Solution {
+    public int mirrorReflection(int p, int q) {
+        // Reduce p and q by their greatest common divisor
+        while (p % 2 == 0 && q % 2 == 0) {
+            p /= 2;
+            q /= 2;
+        }
+
+        // Determine the receptor based on the parity of p and q
+        if (p % 2 == 0) {
+            return 2; // Receptor 2
+        } else if (q % 2 == 0) {
+            return 0; // Receptor 0
+        } else {
+            return 1; // Receptor 1
+        }
+    }
+}
