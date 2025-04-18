@@ -1,0 +1,31 @@
+
+import java.util.*;
+
+class Solution {
+    public int shortestSubarray(int[] nums, int k) {
+        int n = nums.length;
+        long[] prefix = new long[n + 1];
+        Deque<Integer> deque = new ArrayDeque<>();
+        int minLength = n + 1;
+
+        // Compute prefix sums
+        for (int i = 0; i < n; i++) {
+            prefix[i + 1] = prefix[i] + nums[i];
+        }
+
+        // Use a monotonic deque to find the shortest subarray
+        for (int i = 0; i <= n; i++) {
+            // Check if the current subarray sum is at least k
+            while (!deque.isEmpty() && prefix[i] - prefix[deque.peekFirst()] >= k) {
+                minLength = Math.min(minLength, i - deque.pollFirst());
+            }
+            // Maintain the deque in increasing order of prefix sums
+            while (!deque.isEmpty() && prefix[i] <= prefix[deque.peekLast()]) {
+                deque.pollLast();
+            }
+            deque.offer(i);
+        }
+
+        return minLength <= n ? minLength : -1;
+    }
+}
