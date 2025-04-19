@@ -1,0 +1,30 @@
+class Solution {
+    public int primePalindrome(int N) {
+        if (N <= 2) return 2;
+        if (N == 3) return 3;
+        if (N <= 5) return 5;
+        if (N <= 7) return 7;
+        if (N <= 11) return 11;
+
+        int len = String.valueOf(N).length();
+        while (true) {
+            for (int i = (int)Math.pow(10, len / 2 - 1); i < (int)Math.pow(10, len / 2); i++) {
+                String s = String.valueOf(i);
+                String rev = new StringBuilder(s).reverse().toString();
+                int palin = Integer.parseInt(s + rev.substring(1));
+                if (palin >= N && isPrime(palin)) return palin;
+            }
+            len++;
+        }
+    }
+
+    private boolean isPrime(int x) {
+        if (x < 2) return false;
+        if (x == 2 || x == 3) return true;
+        if (x % 2 == 0 || x % 3 == 0) return false;
+        for (int i = 5; i * i <= x; i += 6) {
+            if (x % i == 0 || x % (i + 2) == 0) return false;
+        }
+        return true;
+    }
+}
