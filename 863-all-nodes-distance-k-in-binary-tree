@@ -1,0 +1,47 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+import java.util.*;
+
+class Solution {
+    private Map<TreeNode, TreeNode> parentMap = new HashMap<>();
+    private Set<TreeNode> visited = new HashSet<>();
+    private List<Integer> result = new ArrayList<>();
+
+    public List<Integer> distanceK(TreeNode root, TreeNode target, int k) {
+        // Build parent map
+        buildParentMap(root, null);
+
+        // Perform DFS to find nodes at distance k
+        dfs(target, k);
+
+        return result;
+    }
+
+    private void buildParentMap(TreeNode node, TreeNode parent) {
+        if (node == null) return;
+        parentMap.put(node, parent);
+        buildParentMap(node.left, node);
+        buildParentMap(node.right, node);
+    }
+
+    private void dfs(TreeNode node, int k) {
+        if (node == null || visited.contains(node)) return;
+        visited.add(node);
+
+        if (k == 0) {
+            result.add(node.val);
+            return;
+        }
+
+        dfs(node.left, k - 1);
+        dfs(node.right, k - 1);
+        dfs(parentMap.get(node), k - 1);
+    }
+}
