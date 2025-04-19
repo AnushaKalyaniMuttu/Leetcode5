@@ -1,0 +1,73 @@
+import java.util.*;
+
+class Solution {
+    public int shortestPathAllKeys(String[] grid) {
+        int m = grid.length, n = grid[0].length();
+        int totalKeys = 0, startX = 0, startY = 0;
+
+        // Locate start and count keys
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                char c = grid[i].charAt(j);
+                if (c == '@') {
+                    startX = i;
+                    startY = j;
+                } else if (c >= 'a' && c <= 'f') {
+                    totalKeys++;
+                }
+            }
+        }
+
+        int finalState = (1 << totalKeys) - 1;
+        Queue<int[]> queue = new LinkedList<>();
+        boolean[][][] visited = new boolean[m][n][1 << totalKeys];
+
+        queue.offer(new int[]{startX, startY, 0});
+        visited[startX][startY][0] = true;
+
+        int[][] directions = {{0,1},{1,0},{0,-1},{-1,0}};
+        int steps = 0;
+
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+
+            for (int i = 0; i < size; i++) {
+                int[] cur = queue.poll();
+                int x = cur[0], y = cur[1], keys = cur[2];
+
+                // Check if all keys are collected
+                if (keys == finalState) return steps;
+
+                for (int[] dir : directions) {
+                    int nx = x + dir[0];
+                    int ny = y + dir[1];
+                    int newKeys = keys;
+
+                    if (nx < 0 || ny < 0 || nx >= m || ny >= n) continue;
+                    char cell = grid[nx].charAt(ny);
+
+                    if (cell == '#') continue;
+
+                    // If it's a key, collect it
+                    if (cell >= 'a' && cell <= 'f') {
+                        newKeys |= (1 << (cell - 'a'));
+                    }
+
+                    // If it's a lock, skip if we don't have the key
+                    if (cell >= 'A' && cell <= 'F' && ((newKeys >> (cell - 'A')) & 1) == 0) {
+                        continue;
+                    }
+
+                    // Only visit if this state hasn't been seen
+                    if (!visited[nx][ny][newKeys]) {
+                        visited[nx][ny][newKeys] = true;
+                        queue.offer(new int[]{nx, ny, newKeys});
+                    }
+                }
+            }
+            steps++;
+        }
+
+        return -1; // if not all keys can be collected
+    }
+}
