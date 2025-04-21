@@ -1,0 +1,37 @@
+import java.util.*;
+
+class FreqStack {
+    private Map<Integer, Integer> freqMap;
+    private Map<Integer, Stack<Integer>> groupMap;
+    private int maxFreq;
+
+    public FreqStack() {
+        freqMap = new HashMap<>();
+        groupMap = new HashMap<>();
+        maxFreq = 0;
+    }
+
+    public void push(int x) {
+        int freq = freqMap.getOrDefault(x, 0) + 1;
+        freqMap.put(x, freq);
+        maxFreq = Math.max(maxFreq, freq);
+        groupMap.computeIfAbsent(freq, k -> new Stack<>()).push(x);
+    }
+
+    public int pop() {
+        int x = groupMap.get(maxFreq).pop();
+        freqMap.put(x, freqMap.get(x) - 1);
+        if (groupMap.get(maxFreq).isEmpty()) {
+            maxFreq--;
+        }
+        return x;
+    }
+}
+
+
+/**
+ * Your FreqStack object will be instantiated and called as such:
+ * FreqStack obj = new FreqStack();
+ * obj.push(val);
+ * int param_2 = obj.pop();
+ */
