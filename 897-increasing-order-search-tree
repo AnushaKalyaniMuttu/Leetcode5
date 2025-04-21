@@ -1,0 +1,40 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    private TreeNode prev = null;
+
+    public TreeNode increasingBST(TreeNode root) {
+        if (root == null) return null;
+
+        // Recursively process the left subtree
+        TreeNode newRoot = increasingBST(root.left);
+
+        // Disconnect the left child and set the current node as the right child of the previous node
+        if (prev != null) {
+            prev.right = root;
+            root.left = null;
+        }
+
+        // Move the prev pointer to the current node
+        prev = root;
+
+        // Recursively process the right subtree
+        increasingBST(root.right);
+
+        // Return the new root of the transformed tree
+        return newRoot != null ? newRoot : root;
+    }
+}
