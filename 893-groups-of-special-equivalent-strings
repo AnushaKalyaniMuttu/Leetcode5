@@ -1,0 +1,32 @@
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Arrays;
+
+class Solution {
+    public int numSpecialEquivGroups(String[] A) {
+        Set<String> set = new HashSet<>();
+        
+        for (String s : A) {
+            int[] odd = new int[26];
+            int[] even = new int[26];
+            
+            // Classify characters into odd and even indexed groups
+            for (int i = 0; i < s.length(); i++) {
+                if (i % 2 == 0) {
+                    even[s.charAt(i) - 'a']++;
+                } else {
+                    odd[s.charAt(i) - 'a']++;
+                }
+            }
+            
+            // Create a unique key for the string based on the sorted odd and even groups
+            String key = Arrays.toString(even) + Arrays.toString(odd);
+            
+            // Add the key to the set (duplicates are automatically handled by the set)
+            set.add(key);
+        }
+        
+        // The number of unique special-equivalent groups
+        return set.size();
+    }
+}
