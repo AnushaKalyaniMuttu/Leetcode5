@@ -1,0 +1,30 @@
+import java.util.HashSet;
+import java.util.Set;
+
+class Solution {
+    public int[] fairCandySwap(int[] A, int[] B) {
+        int sumA = 0, sumB = 0;
+        
+        // Calculate the total sum of candies for Alice and Bob
+        for (int a : A) sumA += a;
+        for (int b : B) sumB += b;
+        
+        // Calculate the difference and divide by 2
+        int delta = (sumA - sumB) / 2;
+        
+        // Store the elements of Bob's array in a set for quick lookup
+        Set<Integer> setB = new HashSet<>();
+        for (int b : B) setB.add(b);
+        
+        // Find the pair of boxes to swap
+        for (int a : A) {
+            int b = a - delta;
+            if (setB.contains(b)) {
+                return new int[]{a, b};
+            }
+        }
+        
+        // Return an empty array if no valid swap is found (shouldn't happen as per problem statement)
+        return new int[0];
+    }
+}
