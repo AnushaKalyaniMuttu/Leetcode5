@@ -1,0 +1,26 @@
+import java.util.Arrays;
+
+class Solution {
+    public int sumSubseqWidths(int[] nums) {
+        final int MOD = 1_000_000_007;
+        Arrays.sort(nums);
+        int n = nums.length;
+        long[] pow = new long[n];
+        pow[0] = 1;
+        
+        // Precompute powers of 2 modulo MOD
+        for (int i = 1; i < n; i++) {
+            pow[i] = pow[i - 1] * 2 % MOD;
+        }
+        
+        long result = 0;
+        
+        // Calculate the sum of subsequence widths
+        for (int i = 0; i < n; i++) {
+            // nums[i] contributes to the sum as the maximum value and the minimum value
+            result = (result + (nums[i] * (pow[i] - pow[n - i - 1]) % MOD)) % MOD;
+        }
+        
+        return (int) result;
+    }
+}
