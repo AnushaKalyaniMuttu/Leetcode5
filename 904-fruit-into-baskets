@@ -1,0 +1,26 @@
+import java.util.HashMap;
+
+public class Solution {
+    public int totalFruit(int[] tree) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        int left = 0, maxFruits = 0;
+
+        for (int right = 0; right < tree.length; right++) {
+            map.put(tree[right], map.getOrDefault(tree[right], 0) + 1);
+
+            // Shrink the window until we have at most 2 distinct fruit types
+            while (map.size() > 2) {
+                map.put(tree[left], map.get(tree[left]) - 1);
+                if (map.get(tree[left]) == 0) {
+                    map.remove(tree[left]);
+                }
+                left++;
+            }
+
+            // Update the maximum number of fruits collected
+            maxFruits = Math.max(maxFruits, right - left + 1);
+        }
+
+        return maxFruits;
+    }
+}
