@@ -1,0 +1,48 @@
+class Solution {
+    public int maxSubarraySumCircular(int[] A) {
+        // Step 1: Find the maximum sum of a non-circular subarray (Kadane's algorithm)
+        int maxSum = kadane(A);
+        
+        // Step 2: Find the total sum of the array
+        int totalSum = 0;
+        for (int num : A) {
+            totalSum += num;
+        }
+        
+        // Step 3: Find the minimum sum of a subarray (similar to Kadane's)
+        int minSum = kadaneInverted(A);
+        
+        // Step 4: If all numbers are negative, maxSum and totalSum - minSum will be the same,
+        //         so we return maxSum directly
+        if (totalSum == minSum) {
+            return maxSum;
+        }
+        
+        // Step 5: The result will be the maximum of the two options:
+        // - Maximum non-circular subarray sum
+        // - Maximum circular subarray sum (totalSum - minSum)
+        return Math.max(maxSum, totalSum - minSum);
+    }
+    
+    // Kadane's algorithm to find the maximum subarray sum
+    private int kadane(int[] A) {
+        int currentMax = A[0];
+        int globalMax = A[0];
+        for (int i = 1; i < A.length; i++) {
+            currentMax = Math.max(A[i], currentMax + A[i]);
+            globalMax = Math.max(globalMax, currentMax);
+        }
+        return globalMax;
+    }
+    
+    // Kadane's algorithm to find the minimum subarray sum
+    private int kadaneInverted(int[] A) {
+        int currentMin = A[0];
+        int globalMin = A[0];
+        for (int i = 1; i < A.length; i++) {
+            currentMin = Math.min(A[i], currentMin + A[i]);
+            globalMin = Math.min(globalMin, currentMin);
+        }
+        return globalMin;
+    }
+}
