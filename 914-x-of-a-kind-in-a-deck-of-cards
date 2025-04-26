@@ -1,0 +1,33 @@
+import java.util.*;
+
+class Solution {
+    public boolean hasGroupsSizeX(int[] deck) {
+        // Step 1: Count the frequency of each card
+        Map<Integer, Integer> countMap = new HashMap<>();
+        for (int card : deck) {
+            countMap.put(card, countMap.getOrDefault(card, 0) + 1);
+        }
+
+        // Step 2: Compute the GCD of all frequencies
+        int gcd = -1;
+        for (int count : countMap.values()) {
+            gcd = (gcd == -1) ? count : gcd(gcd, count);
+            if (gcd == 1) {
+                return false; // If the GCD is 1, it's not possible to form groups of size X > 1
+            }
+        }
+
+        // Step 3: Check if GCD is at least 2
+        return gcd >= 2;
+    }
+
+    // Helper function to calculate the GCD of two numbers
+    private int gcd(int a, int b) {
+        while (b != 0) {
+            int temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
+}
