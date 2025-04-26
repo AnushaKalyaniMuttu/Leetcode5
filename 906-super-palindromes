@@ -1,0 +1,36 @@
+class Solution {
+    public int superpalindromesInRange(String left, String right) {
+        long L = Long.parseLong(left), R = Long.parseLong(right);
+        int count = 0;
+
+        // Generate palindromic roots and check if their square is also a palindrome
+        for (int k = 1; k < 100000; k++) {
+            String s = Integer.toString(k);
+            StringBuilder sb = new StringBuilder(s).reverse();
+
+            // Odd length palindrome
+            String odd = s + sb.substring(1);
+            long num = Long.parseLong(odd);
+            long square = num * num;
+            if (square > R) break;
+            if (square >= L && isPalindrome(Long.toString(square))) count++;
+
+            // Even length palindrome
+            String even = s + sb.toString();
+            num = Long.parseLong(even);
+            square = num * num;
+            if (square > R) continue;
+            if (square >= L && isPalindrome(Long.toString(square))) count++;
+        }
+
+        return count;
+    }
+
+    private boolean isPalindrome(String s) {
+        int i = 0, j = s.length() - 1;
+        while (i < j) {
+            if (s.charAt(i++) != s.charAt(j--)) return false;
+        }
+        return true;
+    }
+}
