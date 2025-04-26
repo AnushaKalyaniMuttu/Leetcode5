@@ -1,0 +1,42 @@
+import java.util.*;
+
+class Solution {
+    public List<String> wordSubsets(String[] words1, String[] words2) {
+        List<String> result = new ArrayList<>();
+        
+        // Step 1: Compute the maximum character frequency requirement for words2
+        int[] maxFreq = new int[26]; // This will store the max frequency of each letter across all words in words2
+        for (String word : words2) {
+            int[] freq = new int[26];
+            for (char c : word.toCharArray()) {
+                freq[c - 'a']++;
+            }
+            for (int i = 0; i < 26; i++) {
+                maxFreq[i] = Math.max(maxFreq[i], freq[i]);
+            }
+        }
+
+        // Step 2: Check each word in words1 to see if it satisfies the conditions
+        for (String word : words1) {
+            int[] wordFreq = new int[26];
+            for (char c : word.toCharArray()) {
+                wordFreq[c - 'a']++;
+            }
+            
+            // Check if the current word satisfies the frequency requirements
+            boolean isValid = true;
+            for (int i = 0; i < 26; i++) {
+                if (wordFreq[i] < maxFreq[i]) {
+                    isValid = false;
+                    break;
+                }
+            }
+            
+            if (isValid) {
+                result.add(word);
+            }
+        }
+
+        return result;
+    }
+}
