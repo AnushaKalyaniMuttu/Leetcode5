@@ -1,0 +1,28 @@
+import java.util.HashSet;
+import java.util.Set;
+
+class Solution {
+    public int numUniqueEmails(String[] emails) {
+        Set<String> uniqueEmails = new HashSet<>();
+        
+        for (String email : emails) {
+            // Split the email into local and domain parts
+            String[] parts = email.split("@");
+            String local = parts[0];
+            String domain = parts[1];
+            
+            // Process the local name: remove everything after '+' and remove '.'
+            local = local.split("\\+")[0]; // Take the part before '+'
+            local = local.replace(".", ""); // Remove all '.'
+            
+            // Combine the processed local part with the domain part
+            String newEmail = local + "@" + domain;
+            
+            // Add the processed email to the set
+            uniqueEmails.add(newEmail);
+        }
+        
+        // The set will only contain unique emails, so return its size
+        return uniqueEmails.size();
+    }
+}
