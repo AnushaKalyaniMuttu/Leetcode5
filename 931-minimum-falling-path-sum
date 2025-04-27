@@ -1,0 +1,26 @@
+class Solution {
+    public int minFallingPathSum(int[][] matrix) {
+        int n = matrix.length;
+        
+        // Start from the second to last row and work upwards
+        for (int i = n - 2; i >= 0; i--) {
+            for (int j = 0; j < n; j++) {
+                // Get the minimum of the three possible directions
+                int minBelow = matrix[i + 1][j];  // Directly below
+                if (j > 0) minBelow = Math.min(minBelow, matrix[i + 1][j - 1]);  // Diagonally left
+                if (j < n - 1) minBelow = Math.min(minBelow, matrix[i + 1][j + 1]);  // Diagonally right
+                
+                // Update the current cell with the minimum falling path sum
+                matrix[i][j] += minBelow;
+            }
+        }
+        
+        // The result will be the minimum value in the first row
+        int result = Integer.MAX_VALUE;
+        for (int j = 0; j < n; j++) {
+            result = Math.min(result, matrix[0][j]);
+        }
+        
+        return result;
+    }
+}
