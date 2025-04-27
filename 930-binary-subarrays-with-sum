@@ -1,0 +1,27 @@
+import java.util.HashMap;
+
+class Solution {
+    public int numSubarraysWithSum(int[] nums, int goal) {
+        // HashMap to store the frequency of prefix sums
+        HashMap<Integer, Integer> prefixCount = new HashMap<>();
+        prefixCount.put(0, 1);  // Base case: there's one way to have a sum of 0 (empty subarray)
+        
+        int prefixSum = 0;  // Current prefix sum
+        int result = 0;  // Result to store the count of subarrays
+        
+        for (int num : nums) {
+            // Update the current prefix sum
+            prefixSum += num;
+            
+            // If prefixSum - goal is in the map, it means we found subarrays that sum to goal
+            if (prefixCount.containsKey(prefixSum - goal)) {
+                result += prefixCount.get(prefixSum - goal);
+            }
+            
+            // Update the map with the current prefix sum
+            prefixCount.put(prefixSum, prefixCount.getOrDefault(prefixSum, 0) + 1);
+        }
+        
+        return result;
+    }
+}
