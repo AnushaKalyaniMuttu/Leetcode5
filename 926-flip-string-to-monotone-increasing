@@ -1,0 +1,14 @@
+class Solution {
+    public int minFlipsMonoIncr(String S) {
+        int flipCount = 0, countOnes = 0;
+        for (char c : S.toCharArray()) {
+            if (c == '0') {
+                flipCount++;
+            } else {
+                countOnes++;
+            }
+            flipCount = Math.min(flipCount, countOnes);
+        }
+        return flipCount;
+    }
+}
