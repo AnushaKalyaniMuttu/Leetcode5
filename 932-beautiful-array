@@ -1,0 +1,24 @@
+import java.util.ArrayList;
+import java.util.List;
+
+public class Solution {
+    public int[] beautifulArray(int n) {
+        List<Integer> ans = new ArrayList<>();
+        ans.add(1);
+        while (ans.size() < n) {
+            List<Integer> t = new ArrayList<>();
+            for (int num : ans) {
+                if (num * 2 - 1 <= n) {
+                    t.add(num * 2 - 1);
+                }
+            }
+            for (int num : ans) {
+                if (num * 2 <= n) {
+                    t.add(num * 2);
+                }
+            }
+            ans = t;
+        }
+        return ans.stream().mapToInt(Integer::intValue).toArray();
+    }
+}
