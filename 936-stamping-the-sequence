@@ -1,0 +1,50 @@
+import java.util.*;
+
+public class Solution {
+    public int[] movesToStamp(String stamp, String target) {
+        char[] S = stamp.toCharArray();
+        char[] T = target.toCharArray();
+        int m = S.length, n = T.length;
+        boolean[] visited = new boolean[n];
+        List<Integer> res = new ArrayList<>();
+        int total = 0;
+
+        while (total < n) {
+            boolean doneStamp = false;
+            for (int i = 0; i <= n - m; i++) {
+                if (!visited[i] && canStamp(T, S, i)) {
+                    total += doStamp(T, m, i);
+                    visited[i] = true;
+                    res.add(i);
+                    doneStamp = true;
+                }
+            }
+            if (!doneStamp) return new int[0];
+        }
+
+        // reverse to get the actual order of stamping
+        Collections.reverse(res);
+        return res.stream().mapToInt(i -> i).toArray();
+    }
+
+    private boolean canStamp(char[] T, char[] S, int pos) {
+        int m = S.length;
+        for (int i = 0; i < m; i++) {
+            if (T[pos + i] != '?' && T[pos + i] != S[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private int doStamp(char[] T, int m, int pos) {
+        int changed = 0;
+        for (int i = 0; i < m; i++) {
+            if (T[pos + i] != '?') {
+                T[pos + i] = '?';
+                changed++;
+            }
+        }
+        return changed;
+    }
+}
