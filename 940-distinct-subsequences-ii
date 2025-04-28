@@ -1,0 +1,32 @@
+public class Solution {
+    public int distinctSubseqII(String s) {
+        final int MOD = 1_000_000_007;
+        int n = s.length();
+
+        // dp array to store the number of distinct subsequences up to index i
+        long[] dp = new long[n + 1];
+        dp[0] = 1;  // The empty subsequence (base case)
+
+        // To store the last occurrence of each character (using a map or array for a-z)
+        int[] last = new int[26]; // For 'a' to 'z'
+
+        for (int i = 1; i <= n; i++) {
+            char c = s.charAt(i - 1);
+            int index = c - 'a';  // Convert character to an index (0 for 'a', 1 for 'b', etc.)
+
+            // Calculate dp[i] as twice the previous value dp[i-1] (include or exclude current character)
+            dp[i] = (2 * dp[i - 1]) % MOD;
+
+            // If the character c has been seen before, subtract the subsequences that are double-counted
+            if (last[index] > 0) {
+                dp[i] = (dp[i] - dp[last[index] - 1] + MOD) % MOD;
+            }
+
+            // Update the last occurrence of the character c
+            last[index] = i;
+        }
+
+        // Subtract 1 to exclude the empty subsequence
+        return (int) ((dp[n] - 1 + MOD) % MOD);
+    }
+}
