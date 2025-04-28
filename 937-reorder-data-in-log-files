@@ -1,0 +1,39 @@
+import java.util.*;
+
+public class Solution {
+    public String[] reorderLogFiles(String[] logs) {
+        List<String> letterLogs = new ArrayList<>();
+        List<String> digitLogs = new ArrayList<>();
+        
+        // Separate letter logs and digit logs
+        for (String log : logs) {
+            if (Character.isDigit(log.charAt(log.indexOf(' ') + 1))) {
+                digitLogs.add(log);
+            } else {
+                letterLogs.add(log);
+            }
+        }
+        
+        // Sort letter logs
+        Collections.sort(letterLogs, (log1, log2) -> {
+            String content1 = log1.substring(log1.indexOf(' ') + 1);
+            String content2 = log2.substring(log2.indexOf(' ') + 1);
+            if (content1.equals(content2)) {
+                return log1.compareTo(log2);
+            }
+            return content1.compareTo(content2);
+        });
+        
+        // Combine letter logs and digit logs
+        String[] result = new String[logs.length];
+        int index = 0;
+        for (String log : letterLogs) {
+            result[index++] = log;
+        }
+        for (String log : digitLogs) {
+            result[index++] = log;
+        }
+        
+        return result;
+    }
+}
