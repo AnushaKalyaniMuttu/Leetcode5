@@ -1,0 +1,46 @@
+import java.util.*;
+
+public class Solution {
+    public int[] prisonAfterNDays(int[] cells, int N) {
+        Set<String> seen = new HashSet<>();
+        Map<String, int[]> stateMap = new HashMap<>();
+        boolean hasCycle = false;
+        int cycleLength = 0;
+
+        for (int day = 0; day < N; day++) {
+            int[] next = nextDay(cells);
+            String key = Arrays.toString(next);
+            
+            if (seen.contains(key)) {
+                hasCycle = true;
+                break;
+            }
+
+            seen.add(key);
+            stateMap.put(key, next);
+            cells = next;
+            cycleLength++;
+        }
+
+        if (hasCycle) {
+            N %= cycleLength;
+            for (String key : seen) {
+                stateMap.putIfAbsent(key, nextDay(stateMap.get(key)));
+            }
+
+            for (int i = 0; i < N; i++) {
+                cells = nextDay(cells);
+            }
+        }
+
+        return cells;
+    }
+
+    private int[] nextDay(int[] cells) {
+        int[] res = new int[8];
+        for (int i = 1; i < 7; i++) {
+            res[i] = (cells[i - 1] == cells[i + 1]) ? 1 : 0;
+        }
+        return res;
+    }
+}
