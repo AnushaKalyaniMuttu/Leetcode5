@@ -1,0 +1,29 @@
+import java.util.*;
+
+public class Solution {
+    public int tallestBillboard(int[] rods) {
+        Map<Integer, Integer> dp = new HashMap<>();
+        dp.put(0, 0); // diff -> tallest shorter side
+
+        for (int rod : rods) {
+            Map<Integer, Integer> cur = new HashMap<>(dp);
+            for (Map.Entry<Integer, Integer> entry : cur.entrySet()) {
+                int diff = entry.getKey();
+                int shorter = entry.getValue();
+
+                // Option 1: Add to one side (increase diff)
+                int newDiff1 = diff + rod;
+                int newShorter1 = shorter;
+                dp.put(newDiff1, Math.max(dp.getOrDefault(newDiff1, 0), newShorter1));
+
+                // Option 2: Add to the other side (possibly decrease diff)
+                int newDiff2 = Math.abs(diff - rod);
+                int newShorter2 = shorter + Math.min(rod, diff);
+                dp.put(newDiff2, Math.max(dp.getOrDefault(newDiff2, 0), newShorter2));
+            }
+        }
+
+        // dp.get(0) will contain the maximum equal height possible
+        return dp.getOrDefault(0, 0);
+    }
+}
