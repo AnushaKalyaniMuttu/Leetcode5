@@ -1,0 +1,24 @@
+import java.util.*;
+
+public class Solution {
+    public boolean canReorderDoubled(int[] arr) {
+        Map<Integer, Integer> count = new HashMap<>();
+        for (int x : arr)
+            count.put(x, count.getOrDefault(x, 0) + 1);
+
+        // Sort the keys by absolute value to handle negative numbers correctly
+        List<Integer> keys = new ArrayList<>(count.keySet());
+        keys.sort(Comparator.comparingInt(Math::abs));
+
+        for (int x : keys) {
+            int freq = count.get(x);
+            int doubleFreq = count.getOrDefault(2 * x, 0);
+            if (freq > doubleFreq) {
+                return false;
+            }
+            count.put(2 * x, doubleFreq - freq);
+        }
+
+        return true;
+    }
+}
