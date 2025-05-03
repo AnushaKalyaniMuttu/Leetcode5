@@ -1,0 +1,44 @@
+import java.util.*;
+
+public class Solution {
+    public double minAreaFreeRect(int[][] points) {
+        int n = points.length;
+        Map<String, List<int[][]>> map = new HashMap<>();
+        double minArea = Double.MAX_VALUE;
+
+        // Group by (midpoint, distance squared)
+        for (int i = 0; i < n; ++i) {
+            for (int j = i + 1; j < n; ++j) {
+                int x1 = points[i][0], y1 = points[i][1];
+                int x2 = points[j][0], y2 = points[j][1];
+
+                int midX = x1 + x2;
+                int midY = y1 + y2;
+                int dist2 = (x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2);
+
+                String key = midX + "," + midY + "," + dist2;
+                map.computeIfAbsent(key, k -> new ArrayList<>()).add(new int[][]{{x1, y1}, {x2, y2}});
+            }
+        }
+
+        // For each group of potential diagonals
+        for (List<int[][]> list : map.values()) {
+            for (int i = 0; i < list.size(); ++i) {
+                for (int j = i + 1; j < list.size(); ++j) {
+                    int[] p1 = list.get(i)[0];
+                    int[] p2 = list.get(i)[1];
+                    int[] p3 = list.get(j)[0];
+
+                    // Vectors: p1->p3 and p2->p3
+                    double a = Math.hypot(p1[0] - p3[0], p1[1] - p3[1]);
+                    double b = Math.hypot(p2[0] - p3[0], p2[1] - p3[1]);
+
+                    double area = a * b;
+                    minArea = Math.min(minArea, area);
+                }
+            }
+        }
+
+        return minArea == Double.MAX_VALUE ? 0.0 : minArea;
+    }
+}
