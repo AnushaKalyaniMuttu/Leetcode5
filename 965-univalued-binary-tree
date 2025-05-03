@@ -1,0 +1,15 @@
+public class Solution {
+    public boolean isUnivalTree(TreeNode root) {
+        return dfs(root, root.val);
+    }
+
+    private boolean dfs(TreeNode node, int value) {
+        if (node == null) return true;
+        
+        // Check if the current node value is equal to the passed value
+        if (node.val != value) return false;
+        
+        // Recursively check both left and right subtrees
+        return dfs(node.left, value) && dfs(node.right, value);
+    }
+}
