@@ -1,0 +1,31 @@
+import java.util.*;
+
+public class Solution {
+    public int[] numsSameConsecDiff(int n, int k) {
+        List<Integer> result = new ArrayList<>();
+        if (n == 1) {
+            for (int i = 0; i <= 9; i++) {
+                result.add(i);
+            }
+            return result.stream().mapToInt(i -> i).toArray();
+        }
+        for (int i = 1; i <= 9; i++) {
+            dfs(n - 1, k, i, result);
+        }
+        return result.stream().mapToInt(i -> i).toArray();
+    }
+
+    private void dfs(int n, int k, int current, List<Integer> result) {
+        if (n == 0) {
+            result.add(current);
+            return;
+        }
+        int lastDigit = current % 10;
+        if (lastDigit + k <= 9) {
+            dfs(n - 1, k, current * 10 + lastDigit + k, result);
+        }
+        if (k != 0 && lastDigit - k >= 0) {
+            dfs(n - 1, k, current * 10 + lastDigit - k, result);
+        }
+    }
+}
