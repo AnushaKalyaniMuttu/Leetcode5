@@ -1,0 +1,19 @@
+import java.util.Arrays;
+
+public class Solution {
+    public int largestPerimeter(int[] A) {
+        // Step 1: Sort the array in descending order
+        Arrays.sort(A);
+        
+        // Step 2: Iterate through the array from the third last element to the beginning
+        for (int i = A.length - 1; i >= 2; i--) {
+            // Step 3: Check if the three sides satisfy the triangle inequality
+            if (A[i-2] + A[i-1] > A[i]) {
+                return A[i-2] + A[i-1] + A[i]; // If valid, return the perimeter
+            }
+        }
+        
+        // Step 4: If no valid triangle can be formed, return 0
+        return 0;
+    }
+}
