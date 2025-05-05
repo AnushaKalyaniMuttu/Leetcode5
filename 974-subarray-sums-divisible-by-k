@@ -1,0 +1,22 @@
+import java.util.HashMap;
+
+public class Solution {
+    public int subarraysDivByK(int[] nums, int K) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        map.put(0, 1);  // Initialize with 0 mod K having one occurrence
+        int prefixSum = 0, count = 0;
+        
+        for (int num : nums) {
+            prefixSum += num;
+            int mod = (prefixSum % K + K) % K;  // Handle negative mod values
+            
+            // If this mod has been seen before, add the frequency to the count
+            count += map.getOrDefault(mod, 0);
+            
+            // Update the frequency of this mod value in the map
+            map.put(mod, map.getOrDefault(mod, 0) + 1);
+        }
+        
+        return count;
+    }
+}
