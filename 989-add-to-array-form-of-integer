@@ -1,0 +1,24 @@
+class Solution {
+    public List<Integer> addToArrayForm(int[] A, int K) {
+        List<Integer> result = new ArrayList<>();
+        int n = A.length;
+        int carry = K;
+        
+        // Traverse through the array A from least significant to most significant
+        for (int i = n - 1; i >= 0 || carry > 0; i--) {
+            int sum = carry + (i >= 0 ? A[i] : 0);
+            result.add(sum % 10);
+            carry = sum / 10;
+        }
+        
+        // If there is a carry left, append it to the result
+        while (carry > 0) {
+            result.add(carry % 10);
+            carry /= 10;
+        }
+
+        // The result list is in reverse order, so reverse it to get the correct order
+        Collections.reverse(result);
+        return result;
+    }
+}
