@@ -1,0 +1,35 @@
+class Solution {
+    public int[] sumEvenAfterQueries(int[] A, int[][] queries) {
+        int sum = 0;
+        
+        // Calculate the initial sum of even numbers
+        for (int num : A) {
+            if (num % 2 == 0) {
+                sum += num;
+            }
+        }
+        
+        int[] result = new int[queries.length];
+        
+        for (int i = 0; i < queries.length; i++) {
+            int val = queries[i][0];
+            int index = queries[i][1];
+            
+            // If the original value at A[index] is even, subtract it from sum
+            if (A[index] % 2 == 0) {
+                sum -= A[index];
+            }
+            
+            // Update the value at A[index] and check if the new value is even
+            A[index] += val;
+            if (A[index] % 2 == 0) {
+                sum += A[index];
+            }
+            
+            // Store the current sum of even numbers after the query
+            result[i] = sum;
+        }
+        
+        return result;
+    }
+}
