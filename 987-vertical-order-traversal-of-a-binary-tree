@@ -1,0 +1,74 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+import java.util.*;
+
+class Solution {
+    public List<List<Integer>> verticalTraversal(TreeNode root) {
+        // Map to store the vertical level and corresponding nodes
+        Map<Integer, List<int[]>> map = new TreeMap<>();
+        // Perform BFS traversal with a queue
+        Queue<Tuple> queue = new LinkedList<>();
+        queue.offer(new Tuple(root, 0, 0));  // root, horizontal distance, vertical level
+        
+        // BFS traversal
+        while (!queue.isEmpty()) {
+            Tuple current = queue.poll();
+            TreeNode node = current.node;
+            int horizontal = current.horizontal;
+            int vertical = current.vertical;
+            
+            // Insert node value and its position into the map
+            map.computeIfAbsent(horizontal, k -> new ArrayList<>()).add(new int[] { vertical, node.val });
+            
+            // Add left and right children to the queue
+            if (node.left != null) {
+                queue.offer(new Tuple(node.left, horizontal - 1, vertical + 1));
+            }
+            if (node.right != null) {
+                queue.offer(new Tuple(node.right, horizontal + 1, vertical + 1));
+            }
+        }
+        
+        // Prepare the final result
+        List<List<Integer>> result = new ArrayList<>();
+        for (Map.Entry<Integer, List<int[]>> entry : map.entrySet()) {
+            // Sort by vertical level, then by node value
+            List<int[]> sortedNodes = entry.getValue();
+            sortedNodes.sort((a, b) -> a[0] == b[0] ? a[1] - b[1] : a[0] - b[0]);
+            
+            List<Integer> verticalOrder = new ArrayList<>();
+            for (int[] node : sortedNodes) {
+                verticalOrder.add(node[1]);
+            }
+            result.add(verticalOrder);
+        }
+        
+        return result;
+    }
+    
+    // Helper class to represent a node with horizontal and vertical positions
+    private static class Tuple {
+        TreeNode node;
+        int horizontal;
+        int vertical;
+        
+        Tuple(TreeNode node, int horizontal, int vertical) {
+            this.node = node;
+            this.horizontal = horizontal;
+            this.vertical = vertical;
+        }
+    }
+}
