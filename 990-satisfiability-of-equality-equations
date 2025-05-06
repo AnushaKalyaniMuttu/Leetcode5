@@ -1,0 +1,50 @@
+class Solution {
+    public boolean equationsPossible(String[] equations) {
+        int[] parent = new int[26];
+        
+        // Initialize each variable to be its own parent (self root)
+        for (int i = 0; i < 26; i++) {
+            parent[i] = i;
+        }
+        
+        // First pass: process the '==' equations (union the sets)
+        for (String equation : equations) {
+            if (equation.charAt(1) == '=') {
+                int x = equation.charAt(0) - 'a';
+                int y = equation.charAt(3) - 'a';
+                union(parent, x, y);
+            }
+        }
+        
+        // Second pass: check for the '!=' equations (check if the sets are not equal)
+        for (String equation : equations) {
+            if (equation.charAt(1) == '!') {
+                int x = equation.charAt(0) - 'a';
+                int y = equation.charAt(3) - 'a';
+                if (find(parent, x) == find(parent, y)) {
+                    return false; // They are in the same set, so the equation is not satisfiable
+                }
+            }
+        }
+        
+        return true; // All equations are satisfiable
+    }
+    
+    // Find with path compression
+    private int find(int[] parent, int x) {
+        if (parent[x] != x) {
+            parent[x] = find(parent, parent[x]);
+        }
+        return parent[x];
+    }
+    
+    // Union by rank (or size) - merging two sets
+    private void union(int[] parent, int x, int y) {
+        int rootX = find(parent, x);
+        int rootY = find(parent, y);
+        
+        if (rootX != rootY) {
+            parent[rootX] = rootY;  // Union: make rootY the parent of rootX
+        }
+    }
+}
