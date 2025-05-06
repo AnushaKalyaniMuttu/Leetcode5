@@ -1,0 +1,50 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public String smallestFromLeaf(TreeNode root) {
+        return dfs(root, "");
+    }
+
+    private String dfs(TreeNode node, String path) {
+        // Base case: If the node is null, return an empty string
+        if (node == null) {
+            return "";
+        }
+
+        // Add the current node's character to the path
+        path = (char) ('a' + node.val) + path;
+
+        // If it's a leaf node, return the current path
+        if (node.left == null && node.right == null) {
+            return path;
+        }
+
+        // Otherwise, recursively find the smallest string from the left and right subtrees
+        String left = dfs(node.left, path);
+        String right = dfs(node.right, path);
+
+        // If both left and right are empty, return the non-empty one
+        if (left.isEmpty()) {
+            return right;
+        }
+        if (right.isEmpty()) {
+            return left;
+        }
+
+        // Otherwise, return the lexicographically smaller string
+        return left.compareTo(right) < 0 ? left : right;
+    }
+}
