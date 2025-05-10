@@ -1,0 +1,62 @@
+import java.util.*;
+
+class Solution {
+    private int n;
+
+    public int[] gridIllumination(int n, int[][] lamps, int[][] queries) {
+        this.n = n;
+        Set<Long> lampSet = new HashSet<>();
+        Map<Integer, Integer> row = new HashMap<>();
+        Map<Integer, Integer> col = new HashMap<>();
+        Map<Integer, Integer> diag1 = new HashMap<>();
+        Map<Integer, Integer> diag2 = new HashMap<>();
+
+        // Initialize the lampSet and update maps
+        for (int[] lamp : lamps) {
+            int i = lamp[0], j = lamp[1];
+            long key = encode(i, j);
+            if (lampSet.add(key)) {
+                row.put(i, row.getOrDefault(i, 0) + 1);
+                col.put(j, col.getOrDefault(j, 0) + 1);
+                diag1.put(i - j, diag1.getOrDefault(i - j, 0) + 1);
+                diag2.put(i + j, diag2.getOrDefault(i + j, 0) + 1);
+            }
+        }
+
+        int[] ans = new int[queries.length];
+        for (int k = 0; k < queries.length; ++k) {
+            int i = queries[k][0], j = queries[k][1];
+
+            // Check if the cell is illuminated
+            if (row.getOrDefault(i, 0) > 0 ||
+                col.getOrDefault(j, 0) > 0 ||
+                diag1.getOrDefault(i - j, 0) > 0 ||
+                diag2.getOrDefault(i + j, 0) > 0) {
+                ans[k] = 1;
+            } else {
+                ans[k] = 0;
+            }
+
+            // Turn off the lamp at the query cell and adjacent cells
+            for (int x = i - 1; x <= i + 1; ++x) {
+                for (int y = j - 1; y <= j + 1; ++y) {
+                    if (x < 0 || y < 0 || x >= n || y >= n) continue;
+
+                    long pos = encode(x, y);
+                    if (lampSet.remove(pos)) {
+                        row.put(x, row.getOrDefault(x, 0) - 1);
+                        col.put(y, col.getOrDefault(y, 0) - 1);
+                        diag1.put(x - y, diag1.getOrDefault(x - y, 0) - 1);
+                        diag2.put(x + y, diag2.getOrDefault(x + y, 0) - 1);
+                    }
+                }
+            }
+        }
+
+        return ans;
+    }
+
+    private long encode(int i, int j) {
+        return (long) i * n + j;
+    }
+}
