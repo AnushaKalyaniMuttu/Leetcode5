@@ -1,0 +1,26 @@
+public class Solution {
+    public int longestOnes(int[] nums, int k) {
+        int left = 0, right = 0, maxLength = 0, zeroCount = 0;
+
+        while (right < nums.length) {
+            // If the current element is 0, increment the zero count
+            if (nums[right] == 0) {
+                zeroCount++;
+            }
+
+            // If the zero count exceeds k, shrink the window from the left
+            while (zeroCount > k) {
+                if (nums[left] == 0) {
+                    zeroCount--;
+                }
+                left++;
+            }
+
+            // Update the maximum length of the window
+            maxLength = Math.max(maxLength, right - left + 1);
+            right++;
+        }
+
+        return maxLength;
+    }
+}
