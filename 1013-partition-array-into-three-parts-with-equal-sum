@@ -1,0 +1,28 @@
+class Solution {
+    public boolean canThreePartsEqualSum(int[] arr) {
+        int totalSum = 0;
+        for (int num : arr) {
+            totalSum += num;
+        }
+
+        // If total sum is not divisible by 3, return false
+        if (totalSum % 3 != 0) {
+            return false;
+        }
+
+        int target = totalSum / 3;
+        int currentSum = 0;
+        int partitions = 0;
+
+        for (int num : arr) {
+            currentSum += num;
+            if (currentSum == target) {
+                partitions++;
+                currentSum = 0;
+            }
+        }
+
+        // We need exactly 3 partitions
+        return partitions >= 3;
+    }
+}
