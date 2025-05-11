@@ -1,0 +1,45 @@
+class Solution {
+    public int numDupDigitsAtMostN(int n) {
+        return n - countUniqueDigits(n);
+    }
+
+    private int countUniqueDigits(int n) {
+        List<Integer> digits = new ArrayList<>();
+        int x = n + 1;
+        while (x > 0) {
+            digits.add(0, x % 10);
+            x /= 10;
+        }
+
+        int res = 0;
+        int len = digits.size();
+
+        // count numbers with length less than n
+        for (int i = 1; i < len; i++) {
+            res += 9 * perm(9, i - 1);
+        }
+
+        // count numbers with the same length
+        Set<Integer> seen = new HashSet<>();
+        for (int i = 0; i < len; i++) {
+            int d = digits.get(i);
+            for (int j = i == 0 ? 1 : 0; j < d; j++) {
+                if (!seen.contains(j)) {
+                    res += perm(9 - i, len - i - 1);
+                }
+            }
+            if (seen.contains(d)) break;
+            seen.add(d);
+        }
+
+        return res;
+    }
+
+    private int perm(int m, int n) {
+        int result = 1;
+        for (int i = 0; i < n; i++) {
+            result *= (m - i);
+        }
+        return result;
+    }
+}
