@@ -1,0 +1,26 @@
+public class Solution {
+    public int removeBoxes(int[] boxes) {
+        int n = boxes.length;
+        int[][][] dp = new int[n][n][n];
+
+        return dfs(boxes, 0, n - 1, 0, dp);
+    }
+
+    private int dfs(int[] boxes, int left, int right, int count, int[][][] dp) {
+        if (left > right) return 0;
+        if (dp[left][right][count] > 0) return dp[left][right][count];
+
+        // Count the number of boxes we can remove for the current range
+        int result = (count + 1) * (count + 1) + dfs(boxes, left + 1, right, 0, dp);
+
+        // Try to merge boxes with the same value
+        for (int i = left + 1; i <= right; i++) {
+            if (boxes[i] == boxes[left]) {
+                result = Math.max(result, dfs(boxes, left + 1, i - 1, 0, dp) + dfs(boxes, i, right, count + 1, dp));
+            }
+        }
+
+        dp[left][right][count] = result;
+        return result;
+    }
+}
