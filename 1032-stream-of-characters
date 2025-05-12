@@ -1,0 +1,48 @@
+class StreamChecker {
+    private TrieNode root;
+    private StringBuilder stream;
+
+    public StreamChecker(String[] words) {
+        root = new TrieNode();
+        stream = new StringBuilder();
+
+        for (String word : words) {
+            insert(word);
+        }
+    }
+
+    private void insert(String word) {
+        TrieNode node = root;
+        // Insert the word in reverse
+        for (int i = word.length() - 1; i >= 0; i--) {
+            char ch = word.charAt(i);
+            node = node.children.computeIfAbsent(ch, k -> new TrieNode());
+        }
+        node.isEnd = true;
+    }
+
+    public boolean query(char letter) {
+        stream.append(letter);
+        TrieNode node = root;
+        // Check characters in reverse stream
+        for (int i = stream.length() - 1; i >= 0; i--) {
+            char ch = stream.charAt(i);
+            node = node.children.get(ch);
+            if (node == null) return false;
+            if (node.isEnd) return true;
+        }
+        return false;
+    }
+
+    private static class TrieNode {
+        Map<Character, TrieNode> children = new HashMap<>();
+        boolean isEnd = false;
+    }
+}
+
+
+/**
+ * Your StreamChecker object will be instantiated and called as such:
+ * StreamChecker obj = new StreamChecker(words);
+ * boolean param_1 = obj.query(letter);
+ */
