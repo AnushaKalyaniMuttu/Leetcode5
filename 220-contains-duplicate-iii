@@ -1,0 +1,49 @@
+import java.util.*;
+
+public class Solution {
+    public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
+        if (k <= 0 || t < 0) return false;
+
+        // Create a map to hold bucket values
+        Map<Long, Long> bucketMap = new HashMap<>();
+        
+        // Bucket size: numbers are grouped in buckets of size (t + 1)
+        long bucketSize = (long) t + 1;  // Ensure numbers in a bucket are at most t apart
+
+        for (int i = 0; i < nums.length; i++) {
+            long num = (long) nums[i];
+
+            // Calculate the bucket index for the current number, ensuring correct handling of negative numbers
+            long bucketIndex = (num < 0) ? (num / bucketSize) - 1 : num / bucketSize;
+
+            // Check the current bucket (bucketIndex) for numbers within the valid range
+            if (bucketMap.containsKey(bucketIndex)) {
+                return true;
+            }
+
+            // Check the previous bucket (bucketIndex - 1) for numbers within the valid range
+            if (bucketMap.containsKey(bucketIndex - 1) && num - bucketMap.get(bucketIndex - 1) < bucketSize) {
+                return true;
+            }
+
+            // Check the next bucket (bucketIndex + 1) for numbers within the valid range
+            if (bucketMap.containsKey(bucketIndex + 1) && bucketMap.get(bucketIndex + 1) - num < bucketSize) {
+                return true;
+            }
+
+            // Add the current number to the current bucket
+            bucketMap.put(bucketIndex, num);
+
+            // Maintain the window size by removing the element out of range `k`
+            if (i >= k) {
+                long removeIndex = (long) nums[i - k] / bucketSize;
+                if (nums[i - k] < 0) {
+                    removeIndex -= 1;
+                }
+                bucketMap.remove(removeIndex);
+            }
+        }
+
+        return false;
+    }
+}
