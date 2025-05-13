@@ -1,0 +1,50 @@
+import java.util.HashSet;
+
+public class Solution {
+    private static final int BASE = 131;
+    private long[] powers;
+    private long[] hashes;
+
+    public String longestDupSubstring(String s) {
+        int n = s.length();
+        powers = new long[n + 1];
+        hashes = new long[n + 1];
+        powers[0] = 1;
+
+        // Precompute powers and hashes
+        for (int i = 0; i < n; i++) {
+            powers[i + 1] = powers[i] * BASE;
+            hashes[i + 1] = hashes[i] * BASE + s.charAt(i);
+        }
+
+        String result = "";
+        int left = 1, right = n - 1;
+
+        // Binary search on the length of the duplicate substring
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            String duplicate = findDuplicate(s, mid);
+            if (!duplicate.isEmpty()) {
+                result = duplicate;
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+
+        return result;
+    }
+
+    private String findDuplicate(String s, int length) {
+        int n = s.length();
+        HashSet<Long> seen = new HashSet<>();
+        for (int i = 0; i + length <= n; i++) {
+            long hash = hashes[i + length] - hashes[i] * powers[length];
+            if (seen.contains(hash)) {
+                return s.substring(i, i + length);
+            }
+            seen.add(hash);
+        }
+        return "";
+    }
+}
