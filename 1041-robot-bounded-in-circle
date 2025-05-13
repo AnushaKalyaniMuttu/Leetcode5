@@ -1,0 +1,26 @@
+class Solution {
+    public boolean isRobotBounded(String instructions) {
+        // Initial position (0, 0) and facing north (direction = 0)
+        int x = 0, y = 0, direction = 0;
+
+        // Process each instruction
+        for (char c : instructions.toCharArray()) {
+            if (c == 'G') {
+                // Move forward in the current direction
+                if (direction == 0) y++;      // North
+                else if (direction == 1) x++; // East
+                else if (direction == 2) y--; // South
+                else if (direction == 3) x--; // West
+            } else if (c == 'L') {
+                // Turn left: counterclockwise (90 degrees)
+                direction = (direction + 3) % 4;
+            } else if (c == 'R') {
+                // Turn right: clockwise (90 degrees)
+                direction = (direction + 1) % 4;
+            }
+        }
+
+        // Check if the robot is bounded
+        return (x == 0 && y == 0) || direction != 0;
+    }
+}
