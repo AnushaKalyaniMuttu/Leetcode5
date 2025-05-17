@@ -1,0 +1,23 @@
+class Solution {
+    public int countPrefixSuffixPairs(String[] words) {
+        int count = 0;
+        int n = words.length;
+        
+        // Iterate through each word in the array
+        for (int i = 0; i < n; i++) {
+            String prefixSuffix = words[i];
+            
+            // Compare with every subsequent word in the array
+            for (int j = i + 1; j < n; j++) {
+                String candidate = words[j];
+                
+                // Check if the current word is both a prefix and a suffix of the candidate
+                if (candidate.startsWith(prefixSuffix) && candidate.endsWith(prefixSuffix)) {
+                    count++;
+                }
+            }
+        }
+        
+        return count;
+    }
+}
