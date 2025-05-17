@@ -1,0 +1,62 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+import java.util.*;
+
+public class Solution {
+    public int minimumOperations(TreeNode root) {
+        if (root == null) return 0;
+
+        int totalOps = 0;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+
+        while (!queue.isEmpty()) {
+            int levelSize = queue.size();
+            List<Integer> values = new ArrayList<>();
+            Map<Integer, Integer> indexMap = new HashMap<>();
+
+            // Collect values and their original indices
+            for (int i = 0; i < levelSize; i++) {
+                TreeNode node = queue.poll();
+                values.add(node.val);
+                indexMap.put(node.val, i);
+                if (node.left != null) queue.offer(node.left);
+                if (node.right != null) queue.offer(node.right);
+            }
+
+            // Sort values to determine the target positions
+            List<Integer> sortedValues = new ArrayList<>(values);
+            Collections.sort(sortedValues);
+
+            // Count minimum swaps to sort the values
+            boolean[] visited = new boolean[levelSize];
+            for (int i = 0; i < levelSize; i++) {
+                if (visited[i] || values.get(i).equals(sortedValues.get(i))) continue;
+
+                int cycleSize = 0;
+                int j = i;
+                while (!visited[j]) {
+                    visited[j] = true;
+                    j = indexMap.get(sortedValues.get(j));
+                    cycleSize++;
+                }
+                if (cycleSize > 1) totalOps += cycleSize - 1;
+            }
+        }
+
+        return totalOps;
+    }
+}
