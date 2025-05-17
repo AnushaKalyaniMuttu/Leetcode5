@@ -1,0 +1,39 @@
+class Solution {
+    public String shiftingLetters(String s, int[][] shifts) {
+        int n = s.length();
+        int[] diff = new int[n + 1]; // difference array
+
+        // Apply each shift as a range update
+        for (int[] shift : shifts) {
+            int start = shift[0];
+            int end = shift[1];
+            int dir = shift[2];
+
+            if (dir == 1) { // forward
+                diff[start] += 1;
+                diff[end + 1] -= 1;
+            } else { // backward
+                diff[start] -= 1;
+                diff[end + 1] += 1;
+            }
+        }
+
+        // Prefix sum to get net shift at each position
+        int[] shiftValue = new int[n];
+        int sum = 0;
+        for (int i = 0; i < n; i++) {
+            sum += diff[i];
+            shiftValue[i] = sum;
+        }
+
+        // Apply shift to each character
+        char[] result = s.toCharArray();
+        for (int i = 0; i < n; i++) {
+            int shift = ((result[i] - 'a') + shiftValue[i]) % 26;
+            if (shift < 0) shift += 26; // ensure non-negative
+            result[i] = (char) ('a' + shift);
+        }
+
+        return new String(result);
+    }
+}
