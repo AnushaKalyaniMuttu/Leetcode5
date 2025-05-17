@@ -1,0 +1,28 @@
+class Solution {
+    public boolean canConstruct(String s, int k) {
+        // If the length of s is less than k, it's impossible to create k palindromes
+        if (s.length() < k) {
+            return false;
+        }
+
+        int[] freq = new int[26];
+        
+        // Count the frequency of each character in the string
+        for (char c : s.toCharArray()) {
+            freq[c - 'a']++;
+        }
+
+        // Count the number of characters with odd frequencies
+        int oddCount = 0;
+        for (int count : freq) {
+            if (count % 2 != 0) {
+                oddCount++;
+            }
+        }
+
+        // To construct k palindromes:
+        // - We need at least `oddCount` odd characters.
+        // - Each palindrome can have at most one odd character in its center.
+        return oddCount <= k;
+    }
+}
