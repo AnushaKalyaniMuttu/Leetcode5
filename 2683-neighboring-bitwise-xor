@@ -1,0 +1,13 @@
+import java.util.Arrays;
+
+class Solution {
+    public boolean doesValidArrayExist(int[] derived) {
+        // Compute the XOR of all elements in the derived array
+        int xorSum = 0;
+        for (int num : derived) {
+            xorSum ^= num;
+        }
+        // A valid original array exists if and only if the XOR sum is 0
+        return xorSum == 0;
+    }
+}
