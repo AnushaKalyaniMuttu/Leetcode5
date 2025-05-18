@@ -1,0 +1,47 @@
+import java.util.*;
+
+public class Solution {
+    public int[][] highestPeak(int[][] isWater) {
+        int m = isWater.length;
+        int n = isWater[0].length;
+        
+        int[][] result = new int[m][n];
+        Queue<int[]> queue = new LinkedList<>();
+        
+        // Initialize the result grid with -1 and add all water cells to the queue
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (isWater[i][j] == 1) {
+                    result[i][j] = 0;  // Water cells are the starting points (elevation 0)
+                    queue.offer(new int[]{i, j});
+                } else {
+                    result[i][j] = -1; // Non-water cells will be filled later
+                }
+            }
+        }
+        
+        // Direction vectors for moving up, down, left, right
+        int[] dirs = {-1, 0, 1, 0, -1};
+        
+        // BFS to propagate the highest peaks
+        while (!queue.isEmpty()) {
+            int[] cell = queue.poll();
+            int x = cell[0];
+            int y = cell[1];
+            
+            // Check all 4 possible neighbors
+            for (int i = 0; i < 4; i++) {
+                int newX = x + dirs[i];
+                int newY = y + dirs[i + 1];
+                
+                // If within bounds and the cell has not been visited
+                if (newX >= 0 && newX < m && newY >= 0 && newY < n && result[newX][newY] == -1) {
+                    result[newX][newY] = result[x][y] + 1; // Update with the new height
+                    queue.offer(new int[]{newX, newY});
+                }
+            }
+        }
+        
+        return result;
+    }
+}
