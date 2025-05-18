@@ -1,0 +1,37 @@
+import java.util.*;
+
+public class Solution {
+    public int minCost(int[][] grid) {
+        int m = grid.length, n = grid[0].length;
+        boolean[][] visited = new boolean[m][n];
+        Deque<int[]> queue = new ArrayDeque<>();
+        queue.offer(new int[] {0, 0, 0}); // {row, col, cost}
+        int[][] directions = {{0, 0}, {0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+        
+        while (!queue.isEmpty()) {
+            int[] current = queue.poll();
+            int i = current[0], j = current[1], cost = current[2];
+            
+            if (i == m - 1 && j == n - 1) {
+                return cost;
+            }
+            
+            if (visited[i][j]) {
+                continue;
+            }
+            visited[i][j] = true;
+            
+            for (int k = 1; k <= 4; ++k) {
+                int newX = i + directions[k][0], newY = j + directions[k][1];
+                if (newX >= 0 && newX < m && newY >= 0 && newY < n) {
+                    if (grid[i][j] == k) {
+                        queue.offerFirst(new int[] {newX, newY, cost});
+                    } else {
+                        queue.offer(new int[] {newX, newY, cost + 1});
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+}
