@@ -1,0 +1,35 @@
+import java.util.HashMap;
+import java.util.Map;
+
+public class Solution {
+    public int firstCompleteIndex(int[] arr, int[][] mat) {
+        int m = mat.length, n = mat[0].length;
+        Map<Integer, int[]> positionMap = new HashMap<>();
+        int[] rowCount = new int[m];
+        int[] colCount = new int[n];
+
+        // Map each number in mat to its (row, col) position
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                positionMap.put(mat[i][j], new int[]{i, j});
+            }
+        }
+
+        // Process each number in arr
+        for (int i = 0; i < arr.length; i++) {
+            int[] pos = positionMap.get(arr[i]);
+            int row = pos[0], col = pos[1];
+
+            // Increment the painted cell count for the row and column
+            rowCount[row]++;
+            colCount[col]++;
+
+            // Check if the current row or column is fully painted
+            if (rowCount[row] == n || colCount[col] == m) {
+                return i;
+            }
+        }
+
+        return -1; // Return -1 if no row or column is fully painted
+    }
+}
