@@ -1,0 +1,21 @@
+import java.util.Arrays;
+
+class Solution {
+    public int lastStoneWeightII(int[] stones) {
+        int totalSum = Arrays.stream(stones).sum();
+        boolean[] dp = new boolean[totalSum + 1];
+        dp[0] = true;
+        int s = 0;
+
+        for (int stone : stones) {
+            for (int w = totalSum; w >= stone; --w) {
+                if (dp[w - stone]) {
+                    dp[w] = true;
+                    s = Math.max(s, w);
+                }
+            }
+        }
+
+        return totalSum - 2 * s;
+    }
+}
