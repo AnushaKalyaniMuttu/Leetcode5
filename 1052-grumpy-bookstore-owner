@@ -1,0 +1,31 @@
+public class Solution {
+    public int maxSatisfied(int[] customers, int[] grumpy, int minutes) {
+        int n = customers.length;
+        int totalSatisfied = 0;
+        int currentGrumpySatisfied = 0;
+        int maxAdditionalSatisfied = 0;
+
+        // Calculate initial satisfaction and the grumpy satisfaction for the first 'minutes' minutes
+        for (int i = 0; i < n; i++) {
+            if (grumpy[i] == 0) {
+                totalSatisfied += customers[i];
+            } else {
+                currentGrumpySatisfied += customers[i];
+            }
+
+            // Maintain the sliding window of size 'minutes'
+            if (i >= minutes) {
+                if (grumpy[i - minutes] == 1) {
+                    currentGrumpySatisfied -= customers[i - minutes];
+                }
+            }
+
+            // Update the maximum additional satisfaction
+            if (i >= minutes - 1) {
+                maxAdditionalSatisfied = Math.max(maxAdditionalSatisfied, currentGrumpySatisfied);
+            }
+        }
+
+        return totalSatisfied + maxAdditionalSatisfied;
+    }
+}
