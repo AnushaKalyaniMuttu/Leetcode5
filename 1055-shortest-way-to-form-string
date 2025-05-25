@@ -1,0 +1,26 @@
+public class Solution {
+    public int shortestWay(String source, String target) {
+        int count = 1;  // number of subsequences needed
+        int i = 0;      // pointer for target
+
+        while (i < target.length()) {
+            int j = 0;  // pointer for source
+            int prev = i;
+
+            // try to match as many characters from target starting at i using source
+            while (i < target.length() && j < source.length()) {
+                if (target.charAt(i) == source.charAt(j)) {
+                    i++;
+                }
+                j++;
+            }
+
+            // if no progress was made, return -1 (impossible to form target)
+            if (prev == i) return -1;
+
+            count++;
+        }
+
+        return count - 1;  // subtract 1 because count was incremented once extra at the end
+    }
+}
