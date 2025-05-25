@@ -1,0 +1,31 @@
+import java.util.*;
+
+public class Solution {
+    public int[] rearrangeBarcodes(int[] barcodes) {
+        Map<Integer, Integer> freqMap = new HashMap<>();
+        for (int b : barcodes) {
+            freqMap.put(b, freqMap.getOrDefault(b, 0) + 1);
+        }
+
+        // Max-heap sorted by frequency
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> b[1] - a[1]);
+        for (Map.Entry<Integer, Integer> entry : freqMap.entrySet()) {
+            pq.offer(new int[]{entry.getKey(), entry.getValue()});
+        }
+
+        int[] res = new int[barcodes.length];
+        int i = 0;
+
+        while (!pq.isEmpty()) {
+            int[] curr = pq.poll();
+            int val = curr[0], freq = curr[1];
+            for (int j = 0; j < freq; j++) {
+                if (i >= barcodes.length) i = 1; // Once even indices filled, start from odd
+                res[i] = val;
+                i += 2;
+            }
+        }
+
+        return res;
+    }
+}
