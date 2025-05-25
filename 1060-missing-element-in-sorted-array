@@ -1,0 +1,29 @@
+public class Solution {
+    public int missingElement(int[] nums, int k) {
+        int n = nums.length;
+        
+        // If kth missing is beyond the last element
+        int missingCount = nums[n - 1] - nums[0] + 1 - n;
+        if (k > missingCount) {
+            return nums[n - 1] + (k - missingCount);
+        }
+        
+        int left = 0, right = n - 1;
+        
+        // Binary search to find the smallest index such that
+        // number of missing elements until nums[mid] >= k
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            int missingUntilMid = nums[mid] - nums[0] - (mid);
+            if (missingUntilMid < k) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        
+        // missingUntilLeft-1 < k <= missingUntilLeft
+        int missingUntilLeftMinusOne = nums[left - 1] - nums[0] - (left - 1);
+        return nums[left - 1] + (k - missingUntilLeftMinusOne);
+    }
+}
