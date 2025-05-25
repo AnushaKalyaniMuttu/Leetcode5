@@ -1,0 +1,38 @@
+import java.util.*;
+
+public class Solution {
+    enum State { UNVISITED, VISITING, VISITED }
+
+    public boolean leadsToDestination(int n, int[][] edges, int source, int destination) {
+        List<List<Integer>> graph = new ArrayList<>();
+        for (int i = 0; i < n; i++) graph.add(new ArrayList<>());
+
+        for (int[] edge : edges) {
+            graph.get(edge[0]).add(edge[1]);
+        }
+
+        State[] states = new State[n];
+        Arrays.fill(states, State.UNVISITED);
+
+        return dfs(source, destination, graph, states);
+    }
+
+    private boolean dfs(int node, int destination, List<List<Integer>> graph, State[] states) {
+        if (states[node] == State.VISITING) return false; // cycle detected
+        if (states[node] == State.VISITED) return true;
+
+        // If no outgoing edges, must be destination
+        if (graph.get(node).isEmpty()) {
+            return node == destination;
+        }
+
+        states[node] = State.VISITING;
+
+        for (int nei : graph.get(node)) {
+            if (!dfs(nei, destination, graph, states)) return false;
+        }
+
+        states[node] = State.VISITED;
+        return true;
+    }
+}
