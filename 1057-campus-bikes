@@ -1,0 +1,48 @@
+import java.util.*;
+
+public class Solution {
+    public int[] assignBikes(int[][] workers, int[][] bikes) {
+        int n = workers.length;
+        int m = bikes.length;
+        
+        // Map distance -> list of pairs (workerIndex, bikeIndex)
+        TreeMap<Integer, List<int[]>> distanceMap = new TreeMap<>();
+        
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                int dist = Math.abs(workers[i][0] - bikes[j][0]) + Math.abs(workers[i][1] - bikes[j][1]);
+                distanceMap.computeIfAbsent(dist, k -> new ArrayList<>()).add(new int[]{i, j});
+            }
+        }
+        
+        int[] result = new int[n];
+        Arrays.fill(result, -1);
+        boolean[] bikeUsed = new boolean[m];
+        int assignedCount = 0;
+        
+        // Iterate distances in ascending order
+        for (int dist : distanceMap.keySet()) {
+            List<int[]> pairs = distanceMap.get(dist);
+            
+            // Sort pairs by worker index, then bike index
+            pairs.sort((a, b) -> {
+                if (a[0] != b[0]) return a[0] - b[0];
+                return a[1] - b[1];
+            });
+            
+            for (int[] pair : pairs) {
+                int worker = pair[0], bike = pair[1];
+                
+                if (result[worker] == -1 && !bikeUsed[bike]) {
+                    result[worker] = bike;
+                    bikeUsed[bike] = true;
+                    assignedCount++;
+                    if (assignedCount == n) break;
+                }
+            }
+            if (assignedCount == n) break;
+        }
+        
+        return result;
+    }
+}
