@@ -1,0 +1,44 @@
+import java.util.*;
+
+public class Solution {
+    public String minimizeError(String[] prices, int target) {
+        int n = prices.length;
+        double sumFloor = 0;
+        int countCeilNeeded = 0;
+        double[] diffs = new double[n]; // difference between ceil and actual
+
+        for (int i = 0; i < n; i++) {
+            double val = Double.parseDouble(prices[i]);
+            int floorVal = (int) Math.floor(val);
+            int ceilVal = (int) Math.ceil(val);
+            sumFloor += floorVal;
+            if (floorVal != ceilVal) {
+                diffs[countCeilNeeded] = ceilVal - val;
+                countCeilNeeded++;
+            }
+        }
+
+        // If target is not in achievable range
+        if (target < sumFloor || target > sumFloor + countCeilNeeded) {
+            return "-1";
+        }
+
+        // Sort differences to pick which to ceil
+        Arrays.sort(diffs, 0, countCeilNeeded);
+
+        double error = 0;
+        int ceilCount = target - (int) sumFloor;
+
+        // Sum error for ceil rounded prices
+        for (int i = 0; i < ceilCount; i++) {
+            error += diffs[i];
+        }
+
+        // Sum error for floor rounded prices
+        for (int i = ceilCount; i < countCeilNeeded; i++) {
+            error += 1 - diffs[i];
+        }
+
+        return String.format("%.3f", error);
+    }
+}
