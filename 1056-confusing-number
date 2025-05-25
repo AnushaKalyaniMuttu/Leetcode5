@@ -1,0 +1,29 @@
+public class Solution {
+    public boolean confusingNumber(int n) {
+        int original = n;
+        int rotated = 0;
+
+        while (n > 0) {
+            int digit = n % 10;
+            n /= 10;
+
+            int mapped = mapDigit(digit);
+            if (mapped == -1) return false;
+
+            rotated = rotated * 10 + mapped;
+        }
+
+        return rotated != original;
+    }
+
+    private int mapDigit(int digit) {
+        switch (digit) {
+            case 0: return 0;
+            case 1: return 1;
+            case 6: return 9;
+            case 8: return 8;
+            case 9: return 6;
+            default: return -1;
+        }
+    }
+}
