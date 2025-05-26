@@ -1,0 +1,39 @@
+import java.util.HashSet;
+
+public class Solution {
+    public int longestRepeatingSubstring(String s) {
+        int left = 1, right = s.length();
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (hasDuplicate(s, mid)) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return left - 1;
+    }
+
+    private boolean hasDuplicate(String s, int len) {
+        long hash = 0;
+        long base = 256, mod = (long) 1e9 + 7;
+        long pow = 1;
+
+        for (int i = 0; i < len; i++) {
+            hash = (hash * base + s.charAt(i)) % mod;
+            if (i < len - 1) pow = (pow * base) % mod;
+        }
+
+        HashSet<Long> seen = new HashSet<>();
+        seen.add(hash);
+
+        for (int i = len; i < s.length(); i++) {
+            hash = (hash - s.charAt(i - len) * pow % mod + mod) % mod;
+            hash = (hash * base + s.charAt(i)) % mod;
+            if (seen.contains(hash)) return true;
+            seen.add(hash);
+        }
+
+        return false;
+    }
+}
