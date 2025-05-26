@@ -1,0 +1,29 @@
+import java.util.Stack;
+
+public class Solution {
+    public int validSubarrays(int[] nums) {
+        int n = nums.length;
+        Stack<Integer> stack = new Stack<>();
+        int count = 0;
+
+        for (int i = 0; i < n; i++) {
+            while (!stack.isEmpty() && nums[i] < nums[stack.peek()]) {
+                stack.pop();
+            }
+            stack.push(i);
+        }
+
+        stack.clear(); // reuse the stack
+
+        for (int i = n - 1; i >= 0; i--) {
+            while (!stack.isEmpty() && nums[i] <= nums[stack.peek()]) {
+                stack.pop();
+            }
+            int nextSmallerIndex = stack.isEmpty() ? n : stack.peek();
+            count += nextSmallerIndex - i;
+            stack.push(i);
+        }
+
+        return count;
+    }
+}
