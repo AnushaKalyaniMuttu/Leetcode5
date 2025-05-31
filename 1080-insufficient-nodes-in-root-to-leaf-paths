@@ -1,0 +1,26 @@
+class Solution {
+    public TreeNode sufficientSubset(TreeNode root, int limit) {
+        boolean keep = dfs(root, 0, limit);
+        return keep ? root : null;
+    }
+
+    private boolean dfs(TreeNode node, int sum, int limit) {
+        if (node == null) return false;
+
+        sum += node.val;
+
+        // Leaf node
+        if (node.left == null && node.right == null) {
+            return sum >= limit;
+        }
+
+        boolean leftKeep = dfs(node.left, sum, limit);
+        boolean rightKeep = dfs(node.right, sum, limit);
+
+        // Prune if necessary
+        if (!leftKeep) node.left = null;
+        if (!rightKeep) node.right = null;
+
+        return leftKeep || rightKeep;
+    }
+}
