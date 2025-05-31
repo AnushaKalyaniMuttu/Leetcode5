@@ -1,0 +1,39 @@
+import java.util.*;
+
+class Solution {
+    public int[][] highFive(int[][] items) {
+        // Create a map to store scores for each student ID
+        Map<Integer, PriorityQueue<Integer>> map = new HashMap<>();
+
+        // Iterate through the items to populate the map
+        for (int[] item : items) {
+            int id = item[0], score = item[1];
+            map.putIfAbsent(id, new PriorityQueue<>());
+            PriorityQueue<Integer> pq = map.get(id);
+            pq.offer(score);
+            if (pq.size() > 5) {
+                pq.poll(); // Remove the lowest score if more than 5 scores exist
+            }
+        }
+
+        // Prepare the result array
+        int[][] result = new int[map.size()][2];
+        int index = 0;
+
+        // Calculate the average of top five scores for each student
+        for (Map.Entry<Integer, PriorityQueue<Integer>> entry : map.entrySet()) {
+            int id = entry.getKey();
+            PriorityQueue<Integer> pq = entry.getValue();
+            int sum = 0;
+            while (!pq.isEmpty()) {
+                sum += pq.poll();
+            }
+            result[index++] = new int[]{id, sum / 5};
+        }
+
+        // Sort the result array by student ID
+        Arrays.sort(result, (a, b) -> a[0] - b[0]);
+
+        return result;
+    }
+}
