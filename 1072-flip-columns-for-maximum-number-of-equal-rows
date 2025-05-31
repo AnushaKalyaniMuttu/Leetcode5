@@ -1,0 +1,23 @@
+import java.util.*;
+
+public class Solution {
+    public int maxEqualRowsAfterFlips(int[][] matrix) {
+        Map<String, Integer> patternCount = new HashMap<>();
+        
+        for (int[] row : matrix) {
+            StringBuilder pattern = new StringBuilder();
+            int base = row[0];
+            for (int val : row) {
+                pattern.append(val ^ base); // normalize row: if base is 1, invert bits
+            }
+            String key = pattern.toString();
+            patternCount.put(key, patternCount.getOrDefault(key, 0) + 1);
+        }
+        
+        int max = 0;
+        for (int count : patternCount.values()) {
+            max = Math.max(max, count);
+        }
+        return max;
+    }
+}
