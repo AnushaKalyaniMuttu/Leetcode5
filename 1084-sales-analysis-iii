@@ -1,0 +1,9 @@
+SELECT DISTINCT P.product_id, P.product_name
+FROM Product P
+INNER JOIN Sales S ON S.product_id = P.product_id
+WHERE S.sale_date BETWEEN '2019-01-01' AND '2019-03-31'
+AND P.product_id NOT IN (
+    SELECT S1.product_id
+    FROM Sales S1
+    WHERE S1.sale_date NOT BETWEEN '2019-01-01' AND '2019-03-31'
+);
