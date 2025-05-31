@@ -1,0 +1,15 @@
+WITH PlayerToInstallDate AS (
+    SELECT player_id, MIN(event_date) AS install_dt
+    FROM Activity
+    GROUP BY player_id
+)
+SELECT PlayerToInstallDate.install_dt,
+       COUNT(*) AS installs,
+       ROUND(
+           SUM(IF(DATEDIFF(Activity.event_date, PlayerToInstallDate.install_dt) = 1, 1, 0)) / COUNT(PlayerToInstallDate.install_dt),
+           2
+       ) AS Day1_retention
+FROM PlayerToInstallDate
+LEFT JOIN Activity
+    ON PlayerToInstallDate.player_id = Activity.player_id
+GROUP BY PlayerToInstallDate.install_dt;
