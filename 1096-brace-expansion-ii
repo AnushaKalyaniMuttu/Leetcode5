@@ -1,0 +1,73 @@
+import java.util.*;
+
+class Solution {
+    public List<String> braceExpansionII(String expression) {
+        Set<String> result = parse(expression);
+        List<String> sorted = new ArrayList<>(result);
+        Collections.sort(sorted);
+        return sorted;
+    }
+
+    private Set<String> parse(String expr) {
+        Stack<Set<String>> stack = new Stack<>();
+        Stack<Character> ops = new Stack<>();
+        int i = 0;
+        while (i < expr.length()) {
+            char c = expr.charAt(i);
+
+            if (c == '{') {
+                ops.push(c);
+                i++;
+            } else if (c == '}') {
+                while (!ops.isEmpty() && ops.peek() != '{') {
+                    applyOp(stack, ops.pop());
+                }
+                ops.pop(); // remove '{'
+                i++;
+            } else if (c == ',') {
+                while (!ops.isEmpty() && ops.peek() == '*') {
+                    applyOp(stack, ops.pop());
+                }
+                ops.push('+');
+                i++;
+            } else { // character or implicit concat
+                Set<String> set = new HashSet<>();
+                StringBuilder sb = new StringBuilder();
+                while (i < expr.length() && Character.isLetter(expr.charAt(i))) {
+                    sb.append(expr.charAt(i++));
+                }
+                set.add(sb.toString());
+                stack.push(set);
+
+                // Handle implicit concatenation
+                if (i < expr.length() &&
+                   (Character.isLetter(expr.charAt(i)) || expr.charAt(i) == '{')) {
+                    ops.push('*');
+                }
+            }
+        }
+
+        while (!ops.isEmpty()) {
+            applyOp(stack, ops.pop());
+        }
+
+        return stack.pop();
+    }
+
+    private void applyOp(Stack<Set<String>> stack, char op) {
+        Set<String> right = stack.pop();
+        Set<String> left = stack.pop();
+        Set<String> res = new HashSet<>();
+        if (op == '+') {
+            res.addAll(left);
+            res.addAll(right);
+        } else if (op == '*') {
+            for (String l : left) {
+                for (String r : right) {
+                    res.add(l + r);
+                }
+            }
+        }
+        stack.push(res);
+    }
+}
