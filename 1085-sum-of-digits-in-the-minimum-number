@@ -1,0 +1,19 @@
+class Solution {
+    public int sumOfDigits(int[] nums) {
+        // Find the minimum element in the array
+        int min = Integer.MAX_VALUE;
+        for (int num : nums) {
+            min = Math.min(min, num);
+        }
+
+        // Calculate the sum of digits of the minimum element
+        int sum = 0;
+        while (min > 0) {
+            sum += min % 10;
+            min /= 10;
+        }
+
+        // Return 1 if the sum is even, otherwise return 0
+        return (sum % 2 == 0) ? 1 : 0;
+    }
+}
