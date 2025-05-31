@@ -1,0 +1,26 @@
+import java.util.*;
+
+public class Solution {
+    public int[] addNegabinary(int[] arr1, int[] arr2) {
+        List<Integer> result = new ArrayList<>();
+        int i = arr1.length - 1, j = arr2.length - 1, carry = 0;
+
+        while (i >= 0 || j >= 0 || carry != 0) {
+            int a = i >= 0 ? arr1[i--] : 0;
+            int b = j >= 0 ? arr2[j--] : 0;
+            int sum = a + b + carry;
+
+            result.add(sum & 1);  // current bit (mod 2)
+            carry = -(sum >> 1);  // adjust carry for base -2
+        }
+
+        // Remove leading zeros
+        while (result.size() > 1 && result.get(result.size() - 1) == 0) {
+            result.remove(result.size() - 1);
+        }
+
+        // Reverse result
+        Collections.reverse(result);
+        return result.stream().mapToInt(x -> x).toArray();
+    }
+}
