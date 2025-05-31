@@ -1,0 +1,18 @@
+String sql = """
+    SELECT 
+        p.project_id
+    FROM 
+        Project p
+    JOIN 
+        Employee e ON p.employee_id = e.employee_id
+    GROUP BY 
+        p.project_id
+    HAVING 
+        COUNT(*) = (
+            SELECT COUNT(*)
+            FROM Project p2
+            WHERE p2.project_id = p.project_id
+        )
+    """;
+
+// Execute with JDBC or any Java SQL utility.
