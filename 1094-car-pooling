@@ -1,0 +1,26 @@
+class Solution {
+    public boolean carPooling(int[][] trips, int capacity) {
+        // Array to keep track of passenger changes at each location
+        int[] timeline = new int[1001];
+        
+        // Record passenger pickups and drop-offs
+        for (int[] trip : trips) {
+            int passengers = trip[0];
+            int start = trip[1];
+            int end = trip[2];
+            timeline[start] += passengers;
+            timeline[end] -= passengers;
+        }
+        
+        // Track current passengers on the vehicle
+        int currentPassengers = 0;
+        for (int passengerChange : timeline) {
+            currentPassengers += passengerChange;
+            if (currentPassengers > capacity) {
+                return false; // capacity exceeded
+            }
+        }
+        
+        return true; // never exceeded capacity
+    }
+}
