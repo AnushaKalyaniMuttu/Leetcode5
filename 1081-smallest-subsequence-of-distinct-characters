@@ -1,0 +1,39 @@
+import java.util.*;
+
+public class Solution {
+    public String smallestSubsequence(String text) {
+        int[] lastIndex = new int[26];  // Last occurrence of each char
+        boolean[] inStack = new boolean[26]; // Track chars in stack
+        int n = text.length();
+
+        for (int i = 0; i < n; i++) {
+            lastIndex[text.charAt(i) - 'a'] = i;
+        }
+
+        Deque<Character> stack = new ArrayDeque<>();
+
+        for (int i = 0; i < n; i++) {
+            char c = text.charAt(i);
+            int idx = c - 'a';
+
+            if (inStack[idx]) continue;  // Already in subsequence
+
+            // Remove chars that are lex greater and appear later
+            while (!stack.isEmpty() && stack.peekLast() > c && lastIndex[stack.peekLast() - 'a'] > i) {
+                char removed = stack.removeLast();
+                inStack[removed - 'a'] = false;
+            }
+
+            stack.addLast(c);
+            inStack[idx] = true;
+        }
+
+        // Build result string
+        StringBuilder sb = new StringBuilder();
+        for (char c : stack) {
+            sb.append(c);
+        }
+
+        return sb.toString();
+    }
+}
