@@ -1,0 +1,36 @@
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+class Solution {
+    public int largestValsFromLabels(int[] values, int[] labels, int numWanted, int useLimit) {
+        int n = values.length;
+        int[][] items = new int[n][2];
+        
+        // Pair values with labels
+        for (int i = 0; i < n; i++) {
+            items[i] = new int[]{values[i], labels[i]};
+        }
+
+        // Sort items by value in descending order
+        Arrays.sort(items, (a, b) -> Integer.compare(b[0], a[0]));
+
+        Map<Integer, Integer> labelCount = new HashMap<>();
+        int totalValue = 0;
+        int itemsChosen = 0;
+
+        // Select items respecting the constraints
+        for (int i = 0; i < n && itemsChosen < numWanted; i++) {
+            int value = items[i][0];
+            int label = items[i][1];
+
+            if (labelCount.getOrDefault(label, 0) < useLimit) {
+                labelCount.put(label, labelCount.getOrDefault(label, 0) + 1);
+                totalValue += value;
+                itemsChosen++;
+            }
+        }
+
+        return totalValue;
+    }
+}
