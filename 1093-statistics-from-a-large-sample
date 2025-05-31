@@ -1,0 +1,45 @@
+class Solution {
+    public double[] sampleStats(int[] count) {
+        int min = -1, max = -1, mode = 0;
+        long sum = 0, totalCount = 0, maxCount = 0;
+        
+        // Find min, max, mode, sum and total count
+        for (int i = 0; i < count.length; i++) {
+            if (count[i] > 0) {
+                if (min == -1) min = i;
+                max = i;
+                sum += (long) i * count[i];
+                totalCount += count[i];
+                if (count[i] > maxCount) {
+                    maxCount = count[i];
+                    mode = i;
+                }
+            }
+        }
+        
+        // Find median
+        double median = 0;
+        int mid1 = (int) ((totalCount + 1) / 2);
+        int mid2 = (int) ((totalCount + 2) / 2);
+        int cumulative = 0;
+        int m1 = -1, m2 = -1;
+        
+        for (int i = 0; i < count.length; i++) {
+            cumulative += count[i];
+            if (m1 == -1 && cumulative >= mid1) m1 = i;
+            if (m2 == -1 && cumulative >= mid2) {
+                m2 = i;
+                break;
+            }
+        }
+        median = (m1 + m2) / 2.0;
+        
+        return new double[] {
+            (double) min,
+            (double) max,
+            (double) sum / totalCount,
+            median,
+            (double) mode
+        };
+    }
+}
