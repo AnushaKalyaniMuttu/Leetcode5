@@ -1,0 +1,26 @@
+import java.util.HashMap;
+import java.util.Map;
+
+class Solution {
+    public boolean canDivideIntoSubsequences(int[] nums, int k) {
+        Map<Integer, Integer> freqMap = new HashMap<>();
+        int maxFreq = 0;
+        
+        // Count the frequency of each number
+        for (int num : nums) {
+            int freq = freqMap.getOrDefault(num, 0) + 1;
+            freqMap.put(num, freq);
+            maxFreq = Math.max(maxFreq, freq);
+        }
+        
+        // If the most frequent number appears more times than nums.length / k, return false
+        if (maxFreq * k > nums.length) {
+            return false;
+        }
+        
+        // Greedy approach to assign numbers to subsequences
+        // (Implementation details depend on the specific approach chosen)
+        
+        return true; // Return true if subsequences can be formed
+    }
+}
