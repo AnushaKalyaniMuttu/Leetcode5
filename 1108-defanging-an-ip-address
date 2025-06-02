@@ -1,0 +1,14 @@
+public class Solution {
+    public String defangIPaddr(String address) {
+        // Use StringBuilder for efficient string manipulation
+        StringBuilder defanged = new StringBuilder();
+        for (char ch : address.toCharArray()) {
+            if (ch == '.') {
+                defanged.append("[.]");
+            } else {
+                defanged.append(ch);
+            }
+        }
+        return defanged.toString();
+    }
+}
