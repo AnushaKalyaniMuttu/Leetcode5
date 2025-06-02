@@ -1,0 +1,30 @@
+import java.util.*;
+
+public class Solution {
+    public Map<Integer, Integer> highestGradeForEachStudent(int[][] scores) {
+        // scores[i] = [studentId, score]
+        Map<Integer, Integer> maxScores = new HashMap<>();
+
+        for (int[] entry : scores) {
+            int studentId = entry[0];
+            int score = entry[1];
+
+            maxScores.put(studentId, Math.max(maxScores.getOrDefault(studentId, 0), score));
+        }
+
+        return maxScores;
+    }
+
+    public static void main(String[] args) {
+        Solution sol = new Solution();
+        int[][] scores = {
+            {1, 85},
+            {2, 90},
+            {1, 95},
+            {2, 87},
+            {3, 88}
+        };
+        Map<Integer, Integer> result = sol.highestGradeForEachStudent(scores);
+        System.out.println(result);  // Output: {1=95, 2=90, 3=88}
+    }
+}
