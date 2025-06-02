@@ -1,0 +1,21 @@
+import java.util.*;
+
+public class Solution {
+    public List<Integer> pathInZigZagTree(int label) {
+        List<Integer> path = new ArrayList<>();
+
+        while (label >= 1) {
+            path.add(0, label);  // add to front of list
+
+            int level = (int)(Math.log(label) / Math.log(2));  // find level of label
+            int levelStart = (int)Math.pow(2, level);
+            int levelEnd = (int)Math.pow(2, level + 1) - 1;
+
+            // Calculate the parent in a mirrored level
+            int mirroredLabel = levelStart + levelEnd - label;
+            label = mirroredLabel / 2;
+        }
+
+        return path;
+    }
+}
