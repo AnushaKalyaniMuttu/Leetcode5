@@ -1,0 +1,50 @@
+import java.util.Arrays;
+
+public class Solution {
+    private int[] parent;
+    private int[] rank;
+
+    private int find(int x) {
+        if (parent[x] != x) {
+            parent[x] = find(parent[x]);
+        }
+        return parent[x];
+    }
+
+    private boolean union(int x, int y) {
+        int rootX = find(x);
+        int rootY = find(y);
+        if (rootX == rootY) return false;
+
+        if (rank[rootX] > rank[rootY]) {
+            parent[rootY] = rootX;
+        } else if (rank[rootX] < rank[rootY]) {
+            parent[rootX] = rootY;
+        } else {
+            parent[rootY] = rootX;
+            rank[rootX]++;
+        }
+        return true;
+    }
+
+    public int earliestAcq(int[][] logs, int n) {
+        parent = new int[n];
+        rank = new int[n];
+        for (int i = 0; i < n; i++) {
+            parent[i] = i;
+            rank[i] = 0;
+        }
+
+        Arrays.sort(logs, (a, b) -> Integer.compare(a[0], b[0]));
+
+        for (int[] log : logs) {
+            int timestamp = log[0];
+            int idA = log[1];
+            int idB = log[2];
+            if (union(idA, idB) && --n == 1) {
+                return timestamp;
+            }
+        }
+        return -1;
+    }
+}
