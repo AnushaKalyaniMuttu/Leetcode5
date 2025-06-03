@@ -1,0 +1,15 @@
+public class Solution {
+    public boolean isArmstrong(int n) {
+        int k = String.valueOf(n).length(); // Determine the number of digits
+        int sum = 0;
+        int temp = n;
+        
+        while (temp > 0) {
+            int digit = temp % 10;
+            sum += Math.pow(digit, k); // Raise each digit to the power of k and add to sum
+            temp /= 10;
+        }
+        
+        return sum == n; // Check if the sum equals the original number
+    }
+}
