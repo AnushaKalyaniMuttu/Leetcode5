@@ -1,0 +1,28 @@
+WITH UserSpending AS (
+    SELECT user_id,
+           spend_date,
+           CASE
+               WHEN COUNT(DISTINCT platform) = 2 THEN 'both'
+               ELSE platform
+           END AS platform,
+           SUM(amount) AS amount
+    FROM Spending
+    GROUP BY user_id, spend_date
+),
+DatePlatform AS (
+    SELECT DISTINCT spend_date, 'desktop' AS platform FROM Spending
+    UNION ALL
+    SELECT DISTINCT spend_date, 'mobile' FROM Spending
+    UNION ALL
+    SELECT DISTINCT spend_date, 'both' FROM Spending
+)
+SELECT dp.spend_date,
+       dp.platform,
+       IFNULL(SUM(us.amount), 0) AS total_amount,
+       COUNT(DISTINCT us.user_id) AS total_users
+FROM DatePlatform dp
+LEFT JOIN UserSpending us
+    ON dp.spend_date = us.spend_date
+    AND dp.platform = us.platform
+GROUP BY dp.spend_date, dp.platform
+ORDER BY dp.spend_date, dp.platform DESC;
