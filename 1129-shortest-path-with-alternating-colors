@@ -1,0 +1,64 @@
+import java.util.*;
+
+public class Solution {
+    public int[] shortestAlternatingPaths(int n, int[][] redEdges, int[][] blueEdges) {
+        // Graph representation for red and blue edges
+        List<Integer>[][] graph = new List[2][n];
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < n; j++) {
+                graph[i][j] = new ArrayList<>();
+            }
+        }
+        
+        // Populate the graph with red edges
+        for (int[] edge : redEdges) {
+            graph[0][edge[0]].add(edge[1]);
+        }
+        
+        // Populate the graph with blue edges
+        for (int[] edge : blueEdges) {
+            graph[1][edge[0]].add(edge[1]);
+        }
+        
+        // BFS initialization
+        int[] result = new int[n];
+        Arrays.fill(result, -1);
+        boolean[][] visited = new boolean[n][2]; // visited[node][color]
+        Queue<int[]> queue = new LinkedList<>();
+        
+        // Start BFS from node 0 with both red and blue edges
+        queue.offer(new int[]{0, 0}); // 0 -> red
+        queue.offer(new int[]{0, 1}); // 0 -> blue
+        visited[0][0] = visited[0][1] = true;
+        int distance = 0;
+        
+        // BFS loop
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                int[] current = queue.poll();
+                int node = current[0];
+                int color = current[1];
+                
+                // Update the result if not already visited
+                if (result[node] == -1) {
+                    result[node] = distance;
+                }
+                
+                // Alternate the color for the next step
+                int nextColor = 1 - color;
+                
+                // Explore neighbors
+                for (int neighbor : graph[nextColor][node]) {
+                    if (!visited[neighbor][nextColor]) {
+                        visited[neighbor][nextColor] = true;
+                        queue.offer(new int[]{neighbor, nextColor});
+                    }
+                }
+            }
+            distance++;
+        }
+        
+        return result;
+    }
+}
