@@ -1,0 +1,17 @@
+import java.util.HashMap;
+import java.util.Map;
+
+public class Solution {
+    public int numEquivDominoPairs(int[][] dominoes) {
+        Map<Integer, Integer> countMap = new HashMap<>();
+        int numPairs = 0;
+
+        for (int[] domino : dominoes) {
+            int key = Math.min(domino[0], domino[1]) * 10 + Math.max(domino[0], domino[1]);
+            numPairs += countMap.getOrDefault(key, 0);
+            countMap.put(key, countMap.getOrDefault(key, 0) + 1);
+        }
+
+        return numPairs;
+    }
+}
