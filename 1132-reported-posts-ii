@@ -1,0 +1,16 @@
+WITH Reported AS (
+    SELECT action_date, COUNT(DISTINCT post_id) AS reported_count
+    FROM Actions
+    WHERE action = 'report' AND extra = 'spam'
+    GROUP BY action_date
+),
+Removed AS (
+    SELECT r.action_date, COUNT(DISTINCT a.post_id) AS removed_count
+    FROM Actions a
+    JOIN Removals r ON a.post_id = r.post_id
+    WHERE a.action = 'report' AND a.extra = 'spam'
+    GROUP BY r.action_date
+)
+SELECT ROUND(AVG(CASE WHEN reported_count > 0 THEN removed_count * 100.0 / reported_count ELSE 0 END), 2) AS average_daily_percent
+FROM Reported r
+LEFT JOIN Removed rm ON r.action_date = rm.action_date;
