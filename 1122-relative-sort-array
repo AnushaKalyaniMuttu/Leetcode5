@@ -1,0 +1,36 @@
+import java.util.Arrays;
+
+class Solution {
+    public int[] relativeSortArray(int[] arr1, int[] arr2) {
+        int[] count = new int[1001]; // Array to count occurrences of each number in arr1
+        int min = 1001, max = 0;
+
+        // Count occurrences and determine the min and max values in arr1
+        for (int num : arr1) {
+            count[num]++;
+            min = Math.min(min, num);
+            max = Math.max(max, num);
+        }
+
+        int[] result = new int[arr1.length];
+        int index = 0;
+
+        // Place elements from arr2 in the result array
+        for (int num : arr2) {
+            while (count[num] > 0) {
+                result[index++] = num;
+                count[num]--;
+            }
+        }
+
+        // Place remaining elements in ascending order
+        for (int i = min; i <= max; i++) {
+            while (count[i] > 0) {
+                result[index++] = i;
+                count[i]--;
+            }
+        }
+
+        return result;
+    }
+}
