@@ -1,0 +1,34 @@
+public class Solution {
+    public String alphabetBoardPath(String target) {
+        StringBuilder path = new StringBuilder();
+        int currentRow = 0, currentCol = 0;
+        
+        for (char c : target.toCharArray()) {
+            int index = c - 'a';
+            int targetRow = index / 5;
+            int targetCol = index % 5;
+
+            // Always move UP and LEFT first to avoid invalid 'z' cases
+            while (currentRow > targetRow) {
+                path.append('U');
+                currentRow--;
+            }
+            while (currentCol > targetCol) {
+                path.append('L');
+                currentCol--;
+            }
+            while (currentRow < targetRow) {
+                path.append('D');
+                currentRow++;
+            }
+            while (currentCol < targetCol) {
+                path.append('R');
+                currentCol++;
+            }
+
+            path.append('!');
+        }
+
+        return path.toString();
+    }
+}
