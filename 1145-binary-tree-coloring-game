@@ -1,0 +1,21 @@
+class Solution {
+    private int leftCount = 0, rightCount = 0, targetValue = 0;
+
+    public boolean btreeGameWinningMove(TreeNode root, int n, int x) {
+        targetValue = x;
+        countNodes(root);
+        int parentCount = n - leftCount - rightCount - 1;
+        return Math.max(Math.max(leftCount, rightCount), parentCount) > n / 2;
+    }
+
+    private int countNodes(TreeNode node) {
+        if (node == null) return 0;
+        int left = countNodes(node.left);
+        int right = countNodes(node.right);
+        if (node.val == targetValue) {
+            leftCount = left;
+            rightCount = right;
+        }
+        return left + right + 1;
+    }
+}
