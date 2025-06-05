@@ -1,0 +1,15 @@
+public class Solution {
+    public int movesToMakeZigzag(int[] nums) {
+        int[] moves = new int[2]; // Array to store moves for two cases
+        int n = nums.length;
+
+        for (int i = 0; i < n; ++i) {
+            int left = (i > 0) ? nums[i - 1] : Integer.MAX_VALUE;
+            int right = (i < n - 1) ? nums[i + 1] : Integer.MAX_VALUE;
+            int decrement = Math.max(0, nums[i] - Math.min(left, right) + 1);
+            moves[i % 2] += decrement;
+        }
+
+        return Math.min(moves[0], moves[1]);
+    }
+}
