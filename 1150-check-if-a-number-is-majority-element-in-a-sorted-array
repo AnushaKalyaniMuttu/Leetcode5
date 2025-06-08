@@ -1,0 +1,10 @@
+import java.util.Arrays;
+
+class Solution {
+    public boolean isMajorityElement(int[] nums, int target) {
+        int left = Arrays.binarySearch(nums, target);
+        if (left < 0) return false;
+        int right = Arrays.binarySearch(nums, left, nums.length, target);
+        return right - left + 1 > nums.length / 2;
+    }
+}
