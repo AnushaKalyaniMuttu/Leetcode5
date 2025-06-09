@@ -1,0 +1,28 @@
+class Solution {
+    public int maxRepOpt1(String text) {
+        int[] count = new int[26];
+        for (char c : text.toCharArray()) {
+            count[c - 'a']++;
+        }
+        
+        int maxLength = 0;
+        for (int i = 0; i < text.length(); i++) {
+            int[] windowCount = new int[26];
+            int maxCount = 0;
+            int swaps = 0;
+            for (int j = i; j < text.length(); j++) {
+                int charIndex = text.charAt(j) - 'a';
+                windowCount[charIndex]++;
+                maxCount = Math.max(maxCount, windowCount[charIndex]);
+                if (windowCount[charIndex] == 1) {
+                    swaps++;
+                }
+                if (swaps > 1) {
+                    break;
+                }
+                maxLength = Math.max(maxLength, j - i + 1);
+            }
+        }
+        return maxLength;
+    }
+}
