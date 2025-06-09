@@ -1,0 +1,19 @@
+class Solution {
+    public int minSwaps(int[] data) {
+        int totalOnes = 0;
+        for (int num : data) {
+            if (num == 1) totalOnes++;
+        }
+
+        int maxOnes = 0, currentOnes = 0;
+        for (int i = 0; i < data.length; i++) {
+            if (i >= totalOnes) {
+                if (data[i - totalOnes] == 1) currentOnes--;
+            }
+            if (data[i] == 1) currentOnes++;
+            maxOnes = Math.max(maxOnes, currentOnes);
+        }
+
+        return totalOnes - maxOnes;
+    }
+}
