@@ -1,0 +1,33 @@
+import java.util.*;
+
+class MajorityChecker {
+    private final Map<Integer, List<Integer>> numToIndices;
+    private static final int kTimes = 20;
+
+    public MajorityChecker(int[] arr) {
+        numToIndices = new HashMap<>();
+        for (int i = 0; i < arr.length; ++i) {
+            numToIndices.computeIfAbsent(arr[i], x -> new ArrayList<>()).add(i);
+        }
+    }
+
+    public int query(int left, int right, int threshold) {
+        Random rand = new Random();
+        for (int i = 0; i < kTimes; ++i) {
+            int randIndex = rand.nextInt(right - left + 1) + left;
+            int num = arr[randIndex];
+            List<Integer> indices = numToIndices.get(num);
+            int l = firstGreaterEqual(indices, left);
+            int r = firstGreaterEqual(indices, right + 1);
+            if (r - l >= threshold) {
+                return num;
+            }
+        }
+        return -1;
+    }
+
+    private int firstGreaterEqual(List<Integer> A, int target) {
+        int i = Collections.binarySearch(A, target);
+        return i < 0 ? -i - 1 : i;
+    }
+}
