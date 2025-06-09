@@ -1,0 +1,52 @@
+class Solution {
+    public List<String> mostVisitedPattern(String[] username, int[] timestamp, String[] website) {
+        int n = username.length;
+        List<Record> records = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            records.add(new Record(username[i], timestamp[i], website[i]));
+        }
+        Collections.sort(records, (a, b) -> a.time - b.time);
+
+        Map<String, List<String>> userVisits = new HashMap<>();
+        for (Record r : records) {
+            userVisits.computeIfAbsent(r.user, k -> new ArrayList<>()).add(r.site);
+        }
+
+        Map<String, Integer> patternCount = new HashMap<>();
+        String res = "";
+        int max = 0;
+
+        for (String user : userVisits.keySet()) {
+            List<String> sites = userVisits.get(user);
+            Set<String> seen = new HashSet<>();
+            for (int i = 0; i < sites.size(); i++) {
+                for (int j = i + 1; j < sites.size(); j++) {
+                    for (int k = j + 1; k < sites.size(); k++) {
+                        String pattern = sites.get(i) + "," + sites.get(j) + "," + sites.get(k);
+                        if (seen.contains(pattern)) continue;
+                        seen.add(pattern);
+                        patternCount.put(pattern, patternCount.getOrDefault(pattern, 0) + 1);
+                        if (patternCount.get(pattern) > max || 
+                           (patternCount.get(pattern) == max && pattern.compareTo(res) < 0)) {
+                            res = pattern;
+                            max = patternCount.get(pattern);
+                        }
+                    }
+                }
+            }
+        }
+
+        return Arrays.asList(res.split(","));
+    }
+
+    static class Record {
+        String user, site;
+        int time;
+
+        Record(String u, int t, String s) {
+            user = u;
+            time = t;
+            site = s;
+        }
+    }
+}
