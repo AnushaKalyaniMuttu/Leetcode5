@@ -1,0 +1,43 @@
+import java.util.*;
+
+class Solution {
+    public int maxDistance(int[][] grid) {
+        int n = grid.length;
+        Deque<int[]> queue = new ArrayDeque<>();
+        int[] directions = {-1, 0, 1, 0, -1}; // up, right, down, left
+
+        // Enqueue all land cells (value 1)
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (grid[i][j] == 1) {
+                    queue.offer(new int[] {i, j});
+                }
+            }
+        }
+
+        int maxDistance = -1;
+        // If there are no land cells or the entire grid is land, return -1
+        if (queue.isEmpty() || queue.size() == n * n) {
+            return maxDistance;
+        }
+
+        // Perform BFS
+        while (!queue.isEmpty()) {
+            int currentSize = queue.size();
+            for (int i = 0; i < currentSize; ++i) {
+                int[] point = queue.poll();
+                for (int k = 0; k < 4; ++k) {
+                    int x = point[0] + directions[k];
+                    int y = point[1] + directions[k + 1];
+                    if (x >= 0 && x < n && y >= 0 && y < n && grid[x][y] == 0) {
+                        grid[x][y] = 1; // Mark as visited by converting to land
+                        queue.offer(new int[] {x, y});
+                    }
+                }
+            }
+            ++maxDistance;
+        }
+
+        return maxDistance;
+    }
+}
