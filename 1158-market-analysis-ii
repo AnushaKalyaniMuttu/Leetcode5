@@ -1,0 +1,7 @@
+SELECT DISTINCT u.user_id
+FROM Users u
+JOIN Orders o ON u.user_id = o.seller_id
+JOIN Items i ON o.item_id = i.item_id
+GROUP BY u.user_id, u.favorite_brand
+HAVING COUNT(DISTINCT i.item_brand) = 1 AND
+       MIN(i.item_brand) = u.favorite_brand;
