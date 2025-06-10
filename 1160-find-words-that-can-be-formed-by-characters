@@ -1,0 +1,34 @@
+import java.util.*;
+
+class Solution {
+    public int countCharacters(String[] words, String chars) {
+        int ans = 0;
+        int[] count = new int[26];
+
+        // Count the frequency of each character in chars
+        for (char c : chars.toCharArray()) {
+            count[c - 'a']++;
+        }
+
+        // Check each word
+        for (String word : words) {
+            int[] tempCount = count.clone();
+            boolean canForm = true;
+
+            // Check if the word can be formed
+            for (char c : word.toCharArray()) {
+                if (--tempCount[c - 'a'] < 0) {
+                    canForm = false;
+                    break;
+                }
+            }
+
+            // If the word can be formed, add its length to the answer
+            if (canForm) {
+                ans += word.length();
+            }
+        }
+
+        return ans;
+    }
+}
