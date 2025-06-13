@@ -1,0 +1,46 @@
+import java.util.HashMap;
+import java.util.Map;
+
+class FileSystem {
+    private static class Node {
+        Map<String, Node> children = new HashMap<>();
+        Integer value = null;
+    }
+
+    private Node root = new Node();
+
+    public boolean create(String path, int value) {
+        String[] components = path.split("/");
+        Node node = root;
+
+        for (int i = 1; i < components.length; i++) {
+            node = node.children.computeIfAbsent(components[i], k -> new Node());
+        }
+
+        String fileName = components[components.length - 1];
+        if (node.children.containsKey(fileName)) {
+            return false;
+        }
+
+        Node fileNode = new Node();
+        fileNode.value = value;
+        node.children.put(fileName, fileNode);
+        return true;
+    }
+
+    public int get(String path) {
+        String[] components = path.split("/");
+        Node node = root;
+
+        for (int i = 1; i < components.length; i++) {
+            node = node.children.get(components[i]);
+            if (node == null) {
+                return -1;
+            }
+        }
+
+        String fileName = components[components.length - 1];
+        Node fileNode = node.children.get(fileName);
+        return (fileNode != null && fileNode.value != null) ? fileNode.value : -1;
+    }
+}
