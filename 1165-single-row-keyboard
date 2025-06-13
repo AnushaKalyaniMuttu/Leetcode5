@@ -1,0 +1,32 @@
+class Solution {
+    public boolean isOneRow(String word) {
+        String top = "qwertyuiop";
+        String home = "asdfghjkl";
+        String bottom = "zxcvbnm";
+        
+        Set<Character> topSet = new HashSet<>();
+        Set<Character> homeSet = new HashSet<>();
+        Set<Character> bottomSet = new HashSet<>();
+        
+        for (char c : top.toCharArray()) topSet.add(c);
+        for (char c : home.toCharArray()) homeSet.add(c);
+        for (char c : bottom.toCharArray()) bottomSet.add(c);
+        
+        word = word.toLowerCase();
+        Set<Character> usedSet = null;
+        
+        for (char c : word.toCharArray()) {
+            if (topSet.contains(c)) {
+                if (usedSet == null) usedSet = topSet;
+                else if (usedSet != topSet) return false;
+            } else if (homeSet.contains(c)) {
+                if (usedSet == null) usedSet = homeSet;
+                else if (usedSet != homeSet) return false;
+            } else if (bottomSet.contains(c)) {
+                if (usedSet == null) usedSet = bottomSet;
+                else if (usedSet != bottomSet) return false;
+            }
+        }
+        return true;
+    }
+}
