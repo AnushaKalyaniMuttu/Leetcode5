@@ -1,0 +1,51 @@
+import java.util.*;
+
+public class Solution {
+    public List<String> invalidTransactions(String[] transactions) {
+        int len = transactions.length;
+        List<String> result = new ArrayList<>();
+        Map<String, List<String[]>> map = new HashMap<>();
+
+        // Parse transactions and group by name
+        for (int i = 0; i < len; i++) {
+            String[] parts = transactions[i].split(",");
+            String name = parts[0];
+            map.putIfAbsent(name, new ArrayList<>());
+            map.get(name).add(new String[]{transactions[i], parts[1], parts[2], parts[3]});
+        }
+
+        // Check for invalid transactions
+        for (int i = 0; i < len; i++) {
+            String[] parts = transactions[i].split(",");
+            String name = parts[0];
+            int time = Integer.parseInt(parts[1]);
+            int amount = Integer.parseInt(parts[2]);
+            String city = parts[3];
+
+            // Condition 1: Amount exceeds $1000
+            if (amount > 1000) {
+                result.add(transactions[i]);
+                continue;
+            }
+
+            // Condition 2: Same name, different city, within 60 minutes
+            boolean isInvalid = false;
+            for (String[] transaction : map.get(name)) {
+                if (!transaction[0].equals(transactions[i])) {
+                    int otherTime = Integer.parseInt(transaction[1]);
+                    String otherCity = transaction[3];
+                    if (!otherCity.equals(city) && Math.abs(time - otherTime) <= 60) {
+                        isInvalid = true;
+                        break;
+                    }
+                }
+            }
+
+            if (isInvalid) {
+                result.add(transactions[i]);
+            }
+        }
+
+        return result;
+    }
+}
