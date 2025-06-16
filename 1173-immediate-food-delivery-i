@@ -1,0 +1,59 @@
+import java.util.*;
+
+class DinnerPlates {
+    private int capacity;
+    private List<Stack<Integer>> stacks;
+    private TreeSet<Integer> available;
+
+    public DinnerPlates(int capacity) {
+        this.capacity = capacity;
+        this.stacks = new ArrayList<>();
+        this.available = new TreeSet<>();
+    }
+
+    public void push(int val) {
+        // Remove full stacks from available set
+        while (!available.isEmpty() && available.first() < stacks.size() && 
+               stacks.get(available.first()).size() == capacity) {
+            available.pollFirst();
+        }
+
+        int index;
+        if (available.isEmpty()) {
+            index = stacks.size();
+            Stack<Integer> stack = new Stack<>();
+            stack.push(val);
+            stacks.add(stack);
+            if (capacity > 1) {
+                available.add(index);
+            }
+        } else {
+            index = available.first();
+            while (index >= stacks.size()) {
+                stacks.add(new Stack<>());
+            }
+            stacks.get(index).push(val);
+            if (stacks.get(index).size() == capacity) {
+                available.pollFirst();
+            }
+        }
+    }
+
+    public int pop() {
+        while (!stacks.isEmpty() && stacks.get(stacks.size() - 1).isEmpty()) {
+            stacks.remove(stacks.size() - 1);
+        }
+        if (stacks.isEmpty()) return -1;
+        int idx = stacks.size() - 1;
+        int val = stacks.get(idx).pop();
+        available.add(idx);
+        return val;
+    }
+
+    public int popAtStack(int index) {
+        if (index >= stacks.size() || stacks.get(index).isEmpty()) return -1;
+        int val = stacks.get(index).pop();
+        available.add(index);
+        return val;
+    }
+}
