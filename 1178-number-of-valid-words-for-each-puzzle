@@ -1,13 +1,15 @@
+import java.util.*;
+
 class Solution {
-    public int findNumOfValidWords(String[] words, String[] puzzles) {
-        int[] frequency = new int[1 << 26];
+    public List<Integer> findNumOfValidWords(String[] words, String[] puzzles) {
+        Map<Integer, Integer> frequency = new HashMap<>();
         for (String word : words) {
             int mask = 0;
             for (char c : word.toCharArray()) {
                 mask |= 1 << (c - 'a');
             }
             if (Integer.bitCount(mask) <= 7) {
-                frequency[mask]++;
+                frequency.put(mask, frequency.getOrDefault(mask, 0) + 1);
             }
         }
 
@@ -19,14 +21,16 @@ class Solution {
                 mask |= 1 << (puzzle.charAt(i) - 'a');
             }
             int firstCharMask = 1 << (puzzle.charAt(0) - 'a');
+
             int subset = mask;
             do {
                 int s = subset | firstCharMask;
-                total += frequency[s];
+                total += frequency.getOrDefault(s, 0);
                 subset = (subset - 1) & mask;
             } while (subset != mask);
+
             result.add(total);
         }
-        return result.stream().mapToInt(i -> i).toArray();
+        return result;
     }
 }
