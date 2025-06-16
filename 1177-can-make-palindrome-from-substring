@@ -1,0 +1,27 @@
+import java.util.*;
+
+class Solution {
+    public List<Boolean> canMakePaliQueries(String s, int[][] queries) {
+        int n = s.length();
+        int[] prefix = new int[n + 1];
+        
+        // prefix[i] = bitmask of parity of counts for s[0..i-1]
+        for (int i = 0; i < n; i++) {
+            prefix[i + 1] = prefix[i] ^ (1 << (s.charAt(i) - 'a'));
+        }
+        
+        List<Boolean> res = new ArrayList<>();
+        
+        for (int[] q : queries) {
+            int left = q[0], right = q[1], k = q[2];
+            int mask = prefix[right + 1] ^ prefix[left];
+            
+            int oddCount = Integer.bitCount(mask);
+            
+            // minimum replacements needed = oddCount / 2
+            res.add((oddCount / 2) <= k);
+        }
+        
+        return res;
+    }
+}
