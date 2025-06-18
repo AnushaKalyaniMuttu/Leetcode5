@@ -1,0 +1,22 @@
+public class Solution {
+    public int countLetters(String s) {
+        int count = 0;
+        int i = 0;
+        int n = s.length();
+
+        while (i < n) {
+            int length = 1;
+            while (i + length < n && s.charAt(i) == s.charAt(i + length)) {
+                length++;
+            }
+
+            // Add the number of substrings in this block
+            count += (length * (length + 1)) / 2;
+
+            // Move to the next block
+            i += length;
+        }
+
+        return count;
+    }
+}
