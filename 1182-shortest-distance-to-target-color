@@ -1,0 +1,40 @@
+class Solution {
+    public List<Integer> shortestDistanceColor(int[] colors, int[][] queries) {
+        int n = colors.length;
+        int NUM_COLORS = 3;
+        // Precompute nearest left & right positions for each color 1–3
+        int[][] left = new int[n][NUM_COLORS + 1];
+        int[][] right = new int[n][NUM_COLORS + 1];
+        
+        // Left-to-right scan
+        int[] last = { -1, -1, -1, -1 };
+        for (int i = 0; i < n; i++) {
+            last[colors[i]] = i;
+            for (int c = 1; c <= NUM_COLORS; c++) {
+                left[i][c] = last[c];
+            }
+        }
+        
+        // Right-to-left scan
+        Arrays.fill(last, -1);
+        for (int i = n - 1; i >= 0; i--) {
+            last[colors[i]] = i;
+            for (int c = 1; c <= NUM_COLORS; c++) {
+                right[i][c] = last[c];
+            }
+        }
+        
+        // Answer queries
+        List<Integer> res = new ArrayList<>();
+        for (int[] q : queries) {
+            int idx = q[0], color = q[1];
+            int l = left[idx][color];
+            int r = right[idx][color];
+            int dist = Integer.MAX_VALUE;
+            if (l != -1) dist = idx - l;
+            if (r != -1) dist = Math.min(dist, r - idx);
+            res.add(dist == Integer.MAX_VALUE ? -1 : dist);
+        }
+        return res;
+    }
+}
