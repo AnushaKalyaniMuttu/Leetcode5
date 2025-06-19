@@ -1,0 +1,29 @@
+class Solution {
+    public int makeArrayIncreasing(int[] arr1, int[] arr2) {
+        Arrays.sort(arr2);
+        // dp: maps last value → min operations to reach that state
+        Map<Integer, Integer> dp = new HashMap<>();
+        dp.put(-1, 0);  // before any element, last = -1 with 0 ops
+        
+        for (int a : arr1) {
+            Map<Integer, Integer> next = new HashMap<>();
+            for (var ent : dp.entrySet()) {
+                int last = ent.getKey(), ops = ent.getValue();
+                // Option 1: keep arr1's value if it's strictly increasing
+                if (a > last) {
+                    next.merge(a, ops, Math::min);
+                }
+                // Option 2: replace arr1[i] with the smallest arr2[k] > last
+                int idx = Arrays.binarySearch(arr2, last + 1);
+                if (idx < 0) idx = -idx - 1;
+                if (idx < arr2.length) {
+                    int b = arr2[idx];
+                    next.merge(b, ops + 1, Math::min);
+                }
+            }
+            if (next.isEmpty()) return -1;  // no valid transformations
+            dp = next;
+        }
+        return Collections.min(dp.values());
+    }
+}
