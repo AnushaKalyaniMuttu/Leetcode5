@@ -1,0 +1,21 @@
+class Solution {
+    public int distanceBetweenBusStops(int[] distance, int start, int destination) {
+        int total = 0, direct = 0;
+        int n = distance.length;
+        
+        // Compute total distance around the circle
+        for (int d : distance) {
+            total += d;
+        }
+        
+        // Sum distances moving from start to destination clockwise
+        int i = start;
+        while (i != destination) {
+            direct += distance[i];
+            i = (i + 1) % n;
+        }
+        
+        // The shortest path is the smaller of the two possible directions
+        return Math.min(direct, total - direct);
+    }
+}
