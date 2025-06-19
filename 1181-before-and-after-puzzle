@@ -1,0 +1,28 @@
+class Solution {
+    public List<String> beforeAndAfterPuzzles(String[] phrases) {
+        int n = phrases.length;
+        String[][] ps = new String[n][2];
+        
+        // Extract first and last words for each phrase
+        for (int i = 0; i < n; i++) {
+            String[] ws = phrases[i].split(" ");
+            ps[i][0] = ws[0];
+            ps[i][1] = ws[ws.length - 1];
+        }
+        
+        Set<String> merged = new HashSet<>();
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i != j && ps[i][1].equals(ps[j][0])) {
+                    // Merge by removing the duplicate overlap
+                    String combined = phrases[i] + phrases[j].substring(ps[j][0].length());
+                    merged.add(combined);
+                }
+            }
+        }
+        
+        List<String> result = new ArrayList<>(merged);
+        Collections.sort(result);
+        return result;
+    }
+}
