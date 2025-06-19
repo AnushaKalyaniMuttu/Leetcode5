@@ -1,0 +1,24 @@
+import java.util.Arrays;
+
+class Solution {
+    public int maximumNumberOfOnes(int width, int height, int sideLength, int maxOnes) {
+        int x = sideLength;
+        int[] cnt = new int[x * x];
+        
+        // Count how many times each position in the x×x pattern is "used" across the whole grid
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                int k = (i % x) * x + (j % x);
+                cnt[k]++;
+            }
+        }
+        
+        // Sort counts ascending, pick the highest maxOnes entries, sum them
+        Arrays.sort(cnt);
+        int ans = 0;
+        for (int i = 0; i < maxOnes; i++) {
+            ans += cnt[cnt.length - 1 - i];
+        }
+        return ans;
+    }
+}
