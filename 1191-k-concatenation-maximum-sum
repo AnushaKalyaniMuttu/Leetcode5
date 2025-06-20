@@ -1,0 +1,33 @@
+class Solution {
+    private static final int MOD = 1_000_000_007;
+    
+    public int kConcatenationMaxSum(int[] arr, int k) {
+        long sum = 0, maxPre = 0, minPre = 0, maxSub = 0;
+        
+        // One-pass to compute:
+        // sum = total sum
+        // maxPre = max prefix sum
+        // minPre = min prefix sum (to help calculate maxSub, max suffix)
+        // maxSub = max subarray sum within one copy (Kadane variant)
+        for (int x : arr) {
+            sum += x;
+            maxPre = Math.max(maxPre, sum);
+            minPre = Math.min(minPre, sum);
+            maxSub = Math.max(maxSub, sum - minPre);
+        }
+        
+        long ans = maxSub;
+        if (k == 1) {
+            return (int)(ans % MOD);
+        }
+        
+        long maxSuf = sum - minPre;
+        ans = Math.max(ans, maxPre + maxSuf);
+        
+        if (sum > 0) {
+            ans = Math.max(ans, maxPre + maxSuf + (long)(k - 2) * sum);
+        }
+        
+        return (int)(ans % MOD);
+    }
+}
