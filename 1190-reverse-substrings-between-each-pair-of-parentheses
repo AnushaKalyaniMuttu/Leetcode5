@@ -1,0 +1,27 @@
+class Solution {
+    public String reverseParentheses(String s) {
+        Deque<Character> stack = new ArrayDeque<>();
+        for (char c : s.toCharArray()) {
+            if (c == ')') {
+                // Pop until corresponding '('
+                StringBuilder temp = new StringBuilder();
+                while (stack.peek() != '(') {
+                    temp.append(stack.pop());
+                }
+                stack.pop(); // remove '('
+                // Push reversed substring back
+                for (char x : temp.toString().toCharArray()) {
+                    stack.push(x);
+                }
+            } else {
+                stack.push(c);
+            }
+        }
+        // Build the result
+        StringBuilder sb = new StringBuilder();
+        while (!stack.isEmpty()) {
+            sb.append(stack.pop());
+        }
+        return sb.reverse().toString();
+    }
+}
