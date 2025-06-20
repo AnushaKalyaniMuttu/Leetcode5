@@ -1,0 +1,17 @@
+class Solution {
+    public int maxNumberOfBalloons(String text) {
+        int[] cnt = new int[26];
+        for (char c : text.toCharArray()) {
+            cnt[c - 'a']++;
+        }
+        // 'l' and 'o' appear twice in "balloon"
+        cnt['l' - 'a'] /= 2;
+        cnt['o' - 'a'] /= 2;
+
+        int minCount = Integer.MAX_VALUE;
+        for (char c : new char[]{'b', 'a', 'l', 'o', 'n'}) {
+            minCount = Math.min(minCount, cnt[c - 'a']);
+        }
+        return minCount;
+    }
+}
