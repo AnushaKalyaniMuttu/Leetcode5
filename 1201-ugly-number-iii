@@ -1,0 +1,27 @@
+class Solution {
+    public int nthUglyNumber(int n, int a, int b, int c) {
+        long left = 1, right = 2_000_000_000L;
+        long lcmAB = lcm(a, b), lcmAC = lcm(a, c), lcmBC = lcm(b, c);
+        long lcmABC = lcm(lcmAB, c);
+
+        while (left < right) {
+            long mid = left + (right - left) / 2;
+            long count = mid/a + mid/b + mid/c
+                       - mid/lcmAB - mid/lcmAC - mid/lcmBC
+                       + mid/lcmABC;
+
+            if (count < n) left = mid + 1;
+            else right = mid;
+        }
+
+        return (int) left;
+    }
+
+    private long gcd(long x, long y) {
+        return y == 0 ? x : gcd(y, x % y);
+    }
+
+    private long lcm(long x, long y) {
+        return x / gcd(x, y) * y;
+    }
+}
