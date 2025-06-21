@@ -1,0 +1,19 @@
+import java.util.PriorityQueue;
+
+class Solution {
+    public int minBuildTime(int[] blocks, int split) {
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        for (int block : blocks) {
+            pq.offer(block);
+        }
+
+        while (pq.size() > 1) {
+            int b1 = pq.poll();         // Smallest build time
+            int b2 = pq.poll();         // Second smallest
+            int merged = split + Math.max(b1, b2);  // Combine them with one split
+            pq.offer(merged);           // Add merged back into the heap
+        }
+
+        return pq.poll();  // Final minimum time
+    }
+}
