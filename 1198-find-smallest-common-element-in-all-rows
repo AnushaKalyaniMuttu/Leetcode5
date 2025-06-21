@@ -1,0 +1,14 @@
+class Solution {
+    public int smallestCommonElement(int[][] mat) {
+        int m = mat.length;
+        int[] cnt = new int[10001];
+        for (int[] row : mat) {
+            for (int x : row) {
+                if (++cnt[x] == m) {
+                    return x;  // first time count reaches number of rows ⇒ smallest common
+                }
+            }
+        }
+        return -1;
+    }
+}
