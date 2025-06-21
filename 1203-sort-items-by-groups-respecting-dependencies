@@ -1,0 +1,103 @@
+import java.util.*;
+
+class Solution {
+    public int[] sortItems(int n, int m, int[] group, List<List<Integer>> beforeItems) {
+        // Step 1: Assign unique group IDs to ungrouped items
+        for (int i = 0; i < n; i++) {
+            if (group[i] == -1) {
+                group[i] = m++;
+            }
+        }
+
+        // Step 2: Build graphs
+        List<List<Integer>> groupGraph = new ArrayList<>();
+        int[] groupIndegree = new int[m];
+        List<List<Integer>> itemGraph = new ArrayList<>();
+        int[] itemIndegree = new int[n];
+
+        for (int i = 0; i < m; i++) groupGraph.add(new ArrayList<>());
+        for (int i = 0; i < n; i++) itemGraph.add(new ArrayList<>());
+
+        for (int curr = 0; curr < n; curr++) {
+            for (int prev : beforeItems.get(curr)) {
+                itemGraph.get(prev).add(curr);
+                itemIndegree[curr]++;
+
+                if (group[prev] != group[curr]) {
+                    groupGraph.get(group[prev]).add(group[curr]);
+                    groupIndegree[group[curr]]++;
+                }
+            }
+        }
+
+        // Step 3: Topological sort groups
+        List<Integer> groupOrder = topoSort(groupGraph, groupIndegree, m);
+        if (groupOrder.isEmpty()) return new int[0];
+
+        // Step 4: Topological sort items within groups
+        List<Integer> result = new ArrayList<>();
+        Map<Integer, List<Integer>> groupToItems = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            groupToItems.computeIfAbsent(group[i], k -> new ArrayList<>()).add(i);
+        }
+
+        for (int g : groupOrder) {
+            List<Integer> items = groupToItems.getOrDefault(g, new ArrayList<>());
+            if (items.isEmpty()) continue;
+
+            List<Integer> sortedItems = topoSortItems(itemGraph, itemIndegree, items);
+            if (sortedItems.isEmpty()) return new int[0];
+            result.addAll(sortedItems);
+        }
+
+        // Convert to array
+        return result.stream().mapToInt(i -> i).toArray();
+    }
+
+    // Generic topological sort for groups
+    private List<Integer> topoSort(List<List<Integer>> graph, int[] indegree, int size) {
+        Queue<Integer> queue = new LinkedList<>();
+        for (int i = 0; i < size; i++) {
+            if (indegree[i] == 0) queue.offer(i);
+        }
+
+        List<Integer> order = new ArrayList<>();
+        while (!queue.isEmpty()) {
+            int u = queue.poll();
+            order.add(u);
+            for (int v : graph.get(u)) {
+                indegree[v]--;
+                if (indegree[v] == 0) queue.offer(v);
+            }
+        }
+
+        return order.size() == size ? order : new ArrayList<>();
+    }
+
+    // Topo sort for items in one group
+    private List<Integer> topoSortItems(List<List<Integer>> graph, int[] indegree, List<Integer> items) {
+        Queue<Integer> queue = new LinkedList<>();
+        int count = 0;
+        int[] indegreeCopy = new int[indegree.length];
+        System.arraycopy(indegree, 0, indegreeCopy, 0, indegree.length);
+
+        for (int item : items) {
+            if (indegreeCopy[item] == 0) queue.offer(item);
+        }
+
+        List<Integer> order = new ArrayList<>();
+        while (!queue.isEmpty()) {
+            int u = queue.poll();
+            order.add(u);
+            count++;
+            for (int v : graph.get(u)) {
+                indegreeCopy[v]--;
+                if (indegreeCopy[v] == 0 && items.contains(v)) {
+                    queue.offer(v);
+                }
+            }
+        }
+
+        return count == items.size() ? order : new ArrayList<>();
+    }
+}
