@@ -1,0 +1,49 @@
+import java.util.*;
+
+class Solution {
+    private int[] parent;
+
+    public String smallestStringWithSwaps(String s, List<List<Integer>> pairs) {
+        int n = s.length();
+        parent = new int[n];
+        Arrays.setAll(parent, i -> i);
+
+        // Union indices in each pair
+        for (List<Integer> p : pairs) {
+            int a = find(p.get(0));
+            int b = find(p.get(1));
+            parent[a] = b;
+        }
+
+        // Group characters by their root parent
+        List<Character>[] comps = new List[n];
+        for (int i = 0; i < n; i++) {
+            comps[i] = new ArrayList<>();
+        }
+        char[] arr = s.toCharArray();
+        for (int i = 0; i < n; i++) {
+            comps[find(i)].add(arr[i]);
+        }
+
+        // Sort each component's chars descending to use pop()
+        for (List<Character> comp : comps) {
+            comp.sort((a, b) -> b - a);
+        }
+
+        // Build answer by picking smallest available for each index
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            List<Character> comp = comps[find(i)];
+            sb.append(comp.remove(comp.size() - 1));
+        }
+        return sb.toString();
+    }
+
+    // Path-compressed find
+    private int find(int x) {
+        if (parent[x] != x) {
+            parent[x] = find(parent[x]);
+        }
+        return parent[x];
+    }
+}
