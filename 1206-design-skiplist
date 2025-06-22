@@ -1,0 +1,83 @@
+import java.util.Random;
+
+public class Skiplist {
+    private static final int MAX_LEVEL = 32;
+    private static final double P = 0.25;
+    private static final Random RAND = new Random();
+
+    static class Node {
+        int val;
+        Node[] next;
+
+        Node(int val, int level) {
+            this.val = val;
+            next = new Node[level];
+        }
+    }
+
+    private final Node head = new Node(-1, MAX_LEVEL);
+    private int levelCount = 0;
+
+    // Search for a target value
+    public boolean search(int target) {
+        Node curr = head;
+        for (int i = levelCount - 1; i >= 0; i--) {
+            curr = findClosest(curr, i, target);
+            if (curr.next[i] != null && curr.next[i].val == target) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Add a number to the skiplist
+    public void add(int num) {
+        Node curr = head;
+        int newLevel = randomLevel();
+        Node newNode = new Node(num, newLevel);
+        levelCount = Math.max(levelCount, newLevel);
+
+        for (int i = levelCount - 1; i >= 0; i--) {
+            curr = findClosest(curr, i, num);
+            if (i < newLevel) {
+                newNode.next[i] = curr.next[i];
+                curr.next[i] = newNode;
+            }
+        }
+    }
+
+    // Erase a number (remove one occurrence)
+    public boolean erase(int num) {
+        Node curr = head;
+        boolean found = false;
+        for (int i = levelCount - 1; i >= 0; i--) {
+            curr = findClosest(curr, i, num);
+            if (curr.next[i] != null && curr.next[i].val == num) {
+                curr.next[i] = curr.next[i].next[i];
+                found = true;
+            }
+        }
+        // Decrease levelCount if top levels are empty
+        while (levelCount > 1 && head.next[levelCount - 1] == null) {
+            levelCount--;
+        }
+        return found;
+    }
+
+    // Helper: return the node right before the target or insert position
+    private Node findClosest(Node node, int lvl, int target) {
+        while (node.next[lvl] != null && node.next[lvl].val < target) {
+            node = node.next[lvl];
+        }
+        return node;
+    }
+
+    // Randomly determine level of new node
+    private static int randomLevel() {
+        int lvl = 1;
+        while (lvl < MAX_LEVEL && RAND.nextDouble() < P) {
+            lvl++;
+        }
+        return lvl;
+    }
+}
