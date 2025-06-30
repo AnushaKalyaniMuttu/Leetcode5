@@ -1,0 +1,34 @@
+class Solution {
+    private int[][] grid;
+    private int rows, cols;
+    private final int[] dirs = {-1, 0, 1, 0, -1};
+
+    public int getMaximumGold(int[][] grid) {
+        this.grid = grid;
+        rows = grid.length;
+        cols = grid[0].length;
+        int maxGold = 0;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                maxGold = Math.max(maxGold, dfs(i, j));
+            }
+        }
+        return maxGold;
+    }
+
+    private int dfs(int r, int c) {
+        if (r < 0 || r >= rows || c < 0 || c >= cols || grid[r][c] == 0) {
+            return 0;
+        }
+        int gold = grid[r][c];
+        grid[r][c] = 0;  // mark visited
+
+        int best = 0;
+        for (int k = 0; k < 4; k++) {
+            best = Math.max(best, dfs(r + dirs[k], c + dirs[k + 1]));
+        }
+
+        grid[r][c] = gold;  // backtrack
+        return gold + best;
+    }
+}
