@@ -1,0 +1,22 @@
+class Solution {
+    public int countVowelPermutation(int n) {
+        final int MOD = 1_000_000_007;
+        long a = 1, e = 1, i = 1, o = 1, u = 1;
+
+        for (int len = 2; len <= n; len++) {
+            long aNew = (e + i + u) % MOD; // 'a' can follow 'e', 'i', 'u'
+            long eNew = (a + i) % MOD;     // 'e' can follow 'a', 'i'
+            long iNew = (e + o) % MOD;     // 'i' can follow 'e', 'o'
+            long oNew = i % MOD;           // 'o' can follow 'i'
+            long uNew = (i + o) % MOD;     // 'u' can follow 'i', 'o'
+
+            a = aNew;
+            e = eNew;
+            i = iNew;
+            o = oNew;
+            u = uNew;
+        }
+
+        return (int)((a + e + i + o + u) % MOD);
+    }
+}
