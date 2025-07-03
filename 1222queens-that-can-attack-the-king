@@ -1,0 +1,27 @@
+class Solution {
+    public List<List<Integer>> queensAttacktheKing(int[][] queens, int[] king) {
+        int n = 8;
+        boolean[][] hasQueen = new boolean[n][n];
+        for (int[] q : queens) {
+            hasQueen[q[0]][q[1]] = true;
+        }
+
+        List<List<Integer>> result = new ArrayList<>();
+        // Explore in 8 directions around the king
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dy = -1; dy <= 1; dy++) {
+                if (dx == 0 && dy == 0) continue;
+                int x = king[0] + dx, y = king[1] + dy;
+                while (x >= 0 && x < n && y >= 0 && y < n) {
+                    if (hasQueen[x][y]) {
+                        result.add(List.of(x, y));
+                        break;
+                    }
+                    x += dx;
+                    y += dy;
+                }
+            }
+        }
+        return result;
+    }
+}
