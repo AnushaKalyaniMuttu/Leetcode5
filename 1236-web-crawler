@@ -1,0 +1,31 @@
+import java.util.*;
+
+class Solution {
+    public List<String> crawl(String startUrl, HtmlParser htmlParser) {
+        Queue<String> queue = new LinkedList<>();
+        Set<String> visited = new HashSet<>();
+        
+        String host = getHost(startUrl);
+        queue.offer(startUrl);
+        visited.add(startUrl);
+        
+        while (!queue.isEmpty()) {
+            String url = queue.poll();
+            for (String nextUrl : htmlParser.getUrls(url)) {
+                if (!visited.contains(nextUrl) && getHost(nextUrl).equals(host)) {
+                    visited.add(nextUrl);
+                    queue.offer(nextUrl);
+                }
+            }
+        }
+        return new ArrayList<>(visited);
+    }
+    
+    private String getHost(String url) {
+        // Extract host name after "http://"
+        int start = url.indexOf("://") + 3;
+        int end = url.indexOf('/', start);
+        if (end == -1) return url.substring(start);
+        return url.substring(start, end);
+    }
+}
