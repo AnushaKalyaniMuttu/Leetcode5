@@ -1,0 +1,41 @@
+class Solution {
+    public int dieSimulator(int n, int[] rollMax) {
+        int MOD = 1_000_000_007;
+        int[][][] dp = new int[n + 1][6][16];  // [roll count][face][consecutive count]
+        
+        // Initialize: one roll of each face, count 1
+        for (int i = 0; i < 6; i++) {
+            dp[1][i][1] = 1;
+        }
+
+        // Build DP table
+        for (int roll = 2; roll <= n; roll++) {
+            for (int last = 0; last < 6; last++) {
+                for (int count = 1; count <= rollMax[last]; count++) {
+                    if (dp[roll - 1][last][count] == 0) continue;
+
+                    // Try to roll a new face
+                    for (int newFace = 0; newFace < 6; newFace++) {
+                        if (newFace == last) {
+                            if (count + 1 <= rollMax[last]) {
+                                dp[roll][newFace][count + 1] = (dp[roll][newFace][count + 1] + dp[roll - 1][last][count]) % MOD;
+                            }
+                        } else {
+                            dp[roll][newFace][1] = (dp[roll][newFace][1] + dp[roll - 1][last][count]) % MOD;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Sum up all valid sequences of length n
+        int result = 0;
+        for (int face = 0; face < 6; face++) {
+            for (int count = 1; count <= rollMax[face]; count++) {
+                result = (result + dp[n][face][count]) % MOD;
+            }
+        }
+
+        return result;
+    }
+}
