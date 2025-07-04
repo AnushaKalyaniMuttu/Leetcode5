@@ -1,0 +1,30 @@
+class Solution {
+    public int maximizeSweetness(int[] sweetness, int k) {
+        int left = 0, right = 0;
+        for (int v : sweetness) right += v;
+        
+        // Search for the maximum minimal sweetness achievable
+        while (left < right) {
+            int mid = (left + right + 1) >>> 1;
+            if (canMake(sweetness, k, mid)) {
+                left = mid;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return left;
+    }
+    
+    private boolean canMake(int[] arr, int x, int k) {
+        int sum = 0, count = 0;
+        for (int v : arr) {
+            sum += v;
+            if (sum >= x) {
+                count++;
+                sum = 0;
+            }
+        }
+        // We need at least k+1 pieces with ≥ x sweetness
+        return count > k;
+    }
+}
