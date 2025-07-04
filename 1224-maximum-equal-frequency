@@ -1,0 +1,40 @@
+class Solution {
+    public int maxEqualFreq(int[] nums) {
+        Map<Integer, Integer> count = new HashMap<>();
+        Map<Integer, Integer> freq = new HashMap<>();
+        int res = 0, maxFreq = 0;
+
+        for (int i = 0; i < nums.length; i++) {
+            int x = nums[i];
+            int prevCount = count.getOrDefault(x, 0);
+
+            if (prevCount > 0) {
+                freq.put(prevCount, freq.get(prevCount) - 1);
+                if (freq.get(prevCount) == 0) freq.remove(prevCount);
+            }
+
+            int newCount = prevCount + 1;
+            count.put(x, newCount);
+            freq.put(newCount, freq.getOrDefault(newCount, 0) + 1);
+            maxFreq = Math.max(maxFreq, newCount);
+
+            int total = i + 1;
+
+            boolean ok =
+                // Case 1: all counts are 1
+                maxFreq == 1 ||
+
+                // Case 2: one number has freq 1, rest have maxFreq
+                freq.get(maxFreq) * maxFreq + 1 == total ||
+
+                // Case 3: one number has freq maxFreq - 1, and one number has maxFreq
+                freq.get(maxFreq) == 1 && freq.getOrDefault(maxFreq - 1, 0) * (maxFreq - 1) + maxFreq == total;
+
+            if (ok) {
+                res = total;
+            }
+        }
+
+        return res;
+    }
+}
