@@ -1,0 +1,10 @@
+class Solution {
+    public int missingNumber(int[] arr) {
+        int n = arr.length;
+        // Total terms originally is n+1
+        int sumExpected = (arr[0] + arr[n - 1]) * (n + 1) / 2;
+        int sumActual = 0;
+        for (int x : arr) sumActual += x;
+        return sumExpected - sumActual;
+    }
+}
