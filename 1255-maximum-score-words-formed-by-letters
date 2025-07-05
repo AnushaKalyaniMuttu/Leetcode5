@@ -1,0 +1,55 @@
+public class Solution {
+    private int maxScore = 0;
+    private int[] score;
+
+    public int maxScoreWords(String[] words, char[] letters, int[] score) {
+        this.score = score;
+        int[] letterCount = new int[26];
+        for (char c : letters) {
+            letterCount[c - 'a']++;
+        }
+        backtrack(words, letterCount, 0, 0);
+        return maxScore;
+    }
+
+    private void backtrack(String[] words, int[] letterCount, int index, int currentScore) {
+        if (index == words.length) {
+            maxScore = Math.max(maxScore, currentScore);
+            return;
+        }
+
+        // Option 1: skip current word
+        backtrack(words, letterCount, index + 1, currentScore);
+
+        // Option 2: use current word if possible
+        String word = words[index];
+        int[] wordCount = new int[26];
+        for (char c : word.toCharArray()) {
+            wordCount[c - 'a']++;
+        }
+
+        // Check if we have enough letters
+        for (int i = 0; i < 26; i++) {
+            if (wordCount[i] > letterCount[i]) {
+                return; // can't form this word
+            }
+        }
+
+        // Use letters and add score
+        for (int i = 0; i < 26; i++) {
+            letterCount[i] -= wordCount[i];
+        }
+
+        int wordScore = 0;
+        for (char c : word.toCharArray()) {
+            wordScore += score[c - 'a'];
+        }
+
+        backtrack(words, letterCount, index + 1, currentScore + wordScore);
+
+        // Backtrack - restore letters
+        for (int i = 0; i < 26; i++) {
+            letterCount[i] += wordCount[i];
+        }
+    }
+}
