@@ -1,0 +1,23 @@
+WITH ProductSales AS (
+    SELECT
+        p.product_id,
+        SUM(u.units * p.price) AS total_revenue,
+        SUM(u.units) AS total_units
+    FROM
+        Prices p
+    LEFT JOIN
+        UnitsSold u
+        ON p.product_id = u.product_id
+        AND u.purchase_date BETWEEN p.start_date AND p.end_date
+    GROUP BY
+        p.product_id
+)
+
+SELECT
+    product_id,
+    CASE 
+        WHEN total_units IS NULL OR total_units = 0 THEN 0
+        ELSE ROUND(total_revenue / total_units, 2)
+    END AS average_price
+FROM
+    ProductSales;
