@@ -1,0 +1,47 @@
+public class Solution {
+    private int m, n;
+    private int[][] grid;
+    
+    public int closedIsland(int[][] grid) {
+        this.grid = grid;
+        m = grid.length;
+        n = grid[0].length;
+        
+        // Remove lands connected to edges by marking them visited
+        for (int i = 0; i < m; i++) {
+            dfs(i, 0);
+            dfs(i, n - 1);
+        }
+        for (int j = 0; j < n; j++) {
+            dfs(0, j);
+            dfs(m - 1, j);
+        }
+        
+        int count = 0;
+        // Count closed islands
+        for (int i = 1; i < m - 1; i++) {
+            for (int j = 1; j < n - 1; j++) {
+                if (grid[i][j] == 0 && dfs(i, j)) {
+                    count++;
+                }
+            }
+        }
+        
+        return count;
+    }
+    
+    // Returns true if this island is closed
+    private boolean dfs(int i, int j) {
+        if (i < 0 || i >= m || j < 0 || j >= n) return false; // touches edge => not closed
+        if (grid[i][j] == 1) return true; // water boundary
+        
+        grid[i][j] = 1; // mark visited
+        
+        boolean up = dfs(i - 1, j);
+        boolean down = dfs(i + 1, j);
+        boolean left = dfs(i, j - 1);
+        boolean right = dfs(i, j + 1);
+        
+        return up && down && left && right;
+    }
+}
