@@ -1,0 +1,11 @@
+class Solution {
+    public List<Integer> circularPermutation(int n, int start) {
+        int total = 1 << n; // 2^n
+        List<Integer> result = new ArrayList<>(total);
+        for (int i = 0; i < total; i++) {
+            // Generate the i-th Gray code, then XOR with 'start' to rotate
+            result.add((i ^ (i >> 1)) ^ start);
+        }
+        return result;
+    }
+}
