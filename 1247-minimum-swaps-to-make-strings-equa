@@ -1,0 +1,26 @@
+public class Solution {
+    public int minimumSwap(String s1, String s2) {
+        int xy = 0, yx = 0;
+        int n = s1.length();
+
+        for (int i = 0; i < n; i++) {
+            char c1 = s1.charAt(i);
+            char c2 = s2.charAt(i);
+            if (c1 != c2) {
+                if (c1 == 'x') xy++;
+                else yx++;
+            }
+        }
+
+        // If sum of mismatches is odd, impossible to fix
+        if ((xy + yx) % 2 != 0) return -1;
+
+        // Number of swaps:
+        // Every two same kind mismatches can be fixed in 1 swap
+        int swaps = xy / 2 + yx / 2;
+        // If one mismatch of each kind left, 2 more swaps needed
+        swaps += (xy % 2) * 2;
+
+        return swaps;
+    }
+}
