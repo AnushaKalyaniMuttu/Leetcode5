@@ -1,0 +1,57 @@
+class Solution {
+    private int best = Integer.MAX_VALUE;
+
+    public int tilingRectangle(int n, int m) {
+        if (n == m) return 1;  // if it's a square, only 1 tile needed
+        int H = Math.max(n, m);
+        int W = Math.min(n, m);
+        int[] heights = new int[W];  // represents current height of each column
+        backtrack(heights, H, 0);
+        return best;
+    }
+
+    private void backtrack(int[] heights, int H, int used) {
+        if (used >= best) return;  // pruning: already worse than best found
+
+        // Find the leftmost column with the lowest height
+        int minHeight = Integer.MAX_VALUE;
+        int idx = -1;
+        for (int i = 0; i < heights.length; i++) {
+            if (heights[i] < minHeight) {
+                minHeight = heights[i];
+                idx = i;
+            }
+        }
+
+        // If all columns are filled to height H, update best
+        if (minHeight == H) {
+            best = used;
+            return;
+        }
+
+        int maxLen = 1;
+        while (idx + maxLen <= heights.length && isFlat(heights, idx, idx + maxLen, minHeight)
+                && minHeight + maxLen <= H) {
+            maxLen++;
+        }
+
+        // Try placing square tiles from largest to smallest
+        for (int len = maxLen - 1; len > 0; len--) {
+            for (int k = 0; k < len; k++) {
+                heights[idx + k] += len;
+            }
+            backtrack(heights, H, used + 1);
+            for (int k = 0; k < len; k++) {
+                heights[idx + k] -= len;
+            }
+        }
+    }
+
+    // Helper to check if a range is flat and equal to targetHeight
+    private boolean isFlat(int[] heights, int start, int end, int targetHeight) {
+        for (int i = start; i < end; i++) {
+            if (heights[i] != targetHeight) return false;
+        }
+        return true;
+    }
+}
