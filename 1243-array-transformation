@@ -1,0 +1,19 @@
+class Solution {
+    public List<Integer> transformArray(int[] arr) {
+        boolean isTransforming = true;
+        while (isTransforming) {
+            isTransforming = false;
+            int[] tempArr = arr.clone();
+            for (int i = 1; i < arr.length - 1; ++i) {
+                if (tempArr[i - 1] > tempArr[i] && tempArr[i] < tempArr[i + 1]) {
+                    ++arr[i];
+                    isTransforming = true;
+                } else if (tempArr[i - 1] < tempArr[i] && tempArr[i] > tempArr[i + 1]) {
+                    --arr[i];
+                    isTransforming = true;
+                }
+            }
+        }
+        return Arrays.stream(arr).boxed().collect(Collectors.toList());
+    }
+}
