@@ -1,0 +1,45 @@
+import java.util.*;
+
+class Solution {
+    private int diameter = 0;
+
+    public int treeDiameter(int[][] edges) {
+        int n = edges.length + 1;
+        List<Integer>[] graph = new List[n];
+        for (int i = 0; i < n; i++) {
+            graph[i] = new ArrayList<>();
+        }
+
+        // Build the graph
+        for (int[] edge : edges) {
+            graph[edge[0]].add(edge[1]);
+            graph[edge[1]].add(edge[0]);
+        }
+
+        // Perform DFS from an arbitrary node (e.g., node 0)
+        int[] farthestNode = new int[1];
+        dfs(graph, 0, -1, 0, farthestNode);
+
+        // Perform DFS from the farthest node found
+        boolean[] visited = new boolean[n];
+        visited[farthestNode[0]] = true;
+        dfs(graph, farthestNode[0], -1, 0, null);
+
+        return diameter;
+    }
+
+    private void dfs(List<Integer>[] graph, int node, int parent, int length, int[] farthestNode) {
+        if (farthestNode != null) {
+            if (length > diameter) {
+                diameter = length;
+                farthestNode[0] = node;
+            }
+        }
+
+        for (int neighbor : graph[node]) {
+            if (neighbor != parent) {
+                dfs(graph, neighbor, node, length + 1, farthestNode);
+            }
+        }
+    }
+}
