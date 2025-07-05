@@ -1,0 +1,52 @@
+import java.util.*;
+
+class Leaderboard {
+    private Map<Integer, Integer> playerScores;
+    private TreeMap<Integer, Integer> scoreCounts;
+
+    public Leaderboard() {
+        playerScores = new HashMap<>();
+        scoreCounts = new TreeMap<>(Collections.reverseOrder());
+    }
+
+    public void addScore(int playerId, int score) {
+        int oldScore = playerScores.getOrDefault(playerId, 0);
+        int newScore = oldScore + score;
+        playerScores.put(playerId, newScore);
+
+        // Update scoreCounts map
+        scoreCounts.put(oldScore, scoreCounts.getOrDefault(oldScore, 0) - 1);
+        if (scoreCounts.get(oldScore) == 0) {
+            scoreCounts.remove(oldScore);
+        }
+        scoreCounts.put(newScore, scoreCounts.getOrDefault(newScore, 0) + 1);
+    }
+
+    public int top(int K) {
+        int sum = 0;
+        int count = 0;
+        for (Map.Entry<Integer, Integer> entry : scoreCounts.entrySet()) {
+            int score = entry.getKey();
+            int frequency = entry.getValue();
+            for (int i = 0; i < frequency; i++) {
+                sum += score;
+                count++;
+                if (count == K) {
+                    return sum;
+                }
+            }
+        }
+        return sum;
+    }
+
+    public void reset(int playerId) {
+        int score = playerScores.getOrDefault(playerId, 0);
+        if (score > 0) {
+            playerScores.put(playerId, 0);
+            scoreCounts.put(score, scoreCounts.get(score) - 1);
+            if (scoreCounts.get(score) == 0) {
+                scoreCounts.remove(score);
+            }
+        }
+    }
+}
