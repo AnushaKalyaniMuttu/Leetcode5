@@ -1,0 +1,26 @@
+public class Solution {
+    public int numberOfSubarrays(int[] nums, int k) {
+        int n = nums.length;
+        List<Integer> oddIndices = new ArrayList<>();
+        
+        // Collect indices of odd numbers
+        for (int i = 0; i < n; i++) {
+            if (nums[i] % 2 == 1) {
+                oddIndices.add(i);
+            }
+        }
+        
+        // Add sentinel values correctly at start and end
+        oddIndices.add(0, -1);  // add -1 at the start (index 0)
+        oddIndices.add(n);      // add n at the end
+        
+        int result = 0;
+        for (int i = 1; i + k < oddIndices.size(); i++) {
+            int left = oddIndices.get(i) - oddIndices.get(i - 1);
+            int right = oddIndices.get(i + k) - oddIndices.get(i + k - 1);
+            result += left * right;
+        }
+        
+        return result;
+    }
+}
