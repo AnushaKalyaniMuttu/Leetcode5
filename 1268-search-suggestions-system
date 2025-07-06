@@ -1,0 +1,33 @@
+import java.util.*;
+
+class Solution {
+    public List<List<String>> suggestedProducts(String[] products, String searchWord) {
+        Arrays.sort(products);
+        List<List<String>> result = new ArrayList<>();
+        
+        int start = 0;
+        int n = products.length;
+        for (int i = 1; i <= searchWord.length(); i++) {
+            String prefix = searchWord.substring(0, i);
+            
+            // Move start forward while product is lex less than prefix
+            while (start < n && (products[start].length() < i || 
+                    !products[start].substring(0, i).equals(prefix))) {
+                start++;
+            }
+            
+            List<String> suggestions = new ArrayList<>();
+            // Add up to 3 products starting at start matching prefix
+            for (int j = start; j < Math.min(start + 3, n); j++) {
+                if (products[j].length() >= i && products[j].substring(0, i).equals(prefix)) {
+                    suggestions.add(products[j]);
+                } else {
+                    break;
+                }
+            }
+            
+            result.add(suggestions);
+        }
+        return result;
+    }
+}
