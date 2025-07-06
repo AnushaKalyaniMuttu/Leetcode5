@@ -1,0 +1,63 @@
+class Solution {
+    private static final int[][] DIRS = {{0,1},{1,0},{0,-1},{-1,0}};
+    public int minPushBox(char[][] grid) {
+        int m = grid.length, n = grid[0].length;
+        int sx=0, sy=0, bx=0, by=0, tx=0, ty=0;
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(grid[i][j]=='S') { sx=i; sy=j; }
+                if(grid[i][j]=='B') { bx=i; by=j; }
+                if(grid[i][j]=='T') { tx=i; ty=j; }
+            }
+        }
+        Deque<int[]> dq = new ArrayDeque<>();
+        boolean[][][][] seen = new boolean[m][n][m][n];
+        dq.offer(new int[]{bx, by, sx, sy});
+        seen[bx][by][sx][sy] = true;
+        int pushes = 0;
+
+        while (!dq.isEmpty()) {
+            int size = dq.size();
+            while (size-- > 0) {
+                int[] cur = dq.poll();
+                int cbx = cur[0], cby = cur[1], psx = cur[2], psy = cur[3];
+                if (cbx == tx && cby == ty) return pushes;
+
+                for (int k = 0; k < 4; k++) {
+                    int nbx = cbx + DIRS[k][0], nby = cby + DIRS[k][1];
+                    int reqSx = cbx - DIRS[k][0], reqSy = cby - DIRS[k][1];
+                    if (nbx<0||nbx>=m||nby<0||nby>=n||grid[nbx][nby]=='#') continue;
+                    if (reqSx<0||reqSx>=m||reqSy<0||reqSy>=n||grid[reqSx][reqSy]=='#') continue;
+                    if (seen[nbx][nby][cbx][cby]) continue;
+                    if (!canReach(grid, psx, psy, reqSx, reqSy, cbx, cby)) continue;
+
+                    seen[nbx][nby][cbx][cby] = true;
+                    dq.offer(new int[]{nbx, nby, cbx, cby});
+                }
+            }
+            pushes++;
+        }
+        return -1;
+    }
+
+    private boolean canReach(char[][] grid, int sx, int sy, int tx, int ty, int bx, int by) {
+        int m = grid.length, n = grid[0].length;
+        boolean[][] seen = new boolean[m][n];
+        Deque<int[]> q = new ArrayDeque<>();
+        q.offer(new int[]{sx, sy});
+        seen[sx][sy] = true;
+        while (!q.isEmpty()) {
+            int[] p = q.poll();
+            if (p[0]==tx && p[1]==ty) return true;
+            for (int[] d : DIRS) {
+                int nx = p[0]+d[0], ny = p[1]+d[1];
+                if (nx>=0&&nx<m&&ny>=0&&ny<n && !seen[nx][ny] && grid[nx][ny]!='#' 
+                    && !(nx==bx && ny==by)) {
+                    seen[nx][ny] = true;
+                    q.offer(new int[]{nx, ny});
+                }
+            }
+        }
+        return false;
+    }
+}
