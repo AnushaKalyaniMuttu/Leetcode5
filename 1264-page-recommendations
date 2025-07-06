@@ -1,0 +1,13 @@
+WITH Friends AS (
+  SELECT user2_id AS friend_id FROM Friendship WHERE user1_id = 1
+  UNION
+  SELECT user1_id AS friend_id FROM Friendship WHERE user2_id = 1
+)
+SELECT DISTINCT L.page_id AS recommended_page
+FROM Likes AS L
+JOIN Friends F ON L.user_id = F.friend_id
+WHERE L.page_id NOT IN (
+  SELECT page_id
+  FROM Likes
+  WHERE user_id = 1
+);
