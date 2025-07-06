@@ -1,0 +1,23 @@
+import java.util.*;
+
+class Solution {
+    public int numEmployees(int[][] relations, int headID) {
+        Map<Integer, List<Integer>> managerToEmployees = new HashMap<>();
+        for (int[] rel : relations) {
+            int employee = rel[0], manager = rel[1];
+            managerToEmployees.computeIfAbsent(manager, k -> new ArrayList<>()).add(employee);
+        }
+        
+        return dfs(headID, managerToEmployees);
+    }
+    
+    private int dfs(int manager, Map<Integer, List<Integer>> map) {
+        if (!map.containsKey(manager)) return 0; // no reports
+        
+        int count = 0;
+        for (int employee : map.get(manager)) {
+            count += 1 + dfs(employee, map);
+        }
+        return count;
+    }
+}
