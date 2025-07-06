@@ -1,0 +1,65 @@
+class Solution {
+    private Map<String, String> parent = new HashMap<>();
+    private Map<String, List<String>> groups = new HashMap<>();
+    private List<String> result = new ArrayList<>();
+    private String[] words;
+    private List<String> current = new ArrayList<>();
+
+    public List<String> generateSentences(List<List<String>> synonyms, String text) {
+        // Step 1: initialize DSU parent pointers
+        for (List<String> pair : synonyms) {
+            for (String w : pair) {
+                parent.putIfAbsent(w, w);
+            }
+        }
+        // Step 2: union operation
+        for (List<String> pair : synonyms) {
+            union(pair.get(0), pair.get(1));
+        }
+        // Step 3: group synonyms by their root parent
+        for (String w : parent.keySet()) {
+            String root = find(w);
+            groups.computeIfAbsent(root, k -> new ArrayList<>()).add(w);
+        }
+        // Sort each group for lex order
+        for (List<String> list : groups.values()) {
+            Collections.sort(list);
+        }
+        // Prepare words and run DFS
+        words = text.split("\\s+");
+        dfs(0);
+        return result;
+    }
+
+    private void dfs(int idx) {
+        if (idx == words.length) {
+            result.add(String.join(" ", current));
+            return;
+        }
+        String w = words[idx];
+        if (parent.containsKey(w)) {
+            List<String> syns = groups.get(find(w));
+            for (String s : syns) {
+                current.add(s);
+                dfs(idx + 1);
+                current.remove(current.size() - 1);
+            }
+        } else {
+            current.add(w);
+            dfs(idx + 1);
+            current.remove(current.size() - 1);
+        }
+    }
+
+    private String find(String x) {
+        parent.put(x, parent.get(x).equals(x) ? x : find(parent.get(x)));
+        return parent.get(x);
+    }
+
+    private void union(String a, String b) {
+        String pa = find(a), pb = find(b);
+        if (!pa.equals(pb)) {
+            parent.put(pb, pa);
+        }
+    }
+}
