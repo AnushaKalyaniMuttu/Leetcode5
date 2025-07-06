@@ -1,0 +1,16 @@
+class Solution {
+    public int numberOfWays(int numPeople) {
+        final int MOD = (int)1e9 + 7;
+        int m = numPeople / 2;
+        long[] dp = new long[m + 1];
+        dp[0] = 1;
+
+        // dp[i]: number of valid pairings with 2*i people
+        for (int i = 1; i <= m; i++) {
+            for (int j = 0; j < i; j++) {
+                dp[i] = (dp[i] + dp[j] * dp[i - 1 - j]) % MOD;
+            }
+        }
+        return (int) dp[m];
+    }
+}
