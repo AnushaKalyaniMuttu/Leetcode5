@@ -1,0 +1,29 @@
+class Solution {
+    private static final int MOD = 1_000_000_007;
+    
+    public int numWays(int steps, int arrLen) {
+        int maxPos = Math.min(arrLen - 1, steps);
+        int[][] dp = new int[steps + 1][maxPos + 1];
+        
+        dp[0][0] = 1; // Start at position 0 with 0 steps
+        
+        for (int step = 1; step <= steps; step++) {
+            for (int pos = 0; pos <= maxPos; pos++) {
+                // Stay in the same position
+                dp[step][pos] = dp[step - 1][pos];
+                
+                // Move from left position if possible
+                if (pos - 1 >= 0) {
+                    dp[step][pos] = (dp[step][pos] + dp[step - 1][pos - 1]) % MOD;
+                }
+                
+                // Move from right position if possible
+                if (pos + 1 <= maxPos) {
+                    dp[step][pos] = (dp[step][pos] + dp[step - 1][pos + 1]) % MOD;
+                }
+            }
+        }
+        
+        return dp[steps][0];
+    }
+}
