@@ -1,0 +1,30 @@
+import java.util.*;
+
+class Solution {
+    public List<int[]> removeInterval(int[][] intervals, int[] toBeRemoved) {
+        List<int[]> result = new ArrayList<>();
+        int remStart = toBeRemoved[0];
+        int remEnd = toBeRemoved[1];
+        
+        for (int[] interval : intervals) {
+            int start = interval[0];
+            int end = interval[1];
+            
+            // No overlap, interval ends before toBeRemoved starts
+            if (end <= remStart || start >= remEnd) {
+                result.add(interval);
+            } else {
+                // Left side remains
+                if (start < remStart) {
+                    result.add(new int[]{start, remStart});
+                }
+                // Right side remains
+                if (end > remEnd) {
+                    result.add(new int[]{remEnd, end});
+                }
+            }
+        }
+        
+        return result;
+    }
+}
