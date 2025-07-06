@@ -1,0 +1,21 @@
+class Solution {
+    public String toHexspeak(String num) {
+        long decimal = Long.parseLong(num);
+        String hex = Long.toHexString(decimal).toUpperCase();
+        
+        StringBuilder sb = new StringBuilder();
+        for (char c : hex.toCharArray()) {
+            if (c == '0') {
+                sb.append('O');
+            } else if (c == '1') {
+                sb.append('I');
+            } else if (c >= 'A' && c <= 'F') {
+                sb.append(c);
+            } else {
+                // digits 2-9 not allowed
+                return "ERROR";
+            }
+        }
+        return sb.toString();
+    }
+}
