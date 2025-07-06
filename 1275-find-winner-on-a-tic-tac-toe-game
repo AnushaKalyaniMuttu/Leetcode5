@@ -1,0 +1,33 @@
+class Solution {
+    public String tictactoe(int[][] moves) {
+        int n = 3;
+        int[][] board = new int[n][n]; // 0 = empty, 1 = A, 2 = B
+        
+        for (int i = 0; i < moves.length; i++) {
+            int r = moves[i][0];
+            int c = moves[i][1];
+            int player = (i % 2 == 0) ? 1 : 2;
+            board[r][c] = player;
+            
+            if (checkWin(board, player, r, c)) {
+                return player == 1 ? "A" : "B";
+            }
+        }
+        
+        return moves.length == 9 ? "Draw" : "Pending";
+    }
+    
+    private boolean checkWin(int[][] board, int player, int r, int c) {
+        int n = board.length;
+        boolean winRow = true, winCol = true, winDiag = true, winAntiDiag = true;
+        
+        for (int i = 0; i < n; i++) {
+            if (board[r][i] != player) winRow = false;
+            if (board[i][c] != player) winCol = false;
+            if (board[i][i] != player) winDiag = false;
+            if (board[i][n - 1 - i] != player) winAntiDiag = false;
+        }
+        
+        return winRow || winCol || winDiag || winAntiDiag;
+    }
+}
