@@ -1,0 +1,35 @@
+import java.util.*;
+
+class Solution {
+    private List<List<Integer>> tree;
+    private int[] values;
+    private int remainingNodes;
+    
+    public int deleteTreeNodes(int nodes, int[] parent, int[] value) {
+        this.values = value;
+        tree = new ArrayList<>();
+        for (int i = 0; i < nodes; i++) {
+            tree.add(new ArrayList<>());
+        }
+        for (int i = 0; i < nodes; i++) {
+            if (parent[i] != -1) {
+                tree.get(parent[i]).add(i);
+            }
+        }
+        
+        remainingNodes = 0;
+        dfs(0);  // root is always node 0
+        return remainingNodes;
+    }
+    
+    private int dfs(int node) {
+        int sum = values[node];
+        for (int child : tree.get(node)) {
+            sum += dfs(child);
+        }
+        if (sum != 0) {
+            remainingNodes++;  // count this node if subtree sum != 0
+        }
+        return sum;
+    }
+}
