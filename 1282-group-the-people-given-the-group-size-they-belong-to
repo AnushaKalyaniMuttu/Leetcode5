@@ -1,0 +1,21 @@
+import java.util.*;
+import java.util.stream.*;
+
+class Solution {
+    public List<List<Integer>> groupThePeople(int[] groupSizes) {
+        Map<Integer, List<Integer>> map = new HashMap<>();
+        List<List<Integer>> result = new ArrayList<>();
+
+        IntStream.range(0, groupSizes.length).forEach(i -> {
+            int size = groupSizes[i];
+            map.computeIfAbsent(size, k -> new ArrayList<>()).add(i);
+
+            if (map.get(size).size() == size) {
+                result.add(new ArrayList<>(map.get(size)));
+                map.get(size).clear();
+            }
+        });
+
+        return result;
+    }
+}
