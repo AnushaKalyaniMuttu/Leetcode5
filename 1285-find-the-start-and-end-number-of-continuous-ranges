@@ -1,0 +1,32 @@
+class Solution {
+    public int[] searchRange(int[] nums, int target) {
+        int leftIdx = binarySearch(nums, target, true);
+        int rightIdx = binarySearch(nums, target, false);
+        return new int[]{leftIdx, rightIdx};
+    }
+
+    // If findFirst is true, finds the first occurrence of target.
+    // Otherwise finds the last occurrence.
+    private int binarySearch(int[] nums, int target, boolean findFirst) {
+        int left = 0, right = nums.length - 1;
+        int idx = -1;
+
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+
+            if (nums[mid] == target) {
+                idx = mid;
+                if (findFirst) {
+                    right = mid - 1; // move left to find first occurrence
+                } else {
+                    left = mid + 1;  // move right to find last occurrence
+                }
+            } else if (nums[mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return idx;
+    }
+}
