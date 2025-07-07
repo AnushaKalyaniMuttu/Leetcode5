@@ -1,0 +1,55 @@
+import java.util.*;
+
+class Solution {
+    public int maxCandies(int[] status, int[] candies, int[][] keys, int[][] containedBoxes, int[] initialBoxes) {
+        int n = status.length;
+        boolean[] haveKey = new boolean[n];
+        boolean[] opened = new boolean[n];
+        Set<Integer> boxes = new HashSet<>();
+        
+        for (int b : initialBoxes) {
+            boxes.add(b);
+        }
+
+        Queue<Integer> queue = new LinkedList<>();
+        queue.addAll(boxes);
+
+        int totalCandies = 0;
+
+        while (!queue.isEmpty()) {
+            int box = queue.poll();
+            
+            if (opened[box]) continue;
+            
+            // Check if box can be opened
+            if (status[box] == 1 || haveKey[box]) {
+                // Open it
+                opened[box] = true;
+                totalCandies += candies[box];
+                boxes.remove(box);
+                
+                // Add keys from this box
+                for (int k : keys[box]) {
+                    if (!haveKey[k]) {
+                        haveKey[k] = true;
+                        // If we have this box but not opened, add it to queue
+                        if (boxes.contains(k) && !opened[k]) {
+                            queue.offer(k);
+                        }
+                    }
+                }
+                // Add contained boxes to our boxes set and queue
+                for (int b : containedBoxes[box]) {
+                    if (boxes.add(b)) {  // only add if not already present
+                        queue.offer(b);
+                    }
+                }
+            } else {
+                // Can't open now, add back to the set to try later (but not queue!)
+                // Avoid infinite loop by not re-adding to queue here
+            }
+        }
+
+        return totalCandies;
+    }
+}
