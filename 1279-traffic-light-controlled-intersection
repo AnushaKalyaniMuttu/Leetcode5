@@ -1,0 +1,30 @@
+import java.util.concurrent.Semaphore;
+
+class TrafficLight {
+    private int greenRoad = 1; // 1 for road A, 2 for road B
+    private final Semaphore lock = new Semaphore(1);
+
+    public TrafficLight() {
+    }
+
+    public void carArrived(
+        int carId,            // ID of the car
+        int roadId,           // ID of the road the car travels on. Can be 1 (road A) or 2 (road B)
+        int direction,        // Direction of the car
+        Runnable turnGreen,   // turnGreen() is called when the light on the road should be turned green
+        Runnable crossCar     // crossCar() is called to make the car cross the intersection
+    ) {
+        try {
+            lock.acquire();
+            if (greenRoad != roadId) {
+                turnGreen.run();
+                greenRoad = roadId;
+            }
+            crossCar.run();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } finally {
+            lock.release();
+        }
+    }
+}
