@@ -1,0 +1,31 @@
+import java.util.*;
+
+class Solution {
+    public int maxFreq(String s, int maxLetters, int minSize, int maxSize) {
+        // We only need to consider substrings of length minSize,
+        // since longer substrings are less frequent.
+        Map<String, Integer> countMap = new HashMap<>();
+        int maxCount = 0;
+
+        for (int i = 0; i <= s.length() - minSize; i++) {
+            String sub = s.substring(i, i + minSize);
+            if (uniqueLetters(sub) <= maxLetters) {
+                countMap.put(sub, countMap.getOrDefault(sub, 0) + 1);
+                maxCount = Math.max(maxCount, countMap.get(sub));
+            }
+        }
+        return maxCount;
+    }
+
+    private int uniqueLetters(String s) {
+        boolean[] seen = new boolean[26];
+        int unique = 0;
+        for (char c : s.toCharArray()) {
+            if (!seen[c - 'a']) {
+                seen[c - 'a'] = true;
+                unique++;
+            }
+        }
+        return unique;
+    }
+}
