@@ -1,0 +1,48 @@
+class Solution {
+    public int maxSideLength(int[][] mat, int threshold) {
+        int m = mat.length, n = mat[0].length;
+
+        // Prefix sum matrix
+        int[][] prefix = new int[m + 1][n + 1];
+
+        // Compute prefix sums
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                prefix[i][j] = mat[i - 1][j - 1] 
+                             + prefix[i - 1][j] 
+                             + prefix[i][j - 1] 
+                             - prefix[i - 1][j - 1];
+            }
+        }
+
+        int left = 0, right = Math.min(m, n);
+        int result = 0;
+
+        // Binary search on side length
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (existsSquare(prefix, mid, threshold)) {
+                result = mid;
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+
+        return result;
+    }
+
+    private boolean existsSquare(int[][] prefix, int side, int threshold) {
+        if (side == 0) return true;
+        int m = prefix.length - 1;
+        int n = prefix[0].length - 1;
+
+        for (int i = side; i <= m; i++) {
+            for (int j = side; j <= n; j++) {
+                int sum = prefix[i][j] - prefix[i - side][j] - prefix[i][j - side] + prefix[i - side][j - side];
+                if (sum <= threshold) return true;
+            }
+        }
+        return false;
+    }
+}
