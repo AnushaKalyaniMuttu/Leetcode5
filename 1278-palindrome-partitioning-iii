@@ -1,0 +1,40 @@
+public class Solution {
+    public int palindromePartition(String s, int k) {
+        int n = s.length();
+        int[][] cost = new int[n][n];
+
+        // Precompute cost[i][j] = min changes to make s[i..j] a palindrome
+        for (int len = 1; len <= n; len++) {
+            for (int i = 0; i + len - 1 < n; i++) {
+                int j = i + len - 1;
+                if (i == j) {
+                    cost[i][j] = 0;
+                } else if (s.charAt(i) == s.charAt(j)) {
+                    cost[i][j] = (i + 1 <= j - 1) ? cost[i + 1][j - 1] : 0;
+                } else {
+                    cost[i][j] = ((i + 1 <= j - 1) ? cost[i + 1][j - 1] : 0) + 1;
+                }
+            }
+        }
+
+        int[][] dp = new int[n + 1][k + 1];
+        final int INF = 1000000000;
+
+        for (int i = 0; i <= n; i++) {
+            Arrays.fill(dp[i], INF);
+        }
+
+        dp[0][0] = 0;
+
+        // DP transition
+        for (int i = 1; i <= n; i++) {
+            for (int p = 1; p <= Math.min(i, k); p++) {
+                for (int j = p - 1; j < i; j++) {
+                    dp[i][p] = Math.min(dp[i][p], dp[j][p - 1] + cost[j][i - 1]);
+                }
+            }
+        }
+
+        return dp[n][k];
+    }
+}
