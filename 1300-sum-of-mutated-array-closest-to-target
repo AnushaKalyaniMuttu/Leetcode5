@@ -1,0 +1,38 @@
+class Solution {
+    public int findBestValue(int[] arr, int target) {
+        int left = 0, right = 0;
+        for (int num : arr) {
+            right = Math.max(right, num);
+        }
+
+        int result = 0;
+        int minDiff = Integer.MAX_VALUE;
+
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            int sum = getMutatedSum(arr, mid);
+
+            int diff = Math.abs(sum - target);
+            if (diff < minDiff || (diff == minDiff && mid < result)) {
+                minDiff = diff;
+                result = mid;
+            }
+
+            if (sum < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+
+        return result;
+    }
+
+    private int getMutatedSum(int[] arr, int value) {
+        int sum = 0;
+        for (int num : arr) {
+            sum += Math.min(num, value);
+        }
+        return sum;
+    }
+}
