@@ -1,0 +1,37 @@
+import java.util.*;
+
+class Solution {
+    public List<String> mostPopularWeather(int[][] country, String[] weather) {
+        // Map from country id -> Map of weather type -> frequency
+        Map<Integer, Map<String, Integer>> freqMap = new HashMap<>();
+
+        int n = country.length;
+        for (int i = 0; i < n; i++) {
+            int c = country[i][0];
+            String w = weather[i];
+            freqMap.putIfAbsent(c, new HashMap<>());
+            Map<String, Integer> wmap = freqMap.get(c);
+            wmap.put(w, wmap.getOrDefault(w, 0) + 1);
+        }
+
+        List<String> res = new ArrayList<>();
+        for (int c : freqMap.keySet()) {
+            Map<String, Integer> wmap = freqMap.get(c);
+
+            int maxCount = 0;
+            String ans = null;
+            for (Map.Entry<String, Integer> entry : wmap.entrySet()) {
+                String w = entry.getKey();
+                int count = entry.getValue();
+
+                if (count > maxCount || (count == maxCount && (ans == null || w.compareTo(ans) < 0))) {
+                    maxCount = count;
+                    ans = w;
+                }
+            }
+            res.add(ans);
+        }
+
+        return res;
+    }
+}
