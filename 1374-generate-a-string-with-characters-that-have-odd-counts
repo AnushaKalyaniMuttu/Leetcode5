@@ -1,0 +1,13 @@
+public class Solution {
+    public String generateTheString(int n) {
+        // If n is odd, we can repeat one character n times
+        if (n % 2 == 1) {
+            return "a".repeat(n);
+        }
+        // If n is even, use (n-1) of 'a' and 1 of 'b'
+        StringBuilder sb = new StringBuilder();
+        sb.append("a".repeat(n - 1));
+        sb.append("b");
+        return sb.toString();
+    }
+}
