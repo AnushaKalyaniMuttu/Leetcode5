@@ -1,0 +1,41 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+
+class Solution {
+    private long maxProduct = 0;
+    private long totalSum = 0;
+    private final int MOD = 1_000_000_007;
+    
+    public int maxProduct(TreeNode root) {
+        totalSum = subtreeSum(root);
+        maxProduct = 0;
+        maxProductHelper(root);
+        return (int)(maxProduct % MOD);
+    }
+    
+    // Compute sum of all nodes in the tree
+    private long subtreeSum(TreeNode node) {
+        if (node == null) return 0;
+        return node.val + subtreeSum(node.left) + subtreeSum(node.right);
+    }
+    
+    // Try cutting at each subtree and update max product
+    private long maxProductHelper(TreeNode node) {
+        if (node == null) return 0;
+        long leftSum = maxProductHelper(node.left);
+        long rightSum = maxProductHelper(node.right);
+        long currSum = node.val + leftSum + rightSum;
+        
+        // Calculate product by splitting here
+        maxProduct = Math.max(maxProduct, currSum * (totalSum - currSum));
+        
+        return currSum;
+    }
+}
