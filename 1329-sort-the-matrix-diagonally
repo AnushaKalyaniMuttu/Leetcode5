@@ -1,0 +1,43 @@
+import java.util.*;
+
+class Solution {
+    public int[][] diagonalSort(int[][] mat) {
+        int m = mat.length, n = mat[0].length;
+
+        // For each diagonal starting point in the first row
+        for (int col = 0; col < n; col++) {
+            sortDiagonal(mat, 0, col, m, n);
+        }
+
+        // For each diagonal starting point in the first column (except the first row)
+        for (int row = 1; row < m; row++) {
+            sortDiagonal(mat, row, 0, m, n);
+        }
+
+        return mat;
+    }
+
+    private void sortDiagonal(int[][] mat, int row, int col, int m, int n) {
+        List<Integer> diagonal = new ArrayList<>();
+
+        int r = row, c = col;
+        // Collect elements along the diagonal
+        while (r < m && c < n) {
+            diagonal.add(mat[r][c]);
+            r++;
+            c++;
+        }
+
+        // Sort the diagonal elements
+        Collections.sort(diagonal);
+
+        // Put back sorted elements
+        r = row; c = col;
+        int idx = 0;
+        while (r < m && c < n) {
+            mat[r][c] = diagonal.get(idx++);
+            r++;
+            c++;
+        }
+    }
+}
