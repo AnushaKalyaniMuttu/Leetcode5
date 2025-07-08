@@ -1,0 +1,33 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+
+class Solution {
+    private int maxLen = 0;
+
+    public int longestZigZag(TreeNode root) {
+        dfs(root);
+        return maxLen;
+    }
+
+    // Returns [leftZigZag, rightZigZag] lengths starting at this node
+    private int[] dfs(TreeNode node) {
+        if (node == null) return new int[]{-1, -1};
+
+        int[] left = dfs(node.left);
+        int[] right = dfs(node.right);
+
+        int goLeft = left[1] + 1;   // If we move left next, previous must have come from right
+        int goRight = right[0] + 1; // If we move right next, previous from left
+
+        maxLen = Math.max(maxLen, Math.max(goLeft, goRight));
+
+        return new int[]{goLeft, goRight};
+    }
+}
