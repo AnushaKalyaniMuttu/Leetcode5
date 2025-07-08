@@ -1,0 +1,32 @@
+class Solution {
+    public int minTaps(int n, int[] ranges) {
+        // Create an array maxRange to store the furthest right reach for each left point
+        int[] maxRange = new int[n + 1];
+        
+        for (int i = 0; i <= n; i++) {
+            int left = Math.max(0, i - ranges[i]);
+            int right = Math.min(n, i + ranges[i]);
+            maxRange[left] = Math.max(maxRange[left], right);
+        }
+        
+        int tapsOpen = 0;
+        int currEnd = 0;   // Current coverage end
+        int furthest = 0;  // Furthest coverage reachable
+        
+        for (int i = 0; i <= n; i++) {
+            if (i > furthest) {
+                // Cannot move forward anymore
+                return -1;
+            }
+            furthest = Math.max(furthest, maxRange[i]);
+            
+            if (i == currEnd) {
+                tapsOpen++;
+                currEnd = furthest;
+                if (currEnd >= n) break;
+            }
+        }
+        
+        return currEnd >= n ? tapsOpen : -1;
+    }
+}
