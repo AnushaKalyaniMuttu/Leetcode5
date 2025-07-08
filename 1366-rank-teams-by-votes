@@ -1,0 +1,40 @@
+import java.util.*;
+
+public class Solution {
+    public String rankTeams(String[] votes) {
+        int n = votes[0].length();
+        Map<Character, int[]> map = new HashMap<>();
+
+        // Initialize count arrays for each team
+        for (char c : votes[0].toCharArray()) {
+            map.put(c, new int[n]);
+        }
+
+        // Count votes for each position
+        for (String vote : votes) {
+            for (int i = 0; i < vote.length(); i++) {
+                map.get(vote.charAt(i))[i]++;
+            }
+        }
+
+        // Convert map to list and sort
+        List<Character> teams = new ArrayList<>(map.keySet());
+        teams.sort((a, b) -> {
+            int[] countA = map.get(a);
+            int[] countB = map.get(b);
+            for (int i = 0; i < n; i++) {
+                if (countA[i] != countB[i]) {
+                    return countB[i] - countA[i]; // Higher count wins
+                }
+            }
+            return a - b; // Lexicographical order
+        });
+
+        // Build result string
+        StringBuilder result = new StringBuilder();
+        for (char c : teams) {
+            result.append(c);
+        }
+        return result.toString();
+    }
+}
