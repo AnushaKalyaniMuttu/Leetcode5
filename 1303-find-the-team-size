@@ -1,0 +1,8 @@
+WITH team_counts AS (
+  SELECT team_id, COUNT(1) AS team_size
+  FROM Employee
+  GROUP BY team_id
+)
+SELECT e.employee_id, tc.team_size
+FROM Employee e
+JOIN team_counts tc USING (team_id);
