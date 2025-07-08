@@ -1,0 +1,56 @@
+class Solution {
+    public List<Integer> findCities(int n, int[][] edges, int distanceThreshold) {
+        int INF = 100000000; // A large number to represent infinity
+        
+        // Step 1: Initialize the distance matrix
+        int[][] dist = new int[n][n];
+        
+        // Initially, set the distance between every pair of cities to infinity
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i != j) dist[i][j] = INF;
+            }
+        }
+        
+        // Step 2: Fill the distance matrix with direct distances from the edges
+        for (int[] edge : edges) {
+            int u = edge[0] - 1;  // 0-indexed
+            int v = edge[1] - 1;  // 0-indexed
+            int d = edge[2];
+            dist[u][v] = d;
+            dist[v][u] = d;
+        }
+        
+        // Step 3: Floyd-Warshall algorithm to compute all-pairs shortest path
+        for (int k = 0; k < n; k++) {
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    dist[i][j] = Math.min(dist[i][j], dist[i][k] + dist[k][j]);
+                }
+            }
+        }
+        
+        // Step 4: Count the number of reachable cities for each city
+        int minReachableCities = Integer.MAX_VALUE;
+        List<Integer> result = new ArrayList<>();
+        
+        for (int i = 0; i < n; i++) {
+            int reachableCities = 0;
+            for (int j = 0; j < n; j++) {
+                if (dist[i][j] <= distanceThreshold) {
+                    reachableCities++;
+                }
+            }
+            // Step 5: Track the minimum number of reachable cities
+            if (reachableCities <= minReachableCities) {
+                if (reachableCities < minReachableCities) {
+                    result.clear();
+                }
+                result.add(i + 1);  // Store the city (1-indexed)
+                minReachableCities = reachableCities;
+            }
+        }
+        
+        return result;
+    }
+}
