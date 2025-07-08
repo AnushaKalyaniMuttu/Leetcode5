@@ -1,0 +1,38 @@
+import java.util.*;
+
+class Solution {
+    public int distinctEchoSubstrings(String text) {
+        int n = text.length();
+        int base = 131;
+        long mod = (long)1e9 + 7;
+
+        // Precompute prefix hashes and powers
+        long[] hash = new long[n + 1];
+        long[] power = new long[n + 1];
+        power[0] = 1;
+        for (int i = 0; i < n; i++) {
+            hash[i + 1] = (hash[i] * base + text.charAt(i)) % mod;
+            power[i + 1] = (power[i] * base) % mod;
+        }
+
+        Set<String> result = new HashSet<>();
+
+        // Check all even-length substrings
+        for (int length = 2; length <= n; length += 2) {
+            for (int start = 0; start + length <= n; start++) {
+                int mid = start + length / 2;
+                if (getHash(hash, power, start, mid - 1, mod) == getHash(hash, power, mid, start + length - 1, mod)) {
+                    result.add(text.substring(start, start + length));
+                }
+            }
+        }
+
+        return result.size();
+    }
+
+    // Get hash of substring s[l..r]
+    private long getHash(long[] hash, long[] power, int l, int r, long mod) {
+        long val = (hash[r + 1] - hash[l] * power[r - l + 1]) % mod;
+        return val < 0 ? val + mod : val;
+    }
+}
