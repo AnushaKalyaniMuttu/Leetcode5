@@ -1,0 +1,4 @@
+SELECT a.activity_id, COUNT(DISTINCT a.person_id) AS participant_count
+FROM Activity a
+GROUP BY a.activity_id
+ORDER BY a.activity_id;
