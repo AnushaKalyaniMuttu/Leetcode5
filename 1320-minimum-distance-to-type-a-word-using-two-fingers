@@ -1,0 +1,45 @@
+class Solution {
+    private int[][] memo;
+    private int n;
+    private int[] chars;
+    
+    public int minimumDistance(String word) {
+        n = word.length();
+        chars = new int[n];
+        for (int i = 0; i < n; i++) {
+            chars[i] = word.charAt(i) - 'A';
+        }
+        memo = new int[n][27 * 27]; // 27 for no finger placed (represented by 26)
+        for (int i = 0; i < n; i++) {
+            Arrays.fill(memo[i], -1);
+        }
+        // Start: both fingers not placed (index 26)
+        return dfs(0, 26, 26);
+    }
+    
+    private int dfs(int i, int f1, int f2) {
+        if (i == n) return 0;
+        int key = f1 * 27 + f2;
+        if (memo[i][key] != -1) return memo[i][key];
+        
+        int pos = chars[i];
+        
+        // Move finger 1
+        int distF1 = (f1 == 26) ? 0 : distance(f1, pos);
+        int cost1 = distF1 + dfs(i + 1, pos, f2);
+        
+        // Move finger 2
+        int distF2 = (f2 == 26) ? 0 : distance(f2, pos);
+        int cost2 = distF2 + dfs(i + 1, f1, pos);
+        
+        memo[i][key] = Math.min(cost1, cost2);
+        return memo[i][key];
+    }
+    
+    private int distance(int a, int b) {
+        // 6 columns in keyboard
+        int x1 = a / 6, y1 = a % 6;
+        int x2 = b / 6, y2 = b % 6;
+        return Math.abs(x1 - x2) + Math.abs(y1 - y2);
+    }
+}
