@@ -1,0 +1,43 @@
+class Solution {
+    private int[][] memo;
+    private int[] jobDifficulty;
+    private int n;
+
+    public int minDifficulty(int[] jobDifficulty, int d) {
+        this.jobDifficulty = jobDifficulty;
+        this.n = jobDifficulty.length;
+        if (n < d) return -1;
+
+        memo = new int[n][d + 1];
+        for (int i = 0; i < n; i++) {
+            Arrays.fill(memo[i], -1);
+        }
+
+        return dfs(0, d);
+    }
+
+    private int dfs(int index, int daysLeft) {
+        if (daysLeft == 1) {
+            int maxDiff = 0;
+            for (int i = index; i < n; i++) {
+                maxDiff = Math.max(maxDiff, jobDifficulty[i]);
+            }
+            return maxDiff;
+        }
+
+        if (memo[index][daysLeft] != -1) return memo[index][daysLeft];
+
+        int maxDiff = 0;
+        int minTotalDiff = Integer.MAX_VALUE;
+
+        // Partition jobs from index to i on current day
+        for (int i = index; i <= n - daysLeft; i++) {
+            maxDiff = Math.max(maxDiff, jobDifficulty[i]);
+            int nextDaysDiff = dfs(i + 1, daysLeft - 1);
+            minTotalDiff = Math.min(minTotalDiff, maxDiff + nextDaysDiff);
+        }
+
+        memo[index][daysLeft] = minTotalDiff;
+        return minTotalDiff;
+    }
+}
