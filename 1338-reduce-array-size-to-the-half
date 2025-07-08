@@ -1,0 +1,31 @@
+import java.util.*;
+
+class Solution {
+    public int minSetSize(int[] arr) {
+        int n = arr.length;
+        Map<Integer, Integer> freq = new HashMap<>();
+        
+        // Count frequency of each number
+        for (int num : arr) {
+            freq.put(num, freq.getOrDefault(num, 0) + 1);
+        }
+        
+        // Create a max heap by frequency
+        PriorityQueue<Integer> pq = new PriorityQueue<>((a, b) -> b - a);
+        for (int count : freq.values()) {
+            pq.offer(count);
+        }
+        
+        int removed = 0;
+        int sets = 0;
+        int half = n / 2;
+        
+        // Remove elements greedily from the most frequent sets
+        while (removed < half) {
+            removed += pq.poll();
+            sets++;
+        }
+        
+        return sets;
+    }
+}
