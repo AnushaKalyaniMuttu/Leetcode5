@@ -1,0 +1,30 @@
+import java.util.Arrays;
+
+public class Solution {
+    // Helper method to count the number of 1 bits in the binary representation
+    private int countBits(int n) {
+        return Integer.bitCount(n);
+    }
+
+    public int[] sortByBits(int[] arr) {
+        // Convert primitive int array to Integer array
+        Integer[] nums = Arrays.stream(arr).boxed().toArray(Integer[]::new);
+
+        // Sort using custom comparator
+        Arrays.sort(nums, (a, b) -> {
+            int countA = countBits(a);
+            int countB = countBits(b);
+            if (countA == countB) {
+                return a - b;
+            }
+            return countA - countB;
+        });
+
+        // Convert Integer array back to primitive int array
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = nums[i];
+        }
+
+        return arr;
+    }
+}
