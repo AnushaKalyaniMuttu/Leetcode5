@@ -1,0 +1,14 @@
+public class Solution {
+    private static final int MOD = 1_000_000_007;
+
+    public int countOrders(int n) {
+        long result = 1;
+
+        for (int i = 1; i <= n; i++) {
+            result = (result * i) % MOD;          // factorial part for pickups
+            result = (result * (2 * i - 1)) % MOD; // ways to place delivery
+        }
+
+        return (int) result;
+    }
+}
