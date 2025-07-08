@@ -1,0 +1,6 @@
+SELECT student_name
+FROM Students
+WHERE department_id NOT IN (
+    SELECT department_id FROM Departments
+)
+ORDER BY student_name;
