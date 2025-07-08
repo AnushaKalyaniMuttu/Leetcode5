@@ -1,0 +1,5 @@
+SELECT ad_id
+FROM AdPerformance
+GROUP BY ad_id
+ORDER BY SUM(ad_revenue) DESC
+LIMIT 1;
