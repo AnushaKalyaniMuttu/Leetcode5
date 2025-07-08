@@ -1,0 +1,39 @@
+import java.util.*;
+
+public class Solution {
+    public int trustedContacts(int[][] logs, int startUser, int endTime) {
+        // Filter logs by timestamp <= endTime
+        List<int[]> filtered = new ArrayList<>();
+        for (int[] log : logs) {
+            if (log[0] <= endTime) {
+                filtered.add(log);
+            }
+        }
+
+        // Build adjacency list
+        Map<Integer, List<Integer>> graph = new HashMap<>();
+        for (int[] log : filtered) {
+            graph.computeIfAbsent(log[1], k -> new ArrayList<>()).add(log[2]);
+            graph.computeIfAbsent(log[2], k -> new ArrayList<>()).add(log[1]);
+        }
+
+        // BFS to find all reachable users from startUser
+        Set<Integer> visited = new HashSet<>();
+        Queue<Integer> queue = new LinkedList<>();
+        queue.offer(startUser);
+        visited.add(startUser);
+
+        while (!queue.isEmpty()) {
+            int user = queue.poll();
+            List<Integer> neighbors = graph.getOrDefault(user, Collections.emptyList());
+            for (int neighbor : neighbors) {
+                if (!visited.contains(neighbor)) {
+                    visited.add(neighbor);
+                    queue.offer(neighbor);
+                }
+            }
+        }
+
+        return visited.size();
+    }
+}
