@@ -1,0 +1,44 @@
+import java.util.HashMap;
+import java.util.Map;
+
+public class Cashier {
+    private int n;              // every nth customer gets discount
+    private int discount;       // discount percentage
+    private int count;          // customer count
+    private Map<Integer, Integer> priceMap;  // product_id -> price
+
+    public Cashier(int n, int discount, int[] products, int[] prices) {
+        this.n = n;
+        this.discount = discount;
+        this.count = 0;
+        priceMap = new HashMap<>();
+        for (int i = 0; i < products.length; i++) {
+            priceMap.put(products[i], prices[i]);
+        }
+    }
+
+    public double getBill(int[] product, int[] amount) {
+        count++;  // increase customer count
+        double total = 0.0;
+
+        for (int i = 0; i < product.length; i++) {
+            int p = product[i];
+            int a = amount[i];
+            total += priceMap.get(p) * a;
+        }
+
+        // Apply discount if this is the nth customer
+        if (count % n == 0) {
+            total = total * (100 - discount) / 100.0;
+        }
+
+        return total;
+    }
+}
+
+
+/**
+ * Your Cashier object will be instantiated and called as such:
+ * Cashier obj = new Cashier(n, discount, products, prices);
+ * double param_1 = obj.getBill(product,amount);
+ */
