@@ -1,0 +1,50 @@
+import java.util.*;
+
+class Solution {
+    public double frogPosition(int n, int[][] edges, int t, int target) {
+        List<List<Integer>> graph = new ArrayList<>();
+        for (int i = 0; i <= n; i++) graph.add(new ArrayList<>());
+        
+        // Build adjacency list for the tree
+        for (int[] edge : edges) {
+            graph.get(edge[0]).add(edge[1]);
+            graph.get(edge[1]).add(edge[0]);
+        }
+        
+        boolean[] visited = new boolean[n + 1];
+        return dfs(1, t, target, graph, visited, 1.0);
+    }
+    
+    private double dfs(int node, int t, int target, List<List<Integer>> graph, boolean[] visited, double prob) {
+        if (t < 0) return 0.0;
+        if (node == target) {
+            // Check if can stay here (no unvisited children) or t == 0
+            if (t == 0) return prob;
+            for (int nei : graph.get(node)) {
+                if (!visited[nei]) return 0.0; // Has unvisited children, can still jump
+            }
+            return prob;
+        }
+        
+        visited[node] = true;
+        int unvisitedCount = 0;
+        for (int nei : graph.get(node)) {
+            if (!visited[nei]) unvisitedCount++;
+        }
+        
+        if (unvisitedCount == 0) {
+            // No unvisited children, must stay here
+            visited[node] = false;
+            return node == target && t >= 0 ? prob : 0.0;
+        }
+        
+        double result = 0.0;
+        for (int nei : graph.get(node)) {
+            if (!visited[nei]) {
+                result += dfs(nei, t - 1, target, graph, visited, prob / unvisitedCount);
+            }
+        }
+        visited[node] = false;
+        return result;
+    }
+}
