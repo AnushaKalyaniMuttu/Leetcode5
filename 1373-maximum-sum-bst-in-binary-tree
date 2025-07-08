@@ -1,0 +1,59 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+
+class Solution {
+    private int maxSum = 0;
+
+    public int maxSumBST(TreeNode root) {
+        dfs(root);
+        return maxSum;
+    }
+
+    // Returns: [isBST (1/0), sum, minVal, maxVal]
+    private long[] dfs(TreeNode node) {
+        if (node == null) {
+            // Empty tree is a valid BST with sum = 0
+            return new long[]{1, 0, Long.MAX_VALUE, Long.MIN_VALUE};
+        }
+
+        long[] L = dfs(node.left);
+        long[] R = dfs(node.right);
+
+        boolean isBST = (L[0] == 1 && R[0] == 1 && node.val > L[3] && node.val < R[2]);
+
+        if (isBST) {
+            long sum = L[1] + R[1] + node.val;
+            maxSum = (int) Math.max(maxSum, sum);
+
+            long minVal = node.left != null ? L[2] : node.val;
+            long maxVal = node.right != null ? R[3] : node.val;
+
+            return new long[]{1, sum, minVal, maxVal};
+        } else {
+            // Mark as non-BST
+            return new long[]{0, 0, 0, 0};
+        }
+    }
+}
