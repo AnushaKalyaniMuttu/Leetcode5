@@ -1,0 +1,4 @@
+SELECT client_id, COUNT(*) AS transaction_count
+FROM Transactions
+GROUP BY client_id
+ORDER BY client_id;
