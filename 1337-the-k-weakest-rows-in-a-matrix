@@ -1,0 +1,39 @@
+import java.util.*;
+
+class Solution {
+    public int[] kWeakestRows(int[][] mat, int k) {
+        int m = mat.length;
+        int n = mat[0].length;
+        
+        // Priority queue to store pairs of (soldierCount, rowIndex)
+        PriorityQueue<int[]> pq = new PriorityQueue<>(
+            (a, b) -> {
+                if (a[0] != b[0]) return a[0] - b[0];
+                else return a[1] - b[1];
+            }
+        );
+        
+        for (int i = 0; i < m; i++) {
+            int soldiers = countSoldiers(mat[i]);
+            pq.offer(new int[]{soldiers, i});
+        }
+        
+        int[] result = new int[k];
+        for (int i = 0; i < k; i++) {
+            result[i] = pq.poll()[1];
+        }
+        
+        return result;
+    }
+    
+    private int countSoldiers(int[] row) {
+        // Since soldiers are at front, we can do binary search for first 0
+        int left = 0, right = row.length;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (row[mid] == 1) left = mid + 1;
+            else right = mid;
+        }
+        return left;
+    }
+}
