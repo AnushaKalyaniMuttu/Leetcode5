@@ -1,0 +1,53 @@
+class Solution {
+    private Map<Character, Integer> letterToDigit = new HashMap<>();
+    private boolean[] usedDigit = new boolean[10];
+    private int rows, cols;
+
+    public boolean isSolvable(String[] words, String result) {
+        rows = words.length + 1;
+        cols = 0;
+        for (String w : words) cols = Math.max(cols, w.length());
+        cols = Math.max(cols, result.length());
+        return dfs(words, result, 0, 0, 0);
+    }
+
+    private boolean dfs(String[] words, String result, int row, int col, int sum) {
+        if (col == cols) {
+            // all columns processed; no leftover carry
+            return sum == 0;
+        }
+        if (row == rows) {
+            // end of this column: check units digit and move to next column
+            if (sum % 10 != 0) return false;
+            return dfs(words, result, 0, col + 1, sum / 10);
+        }
+
+        String w = (row == rows - 1) ? result : words[row];
+        int len = w.length();
+        if (col >= len) {
+            // this word/result has no char in this column
+            return dfs(words, result, row + 1, col, sum);
+        }
+
+        char ch = w.charAt(len - col - 1);
+        int sign = (row == rows - 1 ? -1 : 1);
+
+        if (letterToDigit.containsKey(ch)) {
+            int d = letterToDigit.get(ch);
+            // leading zero check
+            if (d == 0 && col == len - 1 && len > 1) return false;
+            return dfs(words, result, row + 1, col, sum + sign * d);
+        } else {
+            for (int d = 0; d < 10; d++) {
+                if (usedDigit[d]) continue;
+                if (d == 0 && col == len - 1 && len > 1) continue;  // no leading zeros
+                letterToDigit.put(ch, d);
+                usedDigit[d] = true;
+                if (dfs(words, result, row + 1, col, sum + sign * d)) return true;
+                usedDigit[d] = false;
+                letterToDigit.remove(ch);
+            }
+            return false;
+        }
+    }
+}
