@@ -1,0 +1,20 @@
+class Solution {
+    public String breakPalindrome(String palindrome) {
+        int n = palindrome.length();
+        if (n == 1) return ""; // Single char palindrome can't be changed
+
+        char[] arr = palindrome.toCharArray();
+
+        // Replace the first non-'a' character in the first half with 'a'
+        for (int i = 0; i < n / 2; i++) {
+            if (arr[i] != 'a') {
+                arr[i] = 'a';
+                return new String(arr);
+            }
+        }
+
+        // If all characters in first half are 'a', change last char to 'b'
+        arr[n - 1] = 'b';
+        return new String(arr);
+    }
+}
