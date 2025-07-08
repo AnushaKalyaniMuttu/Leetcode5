@@ -1,0 +1,74 @@
+import java.util.HashMap;
+import java.util.Map;
+
+class UndergroundSystem {
+
+    // To store the check-in data: id -> [startStation, startTime]
+    private Map<Integer, Pair<String, Integer>> checkInMap;
+    
+    // To store the total travel time and count of trips between stations
+    private Map<String, Pair<Integer, Integer>> travelTimeMap;
+
+    // Helper class to store pairs
+    private class Pair<T, U> {
+        T first;
+        U second;
+        
+        public Pair(T first, U second) {
+            this.first = first;
+            this.second = second;
+        }
+    }
+
+    public UndergroundSystem() {
+        checkInMap = new HashMap<>();
+        travelTimeMap = new HashMap<>();
+    }
+
+    // Method to handle check-in
+    public void checkIn(int id, String startStation, int startTime) {
+        checkInMap.put(id, new Pair<>(startStation, startTime));
+    }
+
+    // Method to handle check-out
+    public void checkOut(int id, String endStation, int endTime) {
+        Pair<String, Integer> checkInData = checkInMap.get(id);
+        String startStation = checkInData.first;
+        int startTime = checkInData.second;
+        
+        // Calculate the travel time
+        int travelTime = endTime - startTime;
+        
+        // Generate the route key
+        String routeKey = startStation + "->" + endStation;
+        
+        // Update the travel time map with the new data
+        if (!travelTimeMap.containsKey(routeKey)) {
+            travelTimeMap.put(routeKey, new Pair<>(travelTime, 1)); // Store total time and count of trips
+        } else {
+            Pair<Integer, Integer> existingData = travelTimeMap.get(routeKey);
+            int totalTime = existingData.first + travelTime;
+            int tripCount = existingData.second + 1;
+            travelTimeMap.put(routeKey, new Pair<>(totalTime, tripCount));
+        }
+    }
+
+    // Method to get the average travel time for a route
+    public double getAverageTime(String startStation, String endStation) {
+        String routeKey = startStation + "->" + endStation;
+        Pair<Integer, Integer> data = travelTimeMap.get(routeKey);
+        int totalTime = data.first;
+        int tripCount = data.second;
+        
+        // Calculate the average and return it rounded to two decimal places
+        return (double) totalTime / tripCount;
+    }
+}
+
+/**
+ * Your UndergroundSystem object will be instantiated and called as such:
+ * UndergroundSystem obj = new UndergroundSystem();
+ * obj.checkIn(id,stationName,t);
+ * obj.checkOut(id,stationName,t);
+ * double param_3 = obj.getAverageTime(startStation,endStation);
+ */
