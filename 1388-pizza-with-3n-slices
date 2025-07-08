@@ -1,0 +1,25 @@
+class Solution {
+    public int maxSizeSlices(int[] slices) {
+        int n = slices.length;
+        // Pick slices excluding the last slice
+        int case1 = maxSizeLinear(slices, 0, n - 2);
+        // Pick slices excluding the first slice
+        int case2 = maxSizeLinear(slices, 1, n - 1);
+        return Math.max(case1, case2);
+    }
+
+    private int maxSizeLinear(int[] slices, int start, int end) {
+        int length = end - start + 1;
+        int count = length / 3; // number of slices to pick
+
+        int[][] dp = new int[length + 2][count + 1]; 
+        // dp[i][j]: max sum picking j slices from first i slices
+
+        for (int i = 2; i < length + 2; i++) {
+            for (int j = 1; j <= count; j++) {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i - 2][j - 1] + slices[start + i - 2]);
+            }
+        }
+        return dp[length + 1][count];
+    }
+}
