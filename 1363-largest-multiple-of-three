@@ -1,0 +1,60 @@
+import java.util.*;
+
+public class Solution {
+    public String largestMultipleOfThree(int[] digits) {
+        List<Integer> rem0 = new ArrayList<>();
+        List<Integer> rem1 = new ArrayList<>();
+        List<Integer> rem2 = new ArrayList<>();
+        int sum = 0;
+
+        // Separate digits by remainder when divided by 3
+        for (int d : digits) {
+            sum += d;
+            if (d % 3 == 0) rem0.add(d);
+            else if (d % 3 == 1) rem1.add(d);
+            else rem2.add(d);
+        }
+
+        // Sort remainder groups ascending (to remove smallest digits easily)
+        Collections.sort(rem1);
+        Collections.sort(rem2);
+
+        int mod = sum % 3;
+        if (mod == 1) {
+            if (!rem1.isEmpty()) rem1.remove(0);
+            else if (rem2.size() >= 2) {
+                rem2.remove(0);
+                rem2.remove(0);
+            } else {
+                return "";
+            }
+        } else if (mod == 2) {
+            if (!rem2.isEmpty()) rem2.remove(0);
+            else if (rem1.size() >= 2) {
+                rem1.remove(0);
+                rem1.remove(0);
+            } else {
+                return "";
+            }
+        }
+
+        // Combine remaining digits
+        List<Integer> result = new ArrayList<>();
+        result.addAll(rem0);
+        result.addAll(rem1);
+        result.addAll(rem2);
+
+        if (result.isEmpty()) return "";
+
+        // Sort descending to form largest number
+        result.sort((a, b) -> b - a);
+
+        // Handle leading zero case
+        if (result.get(0) == 0) return "0";
+
+        StringBuilder sb = new StringBuilder();
+        for (int d : result) sb.append(d);
+
+        return sb.toString();
+    }
+}
