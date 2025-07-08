@@ -1,0 +1,35 @@
+class Solution {
+    public String longestPrefix(String s) {
+        int n = s.length();
+        
+        // Compute the prefix array using KMP approach
+        int[] prefix = new int[n];
+        
+        // Build the prefix array
+        for (int i = 1, len = 0; i < n; ) {
+            if (s.charAt(i) == s.charAt(len)) {
+                len++;
+                prefix[i] = len;
+                i++;
+            } else {
+                if (len > 0) {
+                    len = prefix[len - 1];  // Use the previous prefix length
+                } else {
+                    prefix[i] = 0;
+                    i++;
+                }
+            }
+        }
+        
+        // The length of the longest happy prefix
+        int len = prefix[n - 1];
+        
+        // If there is no valid prefix, return an empty string
+        if (len == 0) {
+            return "";
+        }
+        
+        // Return the longest happy prefix
+        return s.substring(0, len);
+    }
+}
