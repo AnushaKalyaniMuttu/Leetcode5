@@ -1,0 +1,67 @@
+public class Solution {
+    public int maxStudents(char[][] seats) {
+        int m = seats.length, n = seats[0].length;
+        
+        // Precompute valid seat masks for each row (students only on non-broken seats)
+        int[] validMasks = new int[m];
+        for (int i = 0; i < m; i++) {
+            int mask = 0;
+            for (int j = 0; j < n; j++) {
+                mask <<= 1;
+                if (seats[i][j] == '.') {
+                    mask |= 1;
+                }
+            }
+            validMasks[i] = mask;
+        }
+        
+        // All possible seat configurations for each row
+        int maxState = 1 << n;
+        // dp[row][mask] = max students seated up to row using seat config mask at row
+        int[][] dp = new int[m][maxState];
+        for (int i = 0; i < m; i++) {
+            Arrays.fill(dp[i], -1);
+        }
+        
+        // Precompute count of bits set (students seated) for each mask
+        int[] bitCount = new int[maxState];
+        for (int mask = 0; mask < maxState; mask++) {
+            bitCount[mask] = Integer.bitCount(mask);
+        }
+        
+        // Check if mask has no two adjacent bits set (no adjacent seats)
+        boolean[] validRowMask = new boolean[maxState];
+        for (int mask = 0; mask < maxState; mask++) {
+            validRowMask[mask] = (mask & (mask >> 1)) == 0; // no two adjacent bits
+        }
+        
+        // Initialize dp for first row
+        for (int mask = 0; mask < maxState; mask++) {
+            if ((mask & validMasks[0]) == mask && validRowMask[mask]) {
+                dp[0][mask] = bitCount[mask];
+            }
+        }
+        
+        // Fill dp for each row
+        for (int row = 1; row < m; row++) {
+            for (int mask = 0; mask < maxState; mask++) {
+                if ((mask & validMasks[row]) == mask && validRowMask[mask]) {
+                    for (int prevMask = 0; prevMask < maxState; prevMask++) {
+                        if (dp[row-1][prevMask] == -1) continue;
+                        // Check diagonal conflicts between prevMask and mask
+                        if ((mask & (prevMask << 1)) == 0 && (mask & (prevMask >> 1)) == 0) {
+                            dp[row][mask] = Math.max(dp[row][mask], dp[row-1][prevMask] + bitCount[mask]);
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Find max value from last row
+        int maxStudents = 0;
+        for (int mask = 0; mask < maxState; mask++) {
+            maxStudents = Math.max(maxStudents, dp[m-1][mask]);
+        }
+        return maxStudents;
+    }
+}
