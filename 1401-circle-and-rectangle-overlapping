@@ -1,0 +1,19 @@
+class Solution {
+    public boolean checkOverlap(int radius, int xCenter, int yCenter,
+                                int x1, int y1, int x2, int y2) {
+        // Clamp circle center to nearest point on/in rectangle
+        int closestX = clamp(xCenter, x1, x2);
+        int closestY = clamp(yCenter, y1, y2);
+
+        // Compute squared distance from circle center to that closest point
+        int dx = xCenter - closestX;
+        int dy = yCenter - closestY;
+        return dx * dx + dy * dy <= radius * radius;
+    }
+
+    private int clamp(int v, int min, int max) {
+        if (v < min) return min;
+        if (v > max) return max;
+        return v;
+    }
+}
