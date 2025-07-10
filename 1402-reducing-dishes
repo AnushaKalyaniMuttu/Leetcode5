@@ -1,0 +1,19 @@
+import java.util.Arrays;
+
+public class Solution {
+    public int maxSatisfaction(int[] satisfaction) {
+        Arrays.sort(satisfaction);
+        int n = satisfaction.length;
+        
+        int total = 0, answer = 0, cumulative = 0;
+        
+        // Iterate from the end (highest satisfaction) to the start
+        for (int i = n - 1; i >= 0; i--) {
+            cumulative += satisfaction[i];
+            if (cumulative < 0) break;  // No gain adding more dishes with negative sum
+            answer += cumulative;
+        }
+        
+        return answer;
+    }
+}
