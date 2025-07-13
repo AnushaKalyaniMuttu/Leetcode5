@@ -1,0 +1,21 @@
+import java.util.*;
+
+class Solution {
+    public List<String> buildArray(int[] target, int n) {
+        List<String> res = new ArrayList<>();
+        int current = 1, i = 0;
+        
+        while (i < target.length) {
+            if (target[i] == current) {
+                res.add("Push");
+                i++;
+            } else {
+                res.add("Push");
+                res.add("Pop");
+            }
+            current++;
+        }
+        
+        return res;
+    }
+}
