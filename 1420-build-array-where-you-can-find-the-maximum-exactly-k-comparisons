@@ -1,0 +1,32 @@
+class Solution {
+    static final int MOD = 1_000_000_007;
+    public int numOfArrays(int n, int m, int k) {
+        if (k == 0) return 0;
+        long[][][] dp = new long[n+1][k+1][m+1];
+        // Base case
+        for (int j = 1; j <= m; j++) {
+            dp[1][1][j] = 1;
+        }
+        // Fill DP
+        for (int i = 2; i <= n; i++) {
+            for (int cost = 1; cost <= Math.min(i, k); cost++) {
+                for (int j = 1; j <= m; j++) {
+                    // Option 1: placing ≤ j (no new max)
+                    dp[i][cost][j] = (dp[i][cost][j] + dp[i-1][cost][j] * j) % MOD;
+                    // Option 2: placing exactly j as a new max
+                    long sum = 0;
+                    for (int prev = 1; prev < j; prev++) {
+                        sum = (sum + dp[i-1][cost-1][prev]) % MOD;
+                    }
+                    dp[i][cost][j] = (dp[i][cost][j] + sum) % MOD;
+                }
+            }
+        }
+        // Sum up final counts
+        long ans = 0;
+        for (int j = 1; j <= m; j++) {
+            ans = (ans + dp[n][k][j]) % MOD;
+        }
+        return (int) ans;
+    }
+}
