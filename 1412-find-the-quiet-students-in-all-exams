@@ -1,0 +1,14 @@
+WITH Ranked AS (
+  SELECT
+    student_id,
+    RANK() OVER (PARTITION BY exam_id ORDER BY score ASC)   AS rank_asc,
+    RANK() OVER (PARTITION BY exam_id ORDER BY score DESC)  AS rank_desc
+  FROM Exam
+)
+SELECT s.student_id, s.student_name
+FROM Student s
+JOIN Ranked r USING (student_id)
+GROUP BY s.student_id, s.student_name
+HAVING MIN(r.rank_asc) > 1
+   AND MIN(r.rank_desc) > 1
+ORDER BY s.student_id;
