@@ -1,0 +1,46 @@
+class Solution {
+    public String reformat(String s) {
+        StringBuilder letters = new StringBuilder();
+        StringBuilder digits = new StringBuilder();
+        
+        // Separate letters and digits
+        for (char c : s.toCharArray()) {
+            if (Character.isLetter(c)) {
+                letters.append(c);
+            } else {
+                digits.append(c);
+            }
+        }
+        
+        // Check if reformatting is possible
+        if (Math.abs(letters.length() - digits.length()) > 1) {
+            return "";
+        }
+        
+        // Result builder
+        StringBuilder result = new StringBuilder();
+        int i = 0, j = 0;
+    
+        // Decide starting character type
+        boolean shouldPickLetter = letters.length() >= digits.length();
+        
+        // Merge letters and digits
+        while (i < letters.length() && j < digits.length()) {
+            if (shouldPickLetter) {
+                result.append(letters.charAt(i++));
+            } else {
+                result.append(digits.charAt(j++));
+            }
+            shouldPickLetter = !shouldPickLetter; // Alternate
+        }
+        
+        // Add the remaining characters
+        if (i < letters.length()) {
+            result.append(letters.charAt(i));
+        } else if (j < digits.length()) {
+            result.append(digits.charAt(j));
+        }
+        
+        return result.toString();
+    }
+}
