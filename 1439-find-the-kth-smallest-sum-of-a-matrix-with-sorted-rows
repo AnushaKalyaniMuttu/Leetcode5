@@ -1,0 +1,43 @@
+import java.util.PriorityQueue;
+
+class Solution {
+    public int kthSmallest(int[][] mat, int k) {
+        int[] sums = mat[0];
+
+        // Iteratively merge each row with the current sums to keep top k sums
+        for (int i = 1; i < mat.length; i++) {
+            sums = merge(sums, mat[i], k);
+        }
+
+        return sums[k - 1];
+    }
+
+    private int[] merge(int[] arr1, int[] arr2, int k) {
+        int n1 = arr1.length;
+        int n2 = arr2.length;
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] - b[0]);
+        boolean[][] visited = new boolean[n1][n2];
+        int[] result = new int[Math.min(k, n1 * n2)];
+        int idx = 0;
+
+        pq.offer(new int[]{arr1[0] + arr2[0], 0, 0});
+        visited[0][0] = true;
+
+        while (!pq.isEmpty() && idx < k) {
+            int[] curr = pq.poll();
+            result[idx++] = curr[0];
+            int i = curr[1], j = curr[2];
+
+            if (i + 1 < n1 && !visited[i + 1][j]) {
+                pq.offer(new int[]{arr1[i + 1] + arr2[j], i + 1, j});
+                visited[i + 1][j] = true;
+            }
+            if (j + 1 < n2 && !visited[i][j + 1]) {
+                pq.offer(new int[]{arr1[i] + arr2[j + 1], i, j + 1});
+                visited[i][j + 1] = true;
+            }
+        }
+
+        return result;
+    }
+}
