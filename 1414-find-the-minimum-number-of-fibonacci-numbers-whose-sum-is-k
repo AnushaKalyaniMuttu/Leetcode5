@@ -1,0 +1,27 @@
+class Solution {
+    public int findMinFibonacciNumbers(int k) {
+        // Generate Fibonacci numbers up to k
+        List<Integer> fibs = new ArrayList<>();
+        fibs.add(1);
+        fibs.add(1);
+        while (true) {
+            int n = fibs.size();
+            int next = fibs.get(n - 1) + fibs.get(n - 2);
+            if (next > k) break;
+            fibs.add(next);
+        }
+
+        int count = 0;
+        int i = fibs.size() - 1;
+        // Greedily subtract the largest possible Fibonacci repeatedly
+        while (k > 0) {
+            if (fibs.get(i) <= k) {
+                k -= fibs.get(i);
+                count++;
+            } else {
+                i--;
+            }
+        }
+        return count;
+    }
+}
