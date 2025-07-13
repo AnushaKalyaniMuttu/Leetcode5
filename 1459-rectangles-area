@@ -1,0 +1,18 @@
+class Solution {
+    public int countGoodRectangles(int[][] rectangles) {
+        int maxLen = 0;
+        int count = 0;
+
+        for (int[] rect : rectangles) {
+            int squareLen = Math.min(rect[0], rect[1]);
+            if (squareLen > maxLen) {
+                maxLen = squareLen;
+                count = 1;
+            } else if (squareLen == maxLen) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+}
