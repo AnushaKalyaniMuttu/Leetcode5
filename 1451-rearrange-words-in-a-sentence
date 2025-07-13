@@ -1,0 +1,25 @@
+import java.util.*;
+
+class Solution {
+    public String arrangeWords(String text) {
+        // Convert to lowercase
+        text = text.toLowerCase();
+
+        // Split words
+        String[] words = text.split(" ");
+
+        // Sort words by length, stable sort to maintain order for equal length
+        Arrays.sort(words, Comparator.comparingInt(String::length));
+
+        // Capitalize first letter of the first word
+        words[0] = Character.toUpperCase(words[0].charAt(0)) + words[0].substring(1);
+
+        // Rebuild sentence
+        StringBuilder sb = new StringBuilder(words[0]);
+        for (int i = 1; i < words.length; i++) {
+            sb.append(" ").append(words[i]);
+        }
+
+        return sb.toString();
+    }
+}
