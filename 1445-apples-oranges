@@ -1,0 +1,30 @@
+class Solution {
+    public int applesAndOranges(int[] apples, int[] oranges, int target) {
+        int maxLength = 0;
+        int maxCount = 0;
+        
+        // Find longest subarray with difference of sums of apples and oranges <= target
+        int left = 0, sumApples = 0, sumOranges = 0;
+        
+        for (int right = 0; right < apples.length; right++) {
+            sumApples += apples[right];
+            sumOranges += oranges[right];
+            
+            while (Math.abs(sumApples - sumOranges) > target) {
+                sumApples -= apples[left];
+                sumOranges -= oranges[left];
+                left++;
+            }
+            
+            int length = right - left + 1;
+            if (length > maxLength) {
+                maxLength = length;
+                maxCount = 1;
+            } else if (length == maxLength) {
+                maxCount++;
+            }
+        }
+        
+        return maxCount;
+    }
+}
