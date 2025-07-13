@@ -1,0 +1,53 @@
+import java.util.*;
+
+class Solution {
+    public int numPoints(int[][] points, int r) {
+        int n = points.length;
+        if (n == 1) return 1;
+        double radius = r;
+
+        int maxCount = 1;
+        for (int i = 0; i < n; i++) {
+            double[] center1 = new double[2];
+            double[] center2 = new double[2];
+            for (int j = i + 1; j < n; j++) {
+                double d = distance(points[i], points[j]);
+                if (d > 2 * radius) continue; // no circle can cover both points
+                
+                // Find the circle centers
+                double midX = (points[i][0] + points[j][0]) / 2.0;
+                double midY = (points[i][1] + points[j][1]) / 2.0;
+
+                double base = Math.sqrt(radius * radius - (d / 2) * (d / 2));
+                double vx = (points[j][1] - points[i][1]) / d;
+                double vy = (points[i][0] - points[j][0]) / d;
+
+                center1[0] = midX + vx * base;
+                center1[1] = midY + vy * base;
+                center2[0] = midX - vx * base;
+                center2[1] = midY - vy * base;
+
+                maxCount = Math.max(maxCount, countPoints(points, center1, radius));
+                maxCount = Math.max(maxCount, countPoints(points, center2, radius));
+            }
+        }
+        return maxCount;
+    }
+
+    private double distance(int[] a, int[] b) {
+        return Math.hypot(a[0] - b[0], a[1] - b[1]);
+    }
+
+    private int countPoints(int[][] points, double[] center, double r) {
+        int count = 0;
+        double rSq = r * r;
+        for (int[] p : points) {
+            double dx = p[0] - center[0];
+            double dy = p[1] - center[1];
+            if (dx * dx + dy * dy <= rSq + 1e-9) {
+                count++;
+            }
+        }
+        return count;
+    }
+}
