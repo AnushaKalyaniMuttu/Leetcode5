@@ -1,0 +1,20 @@
+class Solution {
+    public String stringShift(String s, int[][] shift) {
+        int netShift = 0;
+
+        // Calculate net shift: left (-1), right (+1)
+        for (int[] move : shift) {
+            if (move[0] == 0) {
+                netShift -= move[1];
+            } else {
+                netShift += move[1];
+            }
+        }
+
+        int len = s.length();
+        netShift = ((netShift % len) + len) % len; // Normalize shift
+
+        // Perform final shift
+        return s.substring(len - netShift) + s.substring(0, len - netShift);
+    }
+}
