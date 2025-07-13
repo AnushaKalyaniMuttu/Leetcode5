@@ -1,0 +1,34 @@
+import java.util.*;
+
+class Solution {
+    private List<List<Integer>> graph;
+    private boolean[] hasApple;
+
+    public int minTime(int n, int[][] edges, List<Boolean> hasApple) {
+        this.hasApple = new boolean[n];
+        for (int i = 0; i < n; i++) {
+            this.hasApple[i] = hasApple.get(i);
+        }
+
+        graph = new ArrayList<>();
+        for (int i = 0; i < n; i++) graph.add(new ArrayList<>());
+        for (int[] edge : edges) {
+            graph.get(edge[0]).add(edge[1]);
+            graph.get(edge[1]).add(edge[0]);
+        }
+
+        return dfs(0, -1);
+    }
+
+    private int dfs(int node, int parent) {
+        int time = 0;
+        for (int child : graph.get(node)) {
+            if (child == parent) continue;
+            int childTime = dfs(child, node);
+            if (childTime > 0 || hasApple[child]) {
+                time += childTime + 2;
+            }
+        }
+        return time;
+    }
+}
