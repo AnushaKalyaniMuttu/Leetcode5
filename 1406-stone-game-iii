@@ -1,0 +1,22 @@
+class Solution {
+    private int[] memo;
+    public String stoneGameIII(int[] stoneValue) {
+        int n = stoneValue.length;
+        memo = new int[n];
+        Arrays.fill(memo, Integer.MIN_VALUE);
+        int score = helper(stoneValue, 0);
+        return score > 0 ? "Alice" : score < 0 ? "Bob" : "Tie";
+    }
+
+    private int helper(int[] a, int i) {
+        int n = a.length;
+        if (i >= n) return 0;
+        if (memo[i] != Integer.MIN_VALUE) return memo[i];
+        int sum = 0, best = Integer.MIN_VALUE;
+        for (int j = i; j < i + 3 && j < n; j++) {
+            sum += a[j];
+            best = Math.max(best, sum - helper(a, j + 1));
+        }
+        return memo[i] = best;
+    }
+}
