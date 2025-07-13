@@ -1,0 +1,37 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+
+class Solution {
+    private int count = 0;
+
+    public int pseudoPalindromicPaths(TreeNode root) {
+        dfs(root, 0);
+        return count;
+    }
+
+    private void dfs(TreeNode node, int path) {
+        if (node == null) return;
+
+        // Toggle the bit for current node value
+        path ^= (1 << node.val);
+
+        // If it's a leaf node
+        if (node.left == null && node.right == null) {
+            // Check if at most one bit is set in path (pseudo-palindrome)
+            if ((path & (path - 1)) == 0) {
+                count++;
+            }
+            return;
+        }
+
+        dfs(node.left, path);
+        dfs(node.right, path);
+    }
+}
