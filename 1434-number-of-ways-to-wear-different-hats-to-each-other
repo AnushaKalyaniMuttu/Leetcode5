@@ -1,0 +1,48 @@
+class Solution {
+    private static final int MOD = 1_000_000_007;
+    private List<Integer>[] hatToPeople;
+    private int[][] memo;
+    private int n;
+
+    public int numberWays(List<List<Integer>> hats) {
+        n = hats.size();
+        hatToPeople = new ArrayList[41];  // Hats numbered 1 to 40
+        for (int i = 1; i <= 40; i++) {
+            hatToPeople[i] = new ArrayList<>();
+        }
+
+        // Map hats to people who like them
+        for (int i = 0; i < n; i++) {
+            for (int hat : hats.get(i)) {
+                hatToPeople[hat].add(i);
+            }
+        }
+
+        memo = new int[41][1 << n];
+        for (int i = 0; i <= 40; i++) {
+            Arrays.fill(memo[i], -1);
+        }
+
+        return dfs(1, 0);
+    }
+
+    private int dfs(int hat, int mask) {
+        if (mask == (1 << n) - 1) return 1;  // All people have hats
+        if (hat > 40) return 0;              // No more hats
+
+        if (memo[hat][mask] != -1) return memo[hat][mask];
+
+        // Option 1: skip current hat
+        long ways = dfs(hat + 1, mask);
+
+        // Option 2: assign current hat to any person who likes it and doesn't have a hat yet
+        for (int person : hatToPeople[hat]) {
+            if ((mask & (1 << person)) == 0) {
+                ways += dfs(hat + 1, mask | (1 << person));
+                ways %= MOD;
+            }
+        }
+
+        return memo[hat][mask] = (int) ways;
+    }
+}
