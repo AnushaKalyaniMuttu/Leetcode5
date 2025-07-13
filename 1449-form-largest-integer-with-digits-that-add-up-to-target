@@ -1,0 +1,29 @@
+class Solution {
+    public String largestNumber(int[] cost, int target) {
+        String[] dp = new String[target + 1];
+        dp[0] = "";
+
+        for (int t = 1; t <= target; t++) {
+            dp[t] = null;
+            for (int d = 9; d >= 1; d--) {
+                int c = cost[d - 1];
+                if (t - c >= 0 && dp[t - c] != null) {
+                    String candidate = dp[t - c] + d;
+                    if (dp[t] == null || compare(candidate, dp[t]) > 0) {
+                        dp[t] = candidate;
+                    }
+                }
+            }
+        }
+
+        return dp[target] == null ? "0" : dp[target];
+    }
+
+    // Compare strings based on length first, then lex order
+    private int compare(String a, String b) {
+        if (a.length() != b.length()) {
+            return a.length() - b.length();
+        }
+        return a.compareTo(b);
+    }
+}
