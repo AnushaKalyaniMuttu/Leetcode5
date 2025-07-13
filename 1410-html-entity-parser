@@ -1,0 +1,33 @@
+class Solution {
+    public String entityParser(String text) {
+        Map<String, Character> map = Map.of(
+            "&quot;", '"',
+            "&apos;", '\'',
+            "&amp;", '&',
+            "&gt;", '>',
+            "&lt;", '<',
+            "&frasl;", '/'
+        );
+        
+        StringBuilder sb = new StringBuilder();
+        int i = 0, n = text.length();
+        
+        while (i < n) {
+            if (text.charAt(i) == '&') {
+                int semi = text.indexOf(';', i + 1);
+                if (semi != -1) {
+                    String ent = text.substring(i, semi + 1);
+                    Character c = map.get(ent);
+                    if (c != null) {
+                        sb.append(c);
+                        i = semi + 1;
+                        continue;
+                    }
+                }
+            }
+            sb.append(text.charAt(i++));
+        }
+        
+        return sb.toString();
+    }
+}
