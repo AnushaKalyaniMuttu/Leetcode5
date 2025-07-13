@@ -1,0 +1,48 @@
+import java.util.*;
+
+class Solution {
+    public List<List<String>> displayTable(List<List<String>> orders) {
+        // Set of unique food items
+        Set<String> foodSet = new HashSet<>();
+        // Map from table number to food count map
+        Map<Integer, Map<String, Integer>> tableFoodCount = new HashMap<>();
+
+        for (List<String> order : orders) {
+            String tableStr = order.get(1);
+            String food = order.get(2);
+            int table = Integer.parseInt(tableStr);
+
+            foodSet.add(food);
+            tableFoodCount.putIfAbsent(table, new HashMap<>());
+            Map<String, Integer> foodCount = tableFoodCount.get(table);
+            foodCount.put(food, foodCount.getOrDefault(food, 0) + 1);
+        }
+
+        // Sort the food items lexicographically
+        List<String> foodList = new ArrayList<>(foodSet);
+        Collections.sort(foodList);
+
+        // Sort table numbers ascending
+        List<Integer> tables = new ArrayList<>(tableFoodCount.keySet());
+        Collections.sort(tables);
+
+        // Prepare the result table
+        List<List<String>> result = new ArrayList<>();
+        List<String> header = new ArrayList<>();
+        header.add("Table");
+        header.addAll(foodList);
+        result.add(header);
+
+        for (int table : tables) {
+            List<String> row = new ArrayList<>();
+            row.add(String.valueOf(table));
+            Map<String, Integer> foodCount = tableFoodCount.get(table);
+            for (String food : foodList) {
+                row.add(String.valueOf(foodCount.getOrDefault(food, 0)));
+            }
+            result.add(row);
+        }
+
+        return result;
+    }
+}
