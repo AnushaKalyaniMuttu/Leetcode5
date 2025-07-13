@@ -1,0 +1,17 @@
+class Solution {
+    public String destCity(List<List<String>> paths) {
+        Set<String> sources = new HashSet<>();
+        for (List<String> path : paths) {
+            sources.add(path.get(0));
+        }
+        
+        for (List<String> path : paths) {
+            String dest = path.get(1);
+            if (!sources.contains(dest)) {
+                return dest;
+            }
+        }
+        
+        return "";
+    }
+}
