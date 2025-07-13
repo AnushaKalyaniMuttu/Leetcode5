@@ -1,0 +1,30 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+
+class Solution {
+    private int count = 0;
+
+    public int goodNodes(TreeNode root) {
+        dfs(root, Integer.MIN_VALUE);
+        return count;
+    }
+
+    private void dfs(TreeNode node, int maxSoFar) {
+        if (node == null) return;
+
+        if (node.val >= maxSoFar) {
+            count++;
+            maxSoFar = node.val;
+        }
+
+        dfs(node.left, maxSoFar);
+        dfs(node.right, maxSoFar);
+    }
+}
