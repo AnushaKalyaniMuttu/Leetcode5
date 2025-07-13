@@ -1,0 +1,22 @@
+class Solution {
+    public String getHappyString(int n, int k) {
+        Map<Character, String> nextMap = Map.of(
+            'a', "bc",
+            'b', "ac",
+            'c', "ab"
+        );
+        Queue<String> q = new ArrayDeque<>(List.of("a", "b", "c"));
+        
+        while (!q.isEmpty() && q.peek().length() != n) {
+            String curr = q.poll();
+            for (char ch : nextMap.get(curr.charAt(curr.length() - 1)).toCharArray()) {
+                q.offer(curr + ch);
+            }
+        }
+        
+        if (q.size() < k) return "";
+        
+        for (int i = 1; i < k; i++) q.poll();
+        return q.poll();
+    }
+}
