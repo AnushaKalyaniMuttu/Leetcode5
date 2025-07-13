@@ -1,0 +1,30 @@
+class Solution {
+    public int[] findDiagonalOrder(List<List<Integer>> nums) {
+        Map<Integer, List<Integer>> map = new HashMap<>();
+        int maxKey = 0;
+        // Group elements by diagonal key = row + col
+        for (int i = 0; i < nums.size(); i++) {
+            for (int j = 0; j < nums.get(i).size(); j++) {
+                int key = i + j;
+                map.computeIfAbsent(key, k -> new ArrayList<>()).add(nums.get(i).get(j));
+                maxKey = Math.max(maxKey, key);
+            }
+        }
+        List<Integer> result = new ArrayList<>();
+        // For each diagonal in order, traverse in reverse insertion to satisfy j⟶ ascending
+        for (int k = 0; k <= maxKey; k++) {
+            List<Integer> list = map.get(k);
+            if (list != null) {
+                for (int idx = list.size() - 1; idx >= 0; idx--) {
+                    result.add(list.get(idx));
+                }
+            }
+        }
+        // Convert to array
+        int[] ans = new int[result.size()];
+        for (int i = 0; i < ans.length; i++) {
+            ans[i] = result.get(i);
+        }
+        return ans;
+    }
+}
