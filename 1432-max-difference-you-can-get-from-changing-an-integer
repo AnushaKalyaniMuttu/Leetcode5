@@ -1,0 +1,48 @@
+class Solution {
+    public int maxDiff(int num) {
+        String s = Integer.toString(num);
+        String a = maxNumber(s);
+        String b = minNumber(s);
+        return Integer.parseInt(a) - Integer.parseInt(b);
+    }
+
+    private String maxNumber(String s) {
+        char[] chars = s.toCharArray();
+        char toReplace = ' ';
+        for (char c : chars) {
+            if (c != '9') {
+                toReplace = c;
+                break;
+            }
+        }
+        if (toReplace == ' ') return s;
+        StringBuilder sb = new StringBuilder();
+        for (char c : chars) {
+            sb.append(c == toReplace ? '9' : c);
+        }
+        return sb.toString();
+    }
+
+    private String minNumber(String s) {
+        char[] chars = s.toCharArray();
+        char toReplace = chars[0];
+        char replacement = '1';
+
+        if (toReplace == '1') {
+            // Find next digit that's not 0 or 1
+            for (int i = 1; i < chars.length; i++) {
+                if (chars[i] != '0' && chars[i] != '1') {
+                    toReplace = chars[i];
+                    replacement = '0';
+                    break;
+                }
+            }
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (char c : chars) {
+            sb.append(c == toReplace ? replacement : c);
+        }
+        return sb.toString();
+    }
+}
