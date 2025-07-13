@@ -1,0 +1,28 @@
+/**
+ * // This is the BinaryMatrix interface.
+ * // You should not implement it, or speculate about its implementation.
+ * interface BinaryMatrix {
+ *     public int get(int row, int col);
+ *     public List<Integer> dimensions();
+ * };
+ */
+class Solution {
+    public int leftMostColumnWithOne(BinaryMatrix binaryMatrix) {
+        List<Integer> dims = binaryMatrix.dimensions();
+        int n = dims.get(0), m = dims.get(1);
+        int row = 0, col = m - 1;
+        int answer = -1;
+        
+        // Start from top‑right corner
+        while (row < n && col >= 0) {
+            if (binaryMatrix.get(row, col) == 1) {
+                answer = col;  // update answer
+                col--;         // move left
+            } else {
+                row++;         // move down
+            }
+        }
+        
+        return answer;
+    }
+}
