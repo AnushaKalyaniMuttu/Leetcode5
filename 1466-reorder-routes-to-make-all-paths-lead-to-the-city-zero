@@ -1,0 +1,44 @@
+class Solution {
+    private List<Integer>[] out;
+    private List<Integer>[] in;
+    private boolean[] visited;
+    private int ans = 0;
+    
+    public int minReorder(int n, int[][] connections) {
+        out = new List[n];
+        in  = new List[n];
+        for (int i = 0; i < n; i++) {
+            out[i] = new ArrayList<>();
+            in[i]  = new ArrayList<>();
+        }
+        
+        for (int[] c : connections) {
+            int u = c[0], v = c[1];
+            out[u].add(v);  // u → v
+            in[v].add(u);   // reverse adjacency
+        }
+        
+        visited = new boolean[n];
+        dfs(0);
+        return ans;
+    }
+    
+    private void dfs(int u) {
+        visited[u] = true;
+        
+        // Traverse roads going out from u: we need to reverse these
+        for (int v : out[u]) {
+            if (!visited[v]) {
+                ans++;        // reversal needed: u→v becomes v→u
+                dfs(v);
+            }
+        }
+        
+        // Traverse roads coming into u: already correct direction
+        for (int v : in[u]) {
+            if (!visited[v]) {
+                dfs(v);
+            }
+        }
+    }
+}
