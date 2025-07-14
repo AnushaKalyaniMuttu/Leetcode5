@@ -1,0 +1,26 @@
+import java.util.*;
+
+class Solution {
+    public int findLeastNumOfUniqueInts(int[] arr, int k) {
+        Map<Integer, Integer> freq = new HashMap<>();
+        for (int num : arr) {
+            freq.put(num, freq.getOrDefault(num, 0) + 1);
+        }
+        
+        // Min-heap by frequency
+        PriorityQueue<Integer> pq = new PriorityQueue<>(freq.values());
+        
+        while (k > 0 && !pq.isEmpty()) {
+            int count = pq.poll();
+            if (count <= k) {
+                k -= count;
+            } else {
+                // Can't remove this entire integer
+                pq.offer(count);
+                break;
+            }
+        }
+        
+        return pq.size();
+    }
+}
