@@ -1,0 +1,28 @@
+import java.util.*;
+
+class Solution {
+    class Node {
+        int val;
+        List<Integer> children;
+        Node(int val, List<Integer> children) {
+            this.val = val;
+            this.children = children;
+        }
+    }
+    
+    public int minimumSalesPath(List<Node> sales) {
+        return dfs(sales, 0);
+    }
+    
+    private int dfs(List<Node> sales, int index) {
+        Node node = sales.get(index);
+        if (node.children == null || node.children.isEmpty()) {
+            return node.val;
+        }
+        int minChildSum = Integer.MAX_VALUE;
+        for (int child : node.children) {
+            minChildSum = Math.min(minChildSum, dfs(sales, child));
+        }
+        return node.val + minChildSum;
+    }
+}
