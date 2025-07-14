@@ -1,0 +1,21 @@
+WITH MaxSalary AS (
+  SELECT
+    company_id,
+    MAX(salary) AS top_salary
+  FROM Salaries
+  GROUP BY company_id
+)
+SELECT
+  s.company_id,
+  s.employee_id,
+  s.employee_name,
+  ROUND(
+    CASE
+      WHEN m.top_salary < 1000 THEN s.salary
+      WHEN m.top_salary BETWEEN 1000 AND 10000 THEN s.salary * 0.76
+      ELSE s.salary * 0.51
+    END
+  ) AS salary
+FROM Salaries AS s
+JOIN MaxSalary AS m
+  ON s.company_id = m.company_id;
