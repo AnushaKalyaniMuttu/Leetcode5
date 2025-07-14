@@ -1,0 +1,27 @@
+class Solution {
+    public int minSumOfLengths(int[] arr, int target) {
+        int n = arr.length;
+        int[] minLen = new int[n]; // min length subarray ending at or before i
+        Arrays.fill(minLen, Integer.MAX_VALUE);
+
+        int left = 0, sum = 0, res = Integer.MAX_VALUE;
+        int best = Integer.MAX_VALUE;
+
+        for (int right = 0; right < n; right++) {
+            sum += arr[right];
+            while (sum > target) {
+                sum -= arr[left++];
+            }
+            if (sum == target) {
+                int currLen = right - left + 1;
+                if (left > 0 && minLen[left - 1] != Integer.MAX_VALUE) {
+                    res = Math.min(res, currLen + minLen[left - 1]);
+                }
+                best = Math.min(best, currLen);
+            }
+            minLen[right] = best;
+        }
+
+        return res == Integer.MAX_VALUE ? -1 : res;
+    }
+}
