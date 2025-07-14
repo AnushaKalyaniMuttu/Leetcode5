@@ -1,0 +1,59 @@
+class Solution {
+    private int[] balls;
+    private int totalBalls;
+    private double totalWays = 0;
+    private double validWays = 0;
+    private double[] fact = new double[50]; // factorial cache
+
+    public double getProbability(int[] balls) {
+        this.balls = balls;
+        totalBalls = 0;
+        for (int b : balls) totalBalls += b;
+
+        // Precompute factorials
+        fact[0] = 1;
+        for (int i = 1; i < fact.length; i++) {
+            fact[i] = fact[i - 1] * i;
+        }
+
+        // Start DFS: index, ballsA, ballsB, distinctA, distinctB, numerator for ways
+        dfs(0, 0, 0, 0, 0, new int[balls.length], new int[balls.length]);
+
+        return validWays / totalWays;
+    }
+
+    private void dfs(int index, int countA, int countB, int distA, int distB, int[] boxA, int[] boxB) {
+        if (index == balls.length) {
+            if (countA != countB) return;
+
+            // Count ways for this configuration
+            double waysA = 1, waysB = 1;
+            for (int i = 0; i < balls.length; i++) {
+                waysA *= fact[boxA[i]];
+                waysB *= fact[boxB[i]];
+            }
+            double currentWays = fact[countA] * fact[countB] / (waysA * waysB);
+            totalWays += currentWays;
+
+            if (distA == distB) {
+                validWays += currentWays;
+            }
+            return;
+        }
+
+        // Try all possible splits for this color's balls
+        for (int i = 0; i <= balls[index]; i++) {
+            int j = balls[index] - i;
+
+            boxA[index] = i;
+            boxB[index] = j;
+
+            int newDistA = distA + (i > 0 ? 1 : 0);
+            int newDistB = distB + (j > 0 ? 1 : 0);
+
+            dfs(index + 1, countA + i, countB + j, newDistA, newDistB, boxA, boxB);
+
+            // Backtrack not needed for primitives (arrays reused in place)
+        }
+    }
+}
