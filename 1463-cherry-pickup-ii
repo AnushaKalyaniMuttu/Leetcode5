@@ -1,0 +1,27 @@
+class Solution {
+    public int cherryPickup(int[][] grid) {
+        int m = grid.length, n = grid[0].length;
+        int[][][] dp = new int[m][n][n];
+        for (int i = 0; i < m; i++)
+            for (int j = 0; j < n; j++)
+                Arrays.fill(dp[i][j], -1);
+        return dfs(grid, 0, 0, n - 1, dp);
+    }
+
+    private int dfs(int[][] g, int x, int y1, int y2, int[][][] dp) {
+        int m = g.length, n = g[0].length;
+        if (x == m) return 0;
+        if (y1 < 0 || y1 >= n || y2 < 0 || y2 >= n) return 0;
+        if (dp[x][y1][y2] != -1) return dp[x][y1][y2];
+
+        int cherries = g[x][y1] + (y1 == y2 ? 0 : g[x][y2]);
+        int bestNext = 0;
+        for (int d1 = -1; d1 <= 1; d1++) {
+            for (int d2 = -1; d2 <= 1; d2++) {
+                bestNext = Math.max(bestNext, dfs(g, x + 1, y1 + d1, y2 + d2, dp));
+            }
+        }
+
+        return dp[x][y1][y2] = cherries + bestNext;
+    }
+}
