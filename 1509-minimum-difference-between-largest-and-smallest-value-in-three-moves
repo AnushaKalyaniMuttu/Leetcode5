@@ -1,0 +1,21 @@
+import java.util.Arrays;
+
+class Solution {
+    public int minDifference(int[] nums) {
+        int n = nums.length;
+        if (n <= 4) return 0; // We can change all elements in at most 3 moves
+
+        Arrays.sort(nums);
+        int res = Integer.MAX_VALUE;
+
+        // Try all 4 possible ways to remove up to 3 elements from either end:
+        // Remove 0 from left, 3 from right
+        // Remove 1 from left, 2 from right
+        // Remove 2 from left, 1 from right
+        // Remove 3 from left, 0 from right
+        for (int i = 0; i <= 3; i++) {
+            res = Math.min(res, nums[n - 4 + i] - nums[i]);
+        }
+        return res;
+    }
+}
