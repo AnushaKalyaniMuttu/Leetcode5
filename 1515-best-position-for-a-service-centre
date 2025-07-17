@@ -1,0 +1,56 @@
+public class Solution {
+    public double getMinDistSum(int[][] positions) {
+        double x = 0, y = 0;
+        int n = positions.length;
+
+        // Initialize (x, y) as the centroid (average point)
+        for (int[] pos : positions) {
+            x += pos[0];
+            y += pos[1];
+        }
+        x /= n;
+        y /= n;
+
+        final double EPS = 1e-7;
+        double prev = Double.MAX_VALUE;
+
+        while (true) {
+            double numeratorX = 0, numeratorY = 0;
+            double denominator = 0;
+            boolean isConverged = true;
+
+            for (int[] pos : positions) {
+                double dx = x - pos[0];
+                double dy = y - pos[1];
+                double dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < EPS) {
+                    // Close enough to one of the points; skip to avoid division by zero
+                    dist = EPS;
+                }
+                numeratorX += pos[0] / dist;
+                numeratorY += pos[1] / dist;
+                denominator += 1.0 / dist;
+            }
+
+            double newX = numeratorX / denominator;
+            double newY = numeratorY / denominator;
+
+            // Check convergence
+            if (Math.abs(x - newX) < EPS && Math.abs(y - newY) < EPS) {
+                break;
+            }
+
+            x = newX;
+            y = newY;
+        }
+
+        // Compute total distance sum
+        double totalDist = 0;
+        for (int[] pos : positions) {
+            double dx = x - pos[0];
+            double dy = y - pos[1];
+            totalDist += Math.sqrt(dx * dx + dy * dy);
+        }
+        return totalDist;
+    }
+}
