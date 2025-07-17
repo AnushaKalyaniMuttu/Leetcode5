@@ -1,0 +1,11 @@
+class Solution {
+    public int countOdds(int low, int high) {
+        return countUpTo(high) - countUpTo(low - 1);
+    }
+
+    // Count number of odds from 0 to num inclusive
+    private int countUpTo(int num) {
+        if (num < 0) return 0;
+        return (num + 1) / 2;
+    }
+}
