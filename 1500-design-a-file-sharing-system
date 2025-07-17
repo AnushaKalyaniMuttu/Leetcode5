@@ -1,0 +1,57 @@
+import java.util.*;
+
+class FileSharing {
+    private int uploadId = 0;
+    private Map<Integer, File> idToFile = new HashMap<>();
+    private Map<String, TreeSet<Integer>> fileToUploads = new HashMap<>();
+    private Map<Integer, Set<Integer>> userToUploads = new HashMap<>();
+
+    public FileSharing(int m) {
+        // m is total users, but not necessarily used explicitly here
+    }
+
+    public int upload(int userId, String fileName) {
+        uploadId++;
+        File file = new File(userId, fileName);
+        idToFile.put(uploadId, file);
+        fileToUploads.computeIfAbsent(fileName, k -> new TreeSet<>()).add(uploadId);
+        userToUploads.computeIfAbsent(userId, k -> new HashSet<>()).add(uploadId);
+        return uploadId;
+    }
+
+    public void remove(int uploadId) {
+        File file = idToFile.get(uploadId);
+        if (file == null) return;
+        idToFile.remove(uploadId);
+        fileToUploads.get(file.fileName).remove(uploadId);
+        if (fileToUploads.get(file.fileName).isEmpty()) {
+            fileToUploads.remove(file.fileName);
+        }
+        userToUploads.get(file.userId).remove(uploadId);
+        if (userToUploads.get(file.userId).isEmpty()) {
+            userToUploads.remove(file.userId);
+        }
+    }
+
+    public List<Integer> request(int userId, String fileName) {
+        TreeSet<Integer> uploads = fileToUploads.get(fileName);
+        if (uploads == null || uploads.isEmpty()) return Collections.emptyList();
+        List<Integer> result = new ArrayList<>();
+        for (int id : uploads) {
+            if (!userToUploads.getOrDefault(userId, Collections.emptySet()).contains(id)) {
+                result.add(id);
+            }
+        }
+        return result;
+    }
+
+    static class File {
+        int userId;
+        String fileName;
+
+        File(int userId, String fileName) {
+            this.userId = userId;
+            this.fileName = fileName;
+        }
+    }
+}
