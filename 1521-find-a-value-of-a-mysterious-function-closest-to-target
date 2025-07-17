@@ -1,0 +1,23 @@
+import java.util.*;
+
+class Solution {
+    public int closestToTarget(int[] arr, int target) {
+        Set<Integer> current = new HashSet<>();
+        int result = Integer.MAX_VALUE;
+
+        for (int num : arr) {
+            Set<Integer> next = new HashSet<>();
+            next.add(num);
+            for (int val : current) {
+                next.add(val & num);
+            }
+            current = next;
+            for (int val : current) {
+                result = Math.min(result, Math.abs(val - target));
+                if (result == 0) return 0;  // early exit if perfect match
+            }
+        }
+
+        return result;
+    }
+}
