@@ -1,0 +1,4 @@
+SELECT c.name
+FROM Country c
+LEFT JOIN Investment i ON c.id = i.to_country
+WHERE i.from_country IS NULL;
