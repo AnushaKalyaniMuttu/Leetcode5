@@ -1,0 +1,21 @@
+class Solution {
+    public int longestSubarray(int[] nums) {
+        int ans = 0, zeros = 0;
+        int left = 0;
+
+        for (int right = 0; right < nums.length; right++) {
+            if (nums[right] == 0) zeros++;
+
+            while (zeros > 1) {
+                if (nums[left] == 0) zeros--;
+                left++;
+            }
+
+            // window [left...right] contains at most one 0, but we delete exactly one,
+            // so the count of 1's is: window size minus 1
+            ans = Math.max(ans, right - left);
+        }
+
+        return ans;
+    }
+}
