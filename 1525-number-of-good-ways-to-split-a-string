@@ -1,0 +1,34 @@
+class Solution {
+    public int numSplits(String s) {
+        int n = s.length();
+        int[] leftCount = new int[26];
+        int[] rightCount = new int[26];
+
+        // Count frequency of all chars in s for right side initially
+        for (char c : s.toCharArray()) {
+            rightCount[c - 'a']++;
+        }
+
+        int leftUnique = 0, rightUnique = 0;
+        for (int freq : rightCount) {
+            if (freq > 0) rightUnique++;
+        }
+
+        int goodSplits = 0;
+
+        for (int i = 0; i < n - 1; i++) {
+            char c = s.charAt(i);
+            leftCount[c - 'a']++;
+            if (leftCount[c - 'a'] == 1) leftUnique++;
+
+            rightCount[c - 'a']--;
+            if (rightCount[c - 'a'] == 0) rightUnique--;
+
+            if (leftUnique == rightUnique) {
+                goodSplits++;
+            }
+        }
+
+        return goodSplits;
+    }
+}
