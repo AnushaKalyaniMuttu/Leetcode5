@@ -1,0 +1,40 @@
+import java.util.*;
+
+class Solution {
+    public int[] countSubTrees(int n, int[][] edges, String labels) {
+        List<List<Integer>> tree = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            tree.add(new ArrayList<>());
+        }
+        for (int[] edge : edges) {
+            tree.get(edge[0]).add(edge[1]);
+            tree.get(edge[1]).add(edge[0]);
+        }
+
+        int[] result = new int[n];
+        boolean[] visited = new boolean[n];
+
+        dfs(0, tree, labels, visited, result);
+        return result;
+    }
+
+    // Returns counts of labels in subtree rooted at node
+    private int[] dfs(int node, List<List<Integer>> tree, String labels, boolean[] visited, int[] result) {
+        visited[node] = true;
+        int[] count = new int[26];
+        char c = labels.charAt(node);
+
+        for (int child : tree.get(node)) {
+            if (!visited[child]) {
+                int[] childCount = dfs(child, tree, labels, visited, result);
+                for (int i = 0; i < 26; i++) {
+                    count[i] += childCount[i];
+                }
+            }
+        }
+
+        count[c - 'a']++;
+        result[node] = count[c - 'a'];
+        return count;
+    }
+}
