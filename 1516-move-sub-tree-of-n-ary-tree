@@ -1,0 +1,66 @@
+import java.util.*;
+
+class Node {
+    public int val;
+    public List<Node> children;
+
+    public Node() {
+        children = new ArrayList<>();
+    }
+
+    public Node(int _val) {
+        val = _val;
+        children = new ArrayList<>();
+    }
+
+    public Node(int _val, List<Node> _children) {
+        val = _val;
+        children = _children;
+    }
+}
+
+class Solution {
+    private Node pParent = null;
+    private Node root;
+
+    public Node moveSubTree(Node root, Node p, Node q) {
+        this.root = root;
+        if (p == q) return root;
+
+        // Find parent of p
+        findParent(root, p);
+
+        // Remove p from its parent's children if parent exists
+        if (pParent != null) {
+            pParent.children.remove(p);
+        } else {
+            // p is root, so the new root will be root or q (if q is not descendant)
+            if (p == root) {
+                root = null;
+            }
+        }
+
+        // Attach p as child of q
+        q.children.add(p);
+
+        // If root was removed (p was root), assign root as q's ancestor
+        if (root == null) {
+            root = q;
+        }
+
+        return root;
+    }
+
+    // DFS to find parent of p
+    private void findParent(Node current, Node p) {
+        if (current == null) return;
+        for (Node child : current.children) {
+            if (child == p) {
+                pParent = current;
+                return;
+            }
+            findParent(child, p);
+            if (pParent != null) return;
+        }
+    }
+}
