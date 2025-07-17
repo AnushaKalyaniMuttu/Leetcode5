@@ -1,0 +1,50 @@
+import java.util.*;
+
+class Node {
+    public int val;
+    public List<Node> children;
+
+    public Node() {}
+
+    public Node(int val) {
+        this.val = val;
+        children = new ArrayList<>();
+    }
+
+    public Node(int val, List<Node> children) {
+        this.val = val;
+        this.children = children;
+    }
+}
+
+class Solution {
+    private int diameter = 0;
+
+    public int diameter(Node root) {
+        dfs(root);
+        return diameter;
+    }
+
+    // Returns the height of the node
+    private int dfs(Node node) {
+        if (node == null) return 0;
+
+        int max1 = 0, max2 = 0; // top two max heights among children
+
+        for (Node child : node.children) {
+            int height = dfs(child);
+            if (height > max1) {
+                max2 = max1;
+                max1 = height;
+            } else if (height > max2) {
+                max2 = height;
+            }
+        }
+
+        // Update diameter if sum of top two heights is bigger
+        diameter = Math.max(diameter, max1 + max2);
+
+        // Return height of current node
+        return max1 + 1;
+    }
+}
