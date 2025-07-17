@@ -1,0 +1,72 @@
+class Solution {
+    private class UF {
+        int[] p, r;
+        UF(int n) { p = new int[n]; r = new int[n]; for (int i = 0; i < n; i++) p[i] = i; }
+        int find(int x) { return p[x] == x ? x : (p[x] = find(p[x])); }
+        boolean union(int a, int b) {
+            int pa = find(a), pb = find(b);
+            if (pa == pb) return false;
+            if (r[pa] < r[pb]) p[pa] = pb;
+            else if (r[pb] < r[pa]) p[pb] = pa;
+            else { p[pb] = pa; r[pa]++; }
+            return true;
+        }
+    }
+
+    public List<List<Integer>> findCriticalAndPseudoCriticalEdges(int n, int[][] edges) {
+        int m = edges.length;
+        int[][] edgeList = new int[m][4];
+        for (int i = 0; i < m; i++) {
+            edgeList[i] = new int[]{edges[i][0], edges[i][1], edges[i][2], i};
+        }
+        Arrays.sort(edgeList, Comparator.comparingInt(a -> a[2]));
+
+        // Build base MST weight
+        UF baseUf = new UF(n);
+        int baseWeight = 0;
+        for (int[] e : edgeList) {
+            if (baseUf.union(e[0], e[1])) baseWeight += e[2];
+        }
+
+        List<Integer> critical = new ArrayList<>();
+        List<Integer> pseudo = new ArrayList<>();
+
+        for (int i = 0; i < m; i++) {
+            int[] e = edgeList[i];
+            // Test critical: skip this edge
+            UF uf1 = new UF(n);
+            int w1 = 0, cnt = 0;
+            for (int j = 0; j < m; j++) {
+                if (i == j) continue;
+                int[] f = edgeList[j];
+                if (uf1.union(f[0], f[1])) {
+                    w1 += f[2];
+                    cnt++;
+                }
+            }
+            if (cnt < n - 1 || w1 > baseWeight) {
+                critical.add(e[3]);
+                continue;
+            }
+
+            // Test pseudo-critical: force include this edge first
+            UF uf2 = new UF(n);
+            uf2.union(e[0], e[1]);
+            int w2 = e[2];
+            int cnt2 = 1;
+            for (int j = 0; j < m; j++) {
+                if (i == j) continue;
+                int[] f = edgeList[j];
+                if (uf2.union(f[0], f[1])) {
+                    w2 += f[2];
+                    cnt2++;
+                }
+            }
+            if (cnt2 == n - 1 && w2 == baseWeight) {
+                pseudo.add(e[3]);
+            }
+        }
+
+        return Arrays.asList(critical, pseudo);
+    }
+}
