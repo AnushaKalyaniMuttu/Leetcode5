@@ -1,0 +1,37 @@
+import java.util.PriorityQueue;
+
+class Solution {
+    public int rangeSum(int[] nums, int n, int left, int right) {
+        int MOD = 1_000_000_007;
+        int[] prefix = new int[n + 1];
+        for (int i = 0; i < n; i++) {
+            prefix[i + 1] = prefix[i] + nums[i];
+        }
+
+        PriorityQueue<int[]> minHeap = new PriorityQueue<>((a, b) -> Integer.compare(a[0], b[0]));
+        // Each element in minHeap: {current sum, start index, next end index}
+
+        for (int i = 1; i <= n; i++) {
+            minHeap.offer(new int[]{prefix[i] - prefix[i - 1], i, i});
+        }
+
+        int result = 0;
+        int count = 0;
+
+        while (!minHeap.isEmpty()) {
+            int[] cur = minHeap.poll();
+            int sum = cur[0], start = cur[1], end = cur[2];
+            count++;
+            if (count >= left && count <= right) {
+                result = (result + sum) % MOD;
+            }
+            if (end < n) {
+                // Move end forward to next element
+                int newSum = sum + nums[end];
+                minHeap.offer(new int[]{newSum, start, end + 1});
+            }
+            if (count == right) break;
+        }
+        return result;
+    }
+}
