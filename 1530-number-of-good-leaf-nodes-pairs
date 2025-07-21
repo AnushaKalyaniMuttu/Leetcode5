@@ -1,0 +1,51 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    private int ans = 0;
+    
+    public int countPairs(TreeNode root, int distance) {
+        dfs(root, distance);
+        return ans;
+    }
+    
+    private int[] dfs(TreeNode node, int distance) {
+        int[] count = new int[distance + 1];
+        if (node == null) return count;
+        
+        if (node.left == null && node.right == null) {
+            count[0] = 1;  // leaf node at distance 0 from itself
+            return count;
+        }
+        
+        int[] left = dfs(node.left, distance);
+        int[] right = dfs(node.right, distance);
+        
+        // Count pairs where leaf from left and right are within distance
+        for (int i = 0; i < distance; i++) {
+            for (int j = 0; j < distance; j++) {
+                if (i + j + 2 <= distance) {
+                    ans += left[i] * right[j];
+                }
+            }
+        }
+        
+        // Build count array for this node: shift child distances by 1
+        for (int i = 0; i < distance; i++) {
+            count[i + 1] = left[i] + right[i];
+        }
+        return count;
+    }
+}
