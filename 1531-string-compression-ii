@@ -1,0 +1,47 @@
+class Solution {
+    private int[][] memo;
+    private String s;
+
+    public int getLengthOfOptimalCompression(String s, int k) {
+        this.s = s;
+        int n = s.length();
+        memo = new int[n][k + 1];
+        for (int i = 0; i < n; i++)
+            Arrays.fill(memo[i], -1);
+        return dp(0, k);
+    }
+
+    // dp(i, k): min compressed length of s[i:] if we can delete <= k chars
+    private int dp(int i, int k) {
+        int n = s.length();
+        if (k < 0) return Integer.MAX_VALUE / 2;
+        if (i == n || n - i <= k) return 0;
+        if (memo[i][k] != -1) return memo[i][k];
+
+        int ans = Integer.MAX_VALUE / 2;
+        int[] freq = new int[26];
+        int maxFreq = 0;
+
+        // Try to keep s[i..j], delete rest to make them same char
+        for (int j = i; j < n; j++) {
+            int c = s.charAt(j) - 'a';
+            freq[c]++;
+            maxFreq = Math.max(maxFreq, freq[c]);
+            int deletions = (j - i + 1) - maxFreq;
+            if (deletions <= k) {
+                ans = Math.min(ans,
+                    cost(maxFreq) + dp(j + 1, k - deletions));
+            }
+        }
+
+        return memo[i][k] = ans;
+    }
+
+    // Cost of encoding a run of length cnt
+    private int cost(int cnt) {
+        if (cnt == 1) return 1;
+        else if (cnt < 10) return 2;
+        else if (cnt < 100) return 3;
+        else return 4;
+    }
+}
