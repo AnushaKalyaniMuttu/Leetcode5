@@ -1,0 +1,17 @@
+class Solution {
+    public int getWinner(int[] arr, int k) {
+        int champion = arr[0];
+        int winCount = 0;
+        
+        for (int i = 1; i < arr.length && winCount < k; i++) {
+            if (arr[i] > champion) {
+                champion = arr[i];
+                winCount = 1;  // new champion starts winning
+            } else {
+                winCount++;    // champion wins again
+            }
+        }
+        
+        return champion;
+    }
+}
