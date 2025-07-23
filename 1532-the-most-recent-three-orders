@@ -1,0 +1,21 @@
+WITH OrdersWithRowNumber AS (
+  SELECT
+    order_id,
+    order_date,
+    customer_id,
+    ROW_NUMBER() OVER (
+      PARTITION BY customer_id
+      ORDER BY order_date DESC
+    ) AS row_num
+  FROM Orders
+)
+SELECT
+  c.name AS customer_name,
+  o.customer_id,
+  o.order_id,
+  o.order_date
+FROM OrdersWithRowNumber o
+JOIN Customers c
+  ON o.customer_id = c.customer_id
+WHERE o.row_num <= 3
+ORDER BY c.name, c.customer_id, o.order_date DESC;
