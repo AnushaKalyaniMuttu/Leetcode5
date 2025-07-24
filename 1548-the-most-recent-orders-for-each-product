@@ -1,0 +1,59 @@
+import java.util.*;
+
+class Solution {
+    public List<Integer> mostSimilar(int n, int[][] edges, String[] names, String[] targetPath) {
+        List<List<Integer>> graph = new ArrayList<>();
+        for (int i = 0; i < n; i++) graph.add(new ArrayList<>());
+        for (int[] edge : edges) {
+            graph.get(edge[0]).add(edge[1]);
+            graph.get(edge[1]).add(edge[0]);
+        }
+
+        int m = targetPath.length;
+        int[][] dp = new int[n][m]; // dp[node][pos] = min mismatch count
+        int[][] parent = new int[n][m]; // to reconstruct path
+
+        for (int i = 0; i < n; i++) {
+            Arrays.fill(dp[i], Integer.MAX_VALUE);
+            Arrays.fill(parent[i], -1);
+        }
+
+        // Initialize dp for position 0
+        for (int i = 0; i < n; i++) {
+            dp[i][0] = (names[i].equals(targetPath[0]) ? 0 : 1);
+        }
+
+        // Fill dp table
+        for (int pos = 1; pos < m; pos++) {
+            for (int node = 0; node < n; node++) {
+                for (int prev : graph.get(node)) {
+                    int cost = dp[prev][pos - 1] + (names[node].equals(targetPath[pos]) ? 0 : 1);
+                    if (cost < dp[node][pos]) {
+                        dp[node][pos] = cost;
+                        parent[node][pos] = prev;
+                    }
+                }
+            }
+        }
+
+        // Find minimum cost at the last position
+        int minCost = Integer.MAX_VALUE;
+        int lastNode = -1;
+        for (int i = 0; i < n; i++) {
+            if (dp[i][m - 1] < minCost) {
+                minCost = dp[i][m - 1];
+                lastNode = i;
+            }
+        }
+
+        // Reconstruct path
+        LinkedList<Integer> path = new LinkedList<>();
+        int current = lastNode;
+        for (int pos = m - 1; pos >= 0; pos--) {
+            path.addFirst(current);
+            current = parent[current][pos];
+        }
+
+        return path;
+    }
+}
