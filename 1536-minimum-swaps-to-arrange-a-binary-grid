@@ -1,0 +1,28 @@
+class Solution {
+    public int minSwaps(int[][] grid) {
+        int n = grid.length;
+        int[] pos = new int[n];
+        for (int i = 0; i < n; i++) {
+            pos[i] = n; // default if no '1' found
+            for (int j = n - 1; j >= 0; j--) {
+                if (grid[i][j] == 1) {
+                    pos[i] = n - 1 - j;
+                    break;
+                }
+            }
+        }
+        int swaps = 0;
+        for (int i = 0; i < n; i++) {
+            int needed = n - 1 - i;
+            int k = i;
+            while (k < n && pos[k] < needed) k++;
+            if (k == n) return -1; // can't fulfill the requirement
+            while (k > i) {
+                pos[k] = pos[k - 1];
+                k--;
+                swaps++;
+            }
+        }
+        return swaps;
+    }
+}
