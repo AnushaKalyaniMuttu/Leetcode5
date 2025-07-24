@@ -1,0 +1,92 @@
+/**
+ * // This is the API interface for querying.
+ * // You should not implement it, or speculate about its implementation.
+ * interface ArrayReader {
+ *     // query returns:
+ *     // 4 if all four are 1, 0 if all four are 0, and 2 otherwise
+ *     public int query(int a, int b, int c, int d);
+ * }
+ */
+
+class Solution {
+    public int guessMajority(ArrayReader reader, int n) {
+        int base = reader.query(1, 2, 3, 4);
+        int zeros = 0, ones = 0;
+        int rep0 = -1, rep1 = -1;
+
+        // Analyze first 4 positions
+        int[] ids = {1, 2, 3, 4};
+        for (int i = 0; i < 4; i++) {
+            // Replace ids[i] with 5 temporarily and compare query
+            int v = reader.query(ids[(i+1)%4], ids[(i+2)%4],
+                                 ids[(i+3)%4], 5);
+            if (v == base) {
+                // ids[i] matches position 4
+                if (base == 4) {
+                    ones++;
+                    rep1 = ids[i];
+                } else {
+                    zeros++;
+                    rep0 = ids[i];
+                }
+            } else {
+                // ids[i] is opposite
+                if (base == 4) {
+                    zeros++;
+                    rep0 = ids[i];
+                } else {
+                    ones++;
+                    rep1 = ids[i];
+                }
+            }
+        }
+
+        // Count position 5 itself
+        if (base == reader.query(1, 2, 3, 5)) {
+            // position 5 matches pos4
+            if (base == 4) {
+                ones++;
+                rep1 = 5;
+            } else {
+                zeros++;
+                rep0 = 5;
+            }
+        } else {
+            if (base == 4) {
+                zeros++;
+                rep0 = 5;
+            } else {
+                ones++;
+                rep1 = 5;
+            }
+        }
+
+        // Process elements 6..n
+        for (int i = 6; i <= n; i++) {
+            int res = reader.query(1, 2, 3, i);
+            if (res == base) {
+                // matches pos4
+                if (base == 4) {
+                    ones++;
+                    rep1 = i;
+                } else {
+                    zeros++;
+                    rep0 = i;
+                }
+            } else {
+                if (base == 4) {
+                    zeros++;
+                    rep0 = i;
+                } else {
+                    ones++;
+                    rep1 = i;
+                }
+            }
+        }
+
+        // Determine majority
+        if (ones > zeros && ones * 2 > n) return rep1;
+        if (zeros > ones && zeros * 2 > n) return rep0;
+        return -1;
+    }
+}
