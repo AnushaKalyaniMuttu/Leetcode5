@@ -1,0 +1,39 @@
+import java.util.Arrays;
+
+class Solution {
+    public int maxDistance(int[] position, int m) {
+        Arrays.sort(position);
+        int left = 1;  // minimum possible distance
+        int right = position[position.length - 1] - position[0];  // max possible distance
+        int result = 0;
+
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (canPlaceBalls(position, m, mid)) {
+                result = mid;     // mid is feasible, try for bigger distance
+                left = mid + 1;
+            } else {
+                right = mid - 1;  // mid not feasible, try smaller distance
+            }
+        }
+
+        return result;
+    }
+
+    private boolean canPlaceBalls(int[] position, int m, int dist) {
+        int count = 1;  // place first ball at position[0]
+        int lastPos = position[0];
+
+        for (int i = 1; i < position.length; i++) {
+            if (position[i] - lastPos >= dist) {
+                count++;
+                lastPos = position[i];
+                if (count == m) {
+                    return true;  // placed all balls successfully
+                }
+            }
+        }
+
+        return false;
+    }
+}
