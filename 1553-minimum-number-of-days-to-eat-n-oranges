@@ -1,0 +1,19 @@
+import java.util.HashMap;
+import java.util.Map;
+
+class Solution {
+    private Map<Integer, Integer> memo = new HashMap<>();
+
+    public int minDays(int n) {
+        if (n <= 1) return n;
+        if (memo.containsKey(n)) return memo.get(n);
+
+        // Eat oranges by reducing to n/2 or n/3, or eat one by one
+        int daysBy2 = n % 2 + minDays(n / 2);
+        int daysBy3 = n % 3 + minDays(n / 3);
+        int result = 1 + Math.min(daysBy2, daysBy3);
+
+        memo.put(n, result);
+        return result;
+    }
+}
