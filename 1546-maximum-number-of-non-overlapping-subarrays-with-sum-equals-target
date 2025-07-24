@@ -1,0 +1,25 @@
+import java.util.HashSet;
+import java.util.Set;
+
+class Solution {
+    public int maxNonOverlapping(int[] nums, int target) {
+        int ans = 0;
+        int prefix = 0;
+        Set<Integer> prefixes = new HashSet<>();
+        prefixes.add(0); // Initialize with 0 to handle subarrays starting from index 0
+
+        for (int num : nums) {
+            prefix += num;
+            if (prefixes.contains(prefix - target)) {
+                ans++;
+                prefix = 0;
+                prefixes.clear();
+                prefixes.add(0); // Reset the set for the next subarray
+            } else {
+                prefixes.add(prefix);
+            }
+        }
+
+        return ans;
+    }
+}
