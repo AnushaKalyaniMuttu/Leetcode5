@@ -1,0 +1,35 @@
+import java.util.Arrays;
+
+class Solution {
+    public int minCost(int n, int[] cuts) {
+        int len = cuts.length;
+        int[] cutsModified = new int[len + 2];
+        cutsModified[0] = 0;
+        System.arraycopy(cuts, 0, cutsModified, 1, len);
+        cutsModified[len + 1] = n;
+        Arrays.sort(cutsModified);
+
+        int[][] dp = new int[len + 2][len + 2];
+        for (int i = 0; i <= len + 1; ++i) {
+            Arrays.fill(dp[i], -1);
+        }
+
+        return computeCost(0, len + 1, cutsModified, dp);
+    }
+
+    private int computeCost(int start, int end, int[] cuts, int[][] dp) {
+        if (dp[start][end] != -1) {
+            return dp[start][end];
+        }
+        if (end - start == 1) {
+            return 0;
+        }
+        int minimumCost = Integer.MAX_VALUE;
+        for (int mid = start + 1; mid < end; mid++) {
+            int splitCost = computeCost(start, mid, cuts, dp) + computeCost(mid, end, cuts, dp) + cuts[end] - cuts[start];
+            minimumCost = Math.min(minimumCost, splitCost);
+        }
+        dp[start][end] = minimumCost;
+        return minimumCost;
+    }
+}
