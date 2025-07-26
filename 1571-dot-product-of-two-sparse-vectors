@@ -1,0 +1,23 @@
+import java.util.*;
+
+class Solution {
+    public int dotProduct(int[][] warehouse1, int[][] warehouse2) {
+        int i = 0, j = 0, sum = 0;
+
+        while (i < warehouse1.length && j < warehouse2.length) {
+            int id1 = warehouse1[i][0], id2 = warehouse2[j][0];
+
+            if (id1 == id2) {
+                sum += warehouse1[i][1] * warehouse2[j][1];
+                i++;
+                j++;
+            } else if (id1 < id2) {
+                i++;
+            } else {
+                j++;
+            }
+        }
+
+        return sum;
+    }
+}
