@@ -1,0 +1,30 @@
+import java.util.*;
+
+class SparseVector {
+    Map<Integer, Integer> map;
+
+    public SparseVector(int[] nums) {
+        map = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != 0) {
+                map.put(i, nums[i]);
+            }
+        }
+    }
+
+    public int dotProduct(SparseVector vec) {
+        int result = 0;
+        // Iterate over the smaller map for efficiency
+        if (this.map.size() > vec.map.size()) {
+            return vec.dotProduct(this);
+        }
+
+        for (int idx : this.map.keySet()) {
+            if (vec.map.containsKey(idx)) {
+                result += this.map.get(idx) * vec.map.get(idx);
+            }
+        }
+
+        return result;
+    }
+}
