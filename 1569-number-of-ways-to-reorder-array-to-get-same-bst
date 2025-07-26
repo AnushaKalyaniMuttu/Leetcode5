@@ -1,0 +1,48 @@
+import java.util.*;
+
+class Solution {
+    private static final int MOD = 1_000_000_007;
+    private long[][] comb;
+
+    public int numOfWays(int[] nums) {
+        int n = nums.length;
+        // Precompute nCk up to n
+        comb = new long[n + 1][n + 1];
+        for (int i = 0; i <= n; i++) {
+            comb[i][0] = comb[i][i] = 1;
+            for (int j = 1; j < i; j++) {
+                comb[i][j] = (comb[i - 1][j - 1] + comb[i - 1][j]) % MOD;
+            }
+        }
+
+        // Convert array to list for easier subarray operations
+        List<Integer> arr = new ArrayList<>(n);
+        for (int x : nums) arr.add(x);
+
+        // Compute total ways and subtract 1 (to exclude the original ordering)
+        long total = dfs(arr);
+        return (int)((total - 1 + MOD) % MOD);
+    }
+
+    // Returns number of ways to reorder 'vals' to get the same BST shape
+    private long dfs(List<Integer> vals) {
+        int m = vals.size();
+        if (m <= 2) return 1;  // size 0,1,2 all have only 1 shape-order
+
+        int root = vals.get(0);
+        List<Integer> left = new ArrayList<>();
+        List<Integer> right = new ArrayList<>();
+        for (int i = 1; i < m; i++) {
+            int v = vals.get(i);
+            if (v < root) left.add(v);
+            else right.add(v);
+        }
+
+        // Number of ways to interleave left and right while keeping relative order
+        long waysToChoose = comb[m - 1][left.size()];
+        long leftWays  = dfs(left);
+        long rightWays = dfs(right);
+
+        return waysToChoose * leftWays % MOD * rightWays % MOD;
+    }
+}
