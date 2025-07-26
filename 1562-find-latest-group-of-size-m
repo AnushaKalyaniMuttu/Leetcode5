@@ -1,0 +1,33 @@
+class Solution {
+    public int findLatestStep(int[] arr, int m) {
+        int n = arr.length;
+        if (m == n) return n;
+
+        int[] length = new int[n + 2]; // Length of group at each index
+        int[] count = new int[n + 1];  // Count of groups by length
+
+        int result = -1;
+
+        for (int step = 0; step < n; step++) {
+            int i = arr[step];
+            int left = length[i - 1];
+            int right = length[i + 1];
+            int newLen = left + right + 1;
+
+            // Update length array at the boundaries of new group
+            length[i - left] = newLen;
+            length[i + right] = newLen;
+
+            // Update count of groups
+            count[left]--;
+            count[right]--;
+            count[newLen]++;
+
+            if (count[m] > 0) {
+                result = step + 1;
+            }
+        }
+
+        return result;
+    }
+}
