@@ -1,0 +1,31 @@
+import java.util.Arrays;
+
+class Solution {
+    public int maxBoxesInWarehouse(int[] boxes, int[] warehouse) {
+        Arrays.sort(boxes); // Smallest boxes first
+
+        int n = warehouse.length;
+        int[] minHeights = new int[n];
+        minHeights[0] = warehouse[0];
+
+        // Preprocess: room can't be taller than any room to its left
+        for (int i = 1; i < n; i++) {
+            minHeights[i] = Math.min(minHeights[i - 1], warehouse[i]);
+        }
+
+        int i = boxes.length - 1; // Largest box
+        int j = n - 1;            // Rightmost room
+        int count = 0;
+
+        // Try to fit largest boxes into tightest spots
+        while (i >= 0 && j >= 0) {
+            if (boxes[i] <= minHeights[j]) {
+                count++;
+                j--;
+            }
+            i--;
+        }
+
+        return count;
+    }
+}
