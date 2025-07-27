@@ -1,0 +1,33 @@
+class Solution {
+    public int numWays(String s) {
+        int mod = 1_000_000_007;
+        int totalOnes = 0;
+
+        // Count total number of 1s
+        for (char c : s.toCharArray()) {
+            if (c == '1') totalOnes++;
+        }
+
+        // If not divisible by 3, no valid way
+        if (totalOnes % 3 != 0) return 0;
+
+        // All zeros case
+        if (totalOnes == 0) {
+            long n = s.length();
+            return (int)(((n - 1) * (n - 2) / 2) % mod);
+        }
+
+        // Divide ones into 3 equal parts
+        int onesPerPart = totalOnes / 3;
+        long firstCut = 0, secondCut = 0;
+        int onesCount = 0;
+
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == '1') onesCount++;
+            if (onesCount == onesPerPart) firstCut++;
+            else if (onesCount == 2 * onesPerPart) secondCut++;
+        }
+
+        return (int)((firstCut * secondCut) % mod);
+    }
+}
