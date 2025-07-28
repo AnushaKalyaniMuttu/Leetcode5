@@ -1,0 +1,84 @@
+class Solution {
+  public int maxNumEdgesToRemove(int n, int[][] edges) {
+        DSU alice = new DSU(n);
+        DSU bob = new DSU(n);
+        int usedEdges = 0;
+
+        // Type 3 edges first (shared by both)
+        for (int[] edge : edges) {
+            if (edge[0] == 3) {
+                boolean aliceMerged = alice.union(edge[1], edge[2]);
+                boolean bobMerged = bob.union(edge[1], edge[2]);
+                if (aliceMerged | bobMerged) {
+                    usedEdges++;
+                }
+            }
+        }
+
+        // Type 1 (Alice only)
+        for (int[] edge : edges) {
+            if (edge[0] == 1) {
+                if (alice.union(edge[1], edge[2])) {
+                    usedEdges++;
+                }
+            }
+        }
+
+        // Type 2 (Bob only)
+        for (int[] edge : edges) {
+            if (edge[0] == 2) {
+                if (bob.union(edge[1], edge[2])) {
+                    usedEdges++;
+                }
+            }
+        }
+
+        // If both are fully connected, we can remove (edges.length - usedEdges)
+        if (alice.count == 1 && bob.count == 1) {
+            return edges.length - usedEdges;
+        }
+
+        return -1;
+    }
+
+    static class DSU {
+        int[] parent;
+        int[] rank;
+        int count;
+
+        DSU(int n) {
+            parent = new int[n + 1];
+            rank = new int[n + 1];
+            count = n;
+            for (int i = 1; i <= n; i++) {
+                parent[i] = i;
+                rank[i] = 1;
+            }
+        }
+
+        int find(int x) {
+            if (parent[x] != x) {
+                parent[x] = find(parent[x]);
+            }
+            return parent[x];
+        }
+
+        boolean union(int x, int y) {
+            int px = find(x);
+            int py = find(y);
+            if (px == py) return false;
+
+            if (rank[px] < rank[py]) {
+                parent[px] = py;
+            } else if (rank[py] < rank[px]) {
+                parent[py] = px;
+            } else {
+                parent[py] = px;
+                rank[px]++;
+            }
+
+            count--;
+            return true;
+        }
+    }
+}
