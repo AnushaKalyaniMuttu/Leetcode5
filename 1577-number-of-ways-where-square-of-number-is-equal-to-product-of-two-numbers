@@ -1,0 +1,29 @@
+import java.util.*;
+class Solution {
+  public int numTriplets(int[] nums1, int[] nums2) {
+        return count(nums1, nums2) + count(nums2, nums1);
+    }
+
+    private int count(int[] squares, int[] products) {
+        Map<Long, Integer> productMap = new HashMap<>();
+        int n = products.length;
+
+        // Count all pairwise products in `products`
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                long prod = 1L * products[i] * products[j];
+                productMap.put(prod, productMap.getOrDefault(prod, 0) + 1);
+            }
+        }
+
+        int count = 0;
+
+        // For each number in `squares`, check if its square is in productMap
+        for (int num : squares) {
+            long square = 1L * num * num;
+            count += productMap.getOrDefault(square, 0);
+        }
+
+        return count;
+    }
+}
