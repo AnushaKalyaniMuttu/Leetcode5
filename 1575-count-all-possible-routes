@@ -1,0 +1,28 @@
+class Solution {
+   static final int MOD = 1_000_000_007;
+    Integer[][] memo;
+
+    public int countRoutes(int[] locations, int start, int finish, int fuel) {
+        int n = locations.length;
+        memo = new Integer[n][fuel + 1];
+        return dfs(locations, start, finish, fuel);
+    }
+
+    private int dfs(int[] locations, int current, int finish, int fuel) {
+        if (fuel < 0) return 0;
+        if (memo[current][fuel] != null) return memo[current][fuel];
+
+        int total = (current == finish) ? 1 : 0;
+
+        for (int next = 0; next < locations.length; next++) {
+            if (next == current) continue;
+
+            int cost = Math.abs(locations[current] - locations[next]);
+            if (fuel >= cost) {
+                total = (total + dfs(locations, next, finish, fuel - cost)) % MOD;
+            }
+        }
+
+        return memo[current][fuel] = total;
+    }
+}
