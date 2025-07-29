@@ -1,0 +1,30 @@
+import java.util.Arrays;
+
+public class PutBoxesIntoTheWarehouseI {
+    public int maxBoxesInWarehouse(int[] boxes, int[] warehouse) {
+        Arrays.sort(boxes); // Sort boxes in ascending order
+
+        // Make the warehouse effective height from left to right
+        int n = warehouse.length;
+        int[] minHeights = new int[n];
+        minHeights[0] = warehouse[0];
+        for (int i = 1; i < n; i++) {
+            minHeights[i] = Math.min(minHeights[i - 1], warehouse[i]);
+        }
+
+        int boxIdx = boxes.length - 1;
+        int roomIdx = n - 1;
+        int count = 0;
+
+        // Greedily fit the largest boxes into the largest available rooms
+        while (boxIdx >= 0 && roomIdx >= 0) {
+            if (boxes[boxIdx] <= minHeights[roomIdx]) {
+                count++;
+                boxIdx--;
+            }
+            roomIdx--;
+        }
+
+        return count;
+    }
+}
