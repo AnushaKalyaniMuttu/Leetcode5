@@ -1,0 +1,30 @@
+class Solution {
+ public boolean isTransformable(String s, String t) {
+        // Queues for digits 0-9, each queue stores the indices where that digit appears in s
+        ArrayDeque<Integer>[] pos = new ArrayDeque[10];
+        for (int i = 0; i < 10; i++) {
+            pos[i] = new ArrayDeque<>();
+        }
+
+        // Store positions of digits in s
+        for (int i = 0; i < s.length(); i++) {
+            pos[s.charAt(i) - '0'].offer(i);
+        }
+
+        for (char c : t.toCharArray()) {
+            int digit = c - '0';
+            if (pos[digit].isEmpty()) return false;
+
+            int index = pos[digit].poll();
+
+            // Check if any smaller digit appears before current index
+            for (int d = 0; d < digit; d++) {
+                if (!pos[d].isEmpty() && pos[d].peek() < index) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+}
