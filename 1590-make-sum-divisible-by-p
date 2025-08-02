@@ -1,0 +1,30 @@
+import java.util.*;
+public class Solution{
+public int minSubarray(int[] nums, int p) {
+        int total = 0;
+        for (int num : nums) {
+            total = (total + num) % p;
+        }
+        if (total == 0) return 0; // already divisible by p
+
+        Map<Integer, Integer> prefixMap = new HashMap<>();
+        prefixMap.put(0, -1);
+
+        int prefixSum = 0;
+        int minLength = nums.length;
+
+        for (int i = 0; i < nums.length; i++) {
+            prefixSum = (prefixSum + nums[i]) % p;
+            int target = (prefixSum - total + p) % p;
+
+            if (prefixMap.containsKey(target)) {
+                minLength = Math.min(minLength, i - prefixMap.get(target));
+            }
+
+            // store the current prefixSum modulo
+            prefixMap.put(prefixSum, i);
+        }
+
+        return minLength == nums.length ? -1 : minLength;
+    }
+    }
