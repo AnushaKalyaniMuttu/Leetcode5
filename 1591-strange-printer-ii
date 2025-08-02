@@ -1,0 +1,70 @@
+import java.util.*;
+
+public class Solution {
+    public boolean isPrintable(int[][] targetGrid) {
+        int m = targetGrid.length;
+        int n = targetGrid[0].length;
+
+        int[][] bounds = new int[61][4]; // [minRow, maxRow, minCol, maxCol]
+        for (int[] row : bounds) {
+            Arrays.fill(row, -1);
+        }
+
+        // Find bounds for each color
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                int color = targetGrid[i][j];
+                if (bounds[color][0] == -1) {
+                    bounds[color][0] = i; bounds[color][1] = i;
+                    bounds[color][2] = j; bounds[color][3] = j;
+                } else {
+                    bounds[color][0] = Math.min(bounds[color][0], i);
+                    bounds[color][1] = Math.max(bounds[color][1], i);
+                    bounds[color][2] = Math.min(bounds[color][2], j);
+                    bounds[color][3] = Math.max(bounds[color][3], j);
+                }
+            }
+        }
+
+        boolean[] removed = new boolean[61];
+        boolean progress = true;
+
+        while (progress) {
+            progress = false;
+            for (int color = 1; color <= 60; ++color) {
+                if (removed[color] || bounds[color][0] == -1) continue;
+
+                boolean canRemove = true;
+                for (int i = bounds[color][0]; i <= bounds[color][1]; ++i) {
+                    for (int j = bounds[color][2]; j <= bounds[color][3]; ++j) {
+                        if (targetGrid[i][j] != 0 && targetGrid[i][j] != color) {
+                            canRemove = false;
+                            break;
+                        }
+                    }
+                    if (!canRemove) break;
+                }
+
+                if (canRemove) {
+                    for (int i = bounds[color][0]; i <= bounds[color][1]; ++i) {
+                        for (int j = bounds[color][2]; j <= bounds[color][3]; ++j) {
+                            if (targetGrid[i][j] == color) {
+                                targetGrid[i][j] = 0;
+                            }
+                        }
+                    }
+                    removed[color] = true;
+                    progress = true;
+                }
+            }
+        }
+
+        // If all non-zero values are removed, return true
+        for (int[] row : targetGrid) {
+            for (int cell : row) {
+                if (cell != 0) return false;
+            }
+        }
+        return true;
+    }
+}
