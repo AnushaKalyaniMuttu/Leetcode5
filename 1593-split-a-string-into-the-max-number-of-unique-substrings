@@ -1,0 +1,24 @@
+class Solution {
+   private int maxCount = 0;
+
+    public int maxUniqueSplit(String s) {
+        backtrack(s, 0, new HashSet<>());
+        return maxCount;
+    }
+
+    private void backtrack(String s, int index, Set<String> seen) {
+        if (index == s.length()) {
+            maxCount = Math.max(maxCount, seen.size());
+            return;
+        }
+
+        for (int i = index + 1; i <= s.length(); i++) {
+            String sub = s.substring(index, i);
+            if (!seen.contains(sub)) {
+                seen.add(sub);
+                backtrack(s, i, seen);
+                seen.remove(sub);  // backtrack
+            }
+        }
+    }
+}
