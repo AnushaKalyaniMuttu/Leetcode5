@@ -1,0 +1,32 @@
+class Solution {
+    public String reorderSpaces(String text) {
+        int totalSpaces = 0;
+        for (char c : text.toCharArray()) {
+            if (c == ' ') totalSpaces++;
+        }
+
+        String[] words = text.trim().split("\\s+");
+        int wordCount = words.length;
+
+        // If only one word, all spaces go to the end
+        if (wordCount == 1) {
+            return words[0] + " ".repeat(totalSpaces);
+        }
+
+        int spacesBetween = totalSpaces / (wordCount - 1);
+        int remainingSpaces = totalSpaces % (wordCount - 1);
+
+        StringBuilder sb = new StringBuilder();
+        String gap = " ".repeat(spacesBetween);
+
+        for (int i = 0; i < wordCount; i++) {
+            sb.append(words[i]);
+            if (i < wordCount - 1) {
+                sb.append(gap);
+            }
+        }
+
+        sb.append(" ".repeat(remainingSpaces));
+        return sb.toString();
+    }
+}
