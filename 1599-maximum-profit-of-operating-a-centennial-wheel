@@ -1,0 +1,28 @@
+class Solution {
+    public int minOperationsMaxProfit(int[] customers, int boardingCost, int runningCost) {
+        int maxProfit = 0, maxRotation = -1;
+        int waiting = 0, totalProfit = 0;
+        int i = 0, rotation = 0;
+
+        while (i < customers.length || waiting > 0) {
+            rotation++;
+
+            if (i < customers.length) {
+                waiting += customers[i];
+                i++;
+            }
+
+            int boarded = Math.min(4, waiting);
+            waiting -= boarded;
+
+            totalProfit += boarded * boardingCost - runningCost;
+
+            if (totalProfit > maxProfit) {
+                maxProfit = totalProfit;
+                maxRotation = rotation;
+            }
+        }
+
+        return maxRotation;
+    }
+}
