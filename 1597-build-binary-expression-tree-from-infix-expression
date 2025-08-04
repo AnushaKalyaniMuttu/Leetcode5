@@ -1,0 +1,58 @@
+import java.util.*;
+
+public class BuildBinaryExpressionTreeFromInfixExpression {
+
+    private static final Map<String, Integer> precedence = Map.of(
+        "+", 1, "-", 1,
+        "*", 2, "/", 2
+    );
+
+    public Node expTree(String s) {
+        Stack<Node> operands = new Stack<>();
+        Stack<String> operators = new Stack<>();
+        int n = s.length();
+        int i = 0;
+
+        while (i < n) {
+            char c = s.charAt(i);
+
+            if (Character.isDigit(c)) {
+                int j = i;
+                while (j < n && Character.isDigit(s.charAt(j))) j++;
+                String num = s.substring(i, j);
+                operands.push(new Node(num));
+                i = j;
+            } else if (c == '(') {
+                operators.push("(");
+                i++;
+            } else if (c == ')') {
+                while (!operators.peek().equals("(")) {
+                    buildTopOperator(operators, operands);
+                }
+                operators.pop(); // pop '('
+                i++;
+            } else { // operator
+                String op = String.valueOf(c);
+                while (!operators.isEmpty() && !operators.peek().equals("(")
+                       && precedence.get(operators.peek()) >= precedence.get(op)) {
+                    buildTopOperator(operators, operands);
+                }
+                operators.push(op);
+                i++;
+            }
+        }
+
+        while (!operators.isEmpty()) {
+            buildTopOperator(operators, operands);
+        }
+
+        return operands.peek();
+    }
+
+    private void buildTopOperator(Stack<String> operators, Stack<Node> operands) {
+        String op = operators.pop();
+        Node right = operands.pop();
+        Node left = operands.pop();
+        operands.push(new Node(op, left, right));
+    }
+}
