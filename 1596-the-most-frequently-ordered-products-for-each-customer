@@ -1,0 +1,23 @@
+import java.util.*;
+
+public class TheMostFrequentlyOccurringElementInAnArray {
+    public int maxFrequency(int[][] items) {
+        Map<Integer, Map<Integer, Integer>> map = new HashMap<>();
+
+        for (int[] item : items) {
+            int key = item[0], val = item[1];
+            map.putIfAbsent(key, new HashMap<>());
+            Map<Integer, Integer> freqMap = map.get(key);
+            freqMap.put(val, freqMap.getOrDefault(val, 0) + 1);
+        }
+
+        int maxFreq = 0;
+        for (Map<Integer, Integer> freqMap : map.values()) {
+            for (int count : freqMap.values()) {
+                maxFreq = Math.max(maxFreq, count);
+            }
+        }
+
+        return maxFreq;
+    }
+}
