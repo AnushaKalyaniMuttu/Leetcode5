@@ -1,0 +1,33 @@
+class Solution {
+   private int maxRequests = 0;
+
+    public int maximumRequests(int n, int[][] requests) {
+        int[] delta = new int[n];
+        backtrack(requests, delta, 0, 0, n);
+        return maxRequests;
+    }
+
+    private void backtrack(int[][] requests, int[] delta, int index, int count, int n) {
+        if (index == requests.length) {
+            for (int d : delta) {
+                if (d != 0) {
+                    return;
+                }
+            }
+            maxRequests = Math.max(maxRequests, count);
+            return;
+        }
+
+        // Choose this request
+        int from = requests[index][0];
+        int to = requests[index][1];
+        delta[from]--;
+        delta[to]++;
+        backtrack(requests, delta, index + 1, count + 1, n);
+        delta[from]++;
+        delta[to]--;
+
+        // Skip this request
+        backtrack(requests, delta, index + 1, count, n);
+    }
+}
