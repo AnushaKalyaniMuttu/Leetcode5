@@ -1,0 +1,38 @@
+class Solution {
+   public List<String> alertNames(String[] keyName, String[] keyTime) {
+        Map<String, List<Integer>> timeMap = new HashMap<>();
+
+        // Step 1: Convert times to minutes and group by name
+        for (int i = 0; i < keyName.length; i++) {
+            timeMap.putIfAbsent(keyName[i], new ArrayList<>());
+            timeMap.get(keyName[i]).add(convertToMinutes(keyTime[i]));
+        }
+
+        List<String> result = new ArrayList<>();
+
+        // Step 2: Check each person's times
+        for (String name : timeMap.keySet()) {
+            List<Integer> times = timeMap.get(name);
+            Collections.sort(times);
+
+            for (int i = 2; i < times.size(); i++) {
+                // If 3rd time - 1st time ≤ 60 minutes
+                if (times.get(i) - times.get(i - 2) <= 60) {
+                    result.add(name);
+                    break;
+                }
+            }
+        }
+
+        Collections.sort(result);
+        return result;
+    }
+
+    // Helper: Convert "HH:MM" to total minutes
+    private int convertToMinutes(String time) {
+        String[] parts = time.split(":");
+        int hours = Integer.parseInt(parts[0]);
+        int minutes = Integer.parseInt(parts[1]);
+        return hours * 60 + minutes;
+    }
+}
