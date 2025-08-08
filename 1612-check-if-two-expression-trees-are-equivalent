@@ -1,0 +1,30 @@
+public boolean checkEquivalence(Node root1, Node root2) {
+        int[] count1 = new int[26];
+        int[] count2 = new int[26];
+        dfs(root1, count1);
+        dfs(root2, count2);
+        return Arrays.equals(count1, count2);
+    }
+
+    private void dfs(Node node, int[] count) {
+        if (node == null) return;
+        if (node.val != '+') {
+            count[node.val - 'a']++;
+            return;
+        }
+        dfs(node.left, count);
+        dfs(node.right, count);
+    }
+
+    public static class Node {
+        char val;
+        Node left;
+        Node right;
+        Node() {}
+        Node(char val) { this.val = val; }
+        Node(char val, Node left, Node right) {
+            this.val = val;
+            this.left = left;
+            this.right = right;
+        }
+    }
