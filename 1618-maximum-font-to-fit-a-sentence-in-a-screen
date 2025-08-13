@@ -1,0 +1,31 @@
+class Solution {
+    public int maxFont(String text, FontInfo fontInfo, int w, int h, int[] fonts) {
+        int left = 0, right = fonts.length - 1;
+        int best = -1;
+
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            int fontSize = fonts[mid];
+
+            if (fits(text, fontInfo, fontSize, w, h)) {
+                best = fontSize;
+                left = mid + 1;  // try for even larger font
+            } else {
+                right = mid - 1;
+            }
+        }
+
+        return best;
+    }
+
+    private boolean fits(String text, FontInfo fi, int fontSize, int w, int h) {
+        if (fi.getHeight(fontSize) > h) return false;
+
+        long widthSum = 0;
+        for (char ch : text.toCharArray()) {
+            widthSum += fi.getWidth(fontSize, ch);
+            if (widthSum > w) return false;
+        }
+        return true;
+    }
+}
