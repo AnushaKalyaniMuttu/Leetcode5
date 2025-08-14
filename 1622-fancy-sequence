@@ -1,0 +1,46 @@
+class Fancy {
+ private static final int MOD = 1_000_000_007;
+    private List<Long> vals = new ArrayList<>();
+    private long a = 1, b = 0;
+
+    public Fancy() {}
+
+    public void append(int val) {
+        long x = (val - b + MOD) % MOD;
+        vals.add(x * modPow(a, MOD - 2) % MOD);
+    }
+
+    public void addAll(int inc) {
+        b = (b + inc) % MOD;
+    }
+
+    public void multAll(int m) {
+        a = (a * m) % MOD;
+        b = (b * m) % MOD;
+    }
+
+    public int getIndex(int idx) {
+        if (idx >= vals.size()) return -1;
+        return (int) ((a * vals.get(idx) + b) % MOD);
+    }
+
+    // Fast exponentiation to compute modular inverse
+    private long modPow(long x, long n) {
+        long res = 1;
+        while (n > 0) {
+            if ((n & 1) == 1) res = (res * x) % MOD;
+            x = (x * x) % MOD;
+            n >>= 1;
+        }
+        return res;
+    }
+}
+
+/**
+ * Your Fancy object will be instantiated and called as such:
+ * Fancy obj = new Fancy();
+ * obj.append(val);
+ * obj.addAll(inc);
+ * obj.multAll(m);
+ * int param_4 = obj.getIndex(idx);
+ */
