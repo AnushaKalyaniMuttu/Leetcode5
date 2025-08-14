@@ -1,0 +1,28 @@
+class Solution {
+    public int[] bestCoordinate(int[][] towers, int radius) {
+        final int MAX = 50;
+        int[] ans = new int[2];
+        int maxQuality = 0;
+
+        for (int x = 0; x <= MAX; ++x) {
+            for (int y = 0; y <= MAX; ++y) {
+                int qualitySum = 0;
+                for (int[] tower : towers) {
+                    double dx = tower[0] - x;
+                    double dy = tower[1] - y;
+                    double d = Math.sqrt(dx * dx + dy * dy);
+                    if (d <= radius) {
+                        int q = tower[2];
+                        qualitySum += (int) (q / (1 + d));
+                    }
+                }
+                if (qualitySum > maxQuality) {
+                    maxQuality = qualitySum;
+                    ans[0] = x;
+                    ans[1] = y;
+                }
+            }
+        }
+        return ans;
+    }
+}
