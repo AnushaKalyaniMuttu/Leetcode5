@@ -1,0 +1,49 @@
+// Base interface for nodes
+abstract class Node {
+    public abstract int evaluate();
+}
+
+// Concrete implementation of a node
+class MyNode extends Node {
+    String val;
+    Node left, right;
+
+    MyNode(String val) {
+        this.val = val;
+    }
+
+    @Override
+    public int evaluate() {
+        // Leaf node
+        if (left == null && right == null) {
+            return Integer.parseInt(val);
+        }
+        // Evaluate children
+        int l = left.evaluate();
+        int r = right.evaluate();
+        // Apply operation
+        return switch (val) {
+            case "+" -> l + r;
+            case "-" -> l - r;
+            case "*" -> l * r;
+            case "/" -> l / r;
+            default -> throw new UnsupportedOperationException("Unknown operator: " + val);
+        };
+    }
+}
+
+// TreeBuilder to construct the tree from postfix
+class TreeBuilder {
+    public Node buildTree(String[] postfix) {
+        Deque<MyNode> stack = new ArrayDeque<>();
+        for (String token : postfix) {
+            MyNode node = new MyNode(token);
+            if (token.equals("+") || token.equals("-") || token.equals("*") || token.equals("/")) {
+                node.right = stack.pop();
+                node.left = stack.pop();
+            }
+            stack.push(node);
+        }
+        return stack.pop();
+    }
+}
