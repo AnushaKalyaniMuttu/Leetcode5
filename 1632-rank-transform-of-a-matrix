@@ -1,0 +1,74 @@
+import java.util.*;
+
+class Solution {
+    // Union-Find structure
+    static class UnionFind {
+        int[] parent;
+        int[] size;
+
+        UnionFind(int n) {
+            parent = new int[n];
+            size = new int[n];
+            for (int i = 0; i < n; i++) parent[i] = i;
+        }
+
+        int find(int x) {
+            if (parent[x] != x) parent[x] = find(parent[x]);
+            return parent[x];
+        }
+
+        void union(int a, int b) {
+            int pa = find(a), pb = find(b);
+            if (pa != pb) {
+                if (size[pa] < size[pb]) {
+                    parent[pa] = pb;
+                    size[pb] += size[pa];
+                } else {
+                    parent[pb] = pa;
+                    size[pa] += size[pb];
+                }
+            }
+        }
+    }
+
+    public int[][] matrixRankTransform(int[][] matrix) {
+        int m = matrix.length, n = matrix[0].length;
+        TreeMap<Integer, List<int[]>> valueMap = new TreeMap<>();
+
+        // Map value -> list of positions
+        for (int i = 0; i < m; i++)
+            for (int j = 0; j < n; j++)
+                valueMap.computeIfAbsent(matrix[i][j], k -> new ArrayList<>()).add(new int[]{i, j});
+
+        int[] rank = new int[m + n]; // Track max rank per row and column
+        int[][] answer = new int[m][n];
+
+        for (var entry : valueMap.entrySet()) {
+            UnionFind uf = new UnionFind(m + n); // Reset DSU for each value group
+            Map<Integer, Integer> groupMaxRank = new HashMap<>();
+
+            // Union cells in same row/column
+            for (int[] pos : entry.getValue()) {
+                uf.union(pos[0], pos[1] + m);
+            }
+
+            // Compute max rank for each group
+            for (int[] pos : entry.getValue()) {
+                int root = uf.find(pos[0]);
+                int currentMax = Math.max(rank[pos[0]], rank[pos[1] + m]);
+                groupMaxRank.put(root, Math.max(groupMaxRank.getOrDefault(root, 0), currentMax));
+            }
+
+            // Assign ranks and update row/column trackers
+            for (int[] pos : entry.getValue()) {
+                int root = uf.find(pos[0]);
+                int newRank = groupMaxRank.get(root) + 1;
+                answer[pos[0]][pos[1]] = newRank;
+                rank[pos[0]] = newRank;
+                rank[pos[1] + m] = newRank;
+            }
+        }
+
+        return answer;
+    }
+}
