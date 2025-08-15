@@ -1,0 +1,41 @@
+import java.util.*;
+
+public class Solution {
+    static class Cell {
+        int row, col, effort;
+        Cell(int r, int c, int e) { row = r; col = c; effort = e; }
+    }
+
+    public int minimumEffortPath(int[][] heights) {
+        int m = heights.length, n = heights[0].length;
+        int[][] dist = new int[m][n];
+        for (int[] row : dist) Arrays.fill(row, Integer.MAX_VALUE);
+        boolean[][] visited = new boolean[m][n];
+
+        PriorityQueue<Cell> pq = new PriorityQueue<>(Comparator.comparingInt(c -> c.effort));
+        dist[0][0] = 0;
+        pq.offer(new Cell(0, 0, 0));
+
+        int[][] DIRS = {{1,0}, {-1,0}, {0,1}, {0,-1}};
+
+        while (!pq.isEmpty()) {
+            Cell cur = pq.poll();
+            int r = cur.row, c = cur.col, e = cur.effort;
+            if (visited[r][c]) continue;
+            visited[r][c] = true;
+            if (r == m - 1 && c == n - 1) return e;
+
+            for (int[] d : DIRS) {
+                int nr = r + d[0], nc = c + d[1];
+                if (nr < 0 || nr >= m || nc < 0 || nc >= n || visited[nr][nc]) continue;
+                int nextEffort = Math.max(e, Math.abs(heights[nr][nc] - heights[r][c]));
+                if (nextEffort < dist[nr][nc]) {
+                    dist[nr][nc] = nextEffort;
+                    pq.offer(new Cell(nr, nc, nextEffort));
+                }
+            }
+        }
+
+        return -1; // Shouldn't happen if the grid is valid.
+    }
+}
