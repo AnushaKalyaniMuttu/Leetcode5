@@ -1,0 +1,45 @@
+class UnionFind {
+    private int[] parent;
+    private int[] rank;
+
+    public UnionFind(int n) {
+        parent = new int[n];
+        rank = new int[n];
+        for (int i = 0; i < n; ++i) parent[i] = i;
+    }
+
+    public int find(int x) {
+        if (parent[x] != x) parent[x] = find(parent[x]);
+        return parent[x];
+    }
+
+    public void union(int a, int b) {
+        int pa = find(a), pb = find(b);
+        if (pa == pb) return;
+        if (rank[pa] < rank[pb]) parent[pa] = pb;
+        else if (rank[pa] > rank[pb]) parent[pb] = pa;
+        else {
+            parent[pb] = pa;
+            rank[pa]++;
+        }
+    }
+}
+
+class Solution {
+    public List<Boolean> areConnected(int n, int threshold, int[][] queries) {
+        UnionFind uf = new UnionFind(n + 1);
+        // Connect based on divisors greater than threshold
+        for (int z = threshold + 1; z <= n; ++z) {
+            for (int multiple = z * 2; multiple <= n; multiple += z) {
+                uf.union(z, multiple);
+            }
+        }
+
+        // Process queries
+        List<Boolean> result = new ArrayList<>();
+        for (int[] q : queries) {
+            result.add(uf.find(q[0]) == uf.find(q[1]));
+        }
+        return result;
+    }
+}
