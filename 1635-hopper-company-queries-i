@@ -1,0 +1,27 @@
+WITH RECURSIVE Months AS (
+  SELECT 1 AS month
+  UNION ALL
+  SELECT month + 1
+  FROM Months
+  WHERE month < 12
+),
+Driver AS (
+  SELECT MONTH(join_date) AS month
+  FROM Drivers
+  WHERE YEAR(join_date) <= 2020
+),
+Ride AS (
+  SELECT MONTH(R.requested_at) AS month
+  FROM AcceptedRides AR
+  JOIN Rides R USING (ride_id)
+  WHERE YEAR(R.requested_at) = 2020
+)
+SELECT
+  m.month,
+  COUNT(DISTINCT d.month <= m.month ? d.month : NULL) AS active_drivers,
+  COUNT(DISTINCT r.month = m.month ? r.month : NULL) AS accepted_rides
+FROM Months m
+LEFT JOIN Driver d ON d.month <= m.month
+LEFT JOIN Ride r ON r.month = m.month
+GROUP BY m.month
+ORDER BY m.month;
