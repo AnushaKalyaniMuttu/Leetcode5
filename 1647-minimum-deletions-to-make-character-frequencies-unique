@@ -1,0 +1,23 @@
+class Solution {
+    public int minDeletions(String s) {
+        int ans = 0;
+        int[] count = new int[26];
+        Set<Integer> usedFreq = new HashSet<>();
+
+        // Count frequency of each lowercase letter
+        for (char c : s.toCharArray()) {
+            count[c - 'a']++;
+        }
+
+        // For each frequency, adjust it until it becomes unique (or zero)
+        for (int freq : count) {
+            while (freq > 0 && usedFreq.contains(freq)) {
+                freq--;  // Delete one occurrence of the character
+                ans++;
+            }
+            usedFreq.add(freq);
+        }
+
+        return ans;
+    }
+}
