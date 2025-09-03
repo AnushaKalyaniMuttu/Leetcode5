@@ -1,0 +1,59 @@
+import java.util.*;
+
+public class SellDiminishingValuedColoredBalls {
+    private static final long MOD = 1_000_000_007L;
+
+    public int maxProfit(int[] inventory, int orders) {
+        Arrays.sort(inventory);
+        int n = inventory.length;
+
+        long res = 0;
+        int i = n - 1;
+
+        while (orders > 0 && i >= 0) {
+            long high = inventory[i];
+            int j = i - 1;
+
+            while (j >= 0 && inventory[j] == high) {
+                j--;
+            }
+
+            long next = (j >= 0) ? inventory[j] : 0;
+            long width = i - j;
+            long levels = high - next;
+
+            long canSell = levels * width;
+
+            if (orders >= canSell) {
+                // Sell all down to 'next'
+                long sumLevels = sumRange(next + 1, high) % MOD;
+                res = (res + (sumLevels * (width % MOD)) % MOD) % MOD;
+                orders -= canSell;
+                i = j; // move down
+            } else {
+                // Partial sell
+                long fullLevels = orders / width;
+                long remainder = orders % width;
+                long mid = high - fullLevels;
+
+                long sumFull = sumRange(mid + 1, high) % MOD;
+                res = (res + (sumFull * (width % MOD)) % MOD) % MOD;
+
+                res = (res + (remainder % MOD) * (mid % MOD)) % MOD;
+
+                orders = 0;
+            }
+        }
+
+        return (int)(res % MOD);
+    }
+
+    private long sumRange(long a, long b) {
+        if (a > b) return 0;
+        long terms = (b - a + 1);
+        if (((a + b) & 1) == 0) {
+            return ((a + b) / 2) * terms;
+        } else {
+            return (a + b) * (terms / 2);
+        }
+    }
