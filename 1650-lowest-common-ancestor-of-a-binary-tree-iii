@@ -1,0 +1,24 @@
+// 1650. Lowest Common Ancestor of a Binary Tree III
+// https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree-iii/
+
+class Node {
+    public int val;
+    public Node left;
+    public Node right;
+    public Node parent;
+    Node(int v) { val = v; }
+}
+
+public class LowestCommonAncestorOfABinaryTreeIII {
+    public Node lowestCommonAncestor(Node p, Node q) {
+        Node a = p, b = q;
+
+        // Similar to linked list intersection approach
+        while (a != b) {
+            a = (a == null) ? q : a.parent;
+            b = (b == null) ? p : b.parent;
+        }
+
+        return a; // or b
+    }
+}
