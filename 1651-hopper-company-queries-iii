@@ -1,0 +1,10 @@
+-- 1651. Hopper Company Queries I
+SELECT d.driver_id,
+       ROUND(SUM(r.ride_distance) / COUNT(r.ride_id), 2) AS average_distance,
+       ROUND(SUM(r.ride_duration) / COUNT(r.ride_id), 2) AS average_duration
+FROM Drivers d
+JOIN Rides r
+  ON d.driver_id = r.driver_id
+WHERE YEAR(d.join_date) = 2020
+  AND YEAR(r.requested_at) = 2020
+GROUP BY d.driver_id;
