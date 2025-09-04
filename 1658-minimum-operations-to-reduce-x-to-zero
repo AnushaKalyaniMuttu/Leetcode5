@@ -1,0 +1,31 @@
+class Solution {
+    public int minOperations(int[] nums, int x) {
+        int total = 0;
+        for (int v : nums) {
+            total += v;
+        }
+        int target = total - x;
+
+        if (target < 0) {
+            return -1;
+        }
+        if (target == 0) {
+            return nums.length;
+        }
+
+        int maxLen = -1, sum = 0, j = 0;
+        int n = nums.length;
+
+        for (int i = 0; i < n; ++i) {
+            sum += nums[i];
+            while (sum > target && j <= i) {
+                sum -= nums[j++];
+            }
+            if (sum == target) {
+                maxLen = Math.max(maxLen, i - j + 1);
+            }
+        }
+
+        return maxLen == -1 ? -1 : n - maxLen;
+    }
+}
