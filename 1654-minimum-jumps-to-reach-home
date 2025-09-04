@@ -1,0 +1,44 @@
+enum Direction { FORWARD, BACKWARD }
+
+class Solution {
+    public int minimumJumps(int[] forbidden, int a, int b, int x) {
+        // Determine the furthest position to consider in BFS.
+        int furthest = x + a + b;
+        Set<Integer> seenForward = new HashSet<>();
+        Set<Integer> seenBackward = new HashSet<>();
+        
+        for (int pos : forbidden) {
+            seenForward.add(pos);
+            seenBackward.add(pos);
+            furthest = Math.max(furthest, pos + a + b);
+        }
+
+        // BFS queue storing (directionLastJumpWas, currentPosition)
+        Queue<Pair<Direction, Integer>> queue = new ArrayDeque<>();
+        queue.offer(new Pair<>(Direction.FORWARD, 0));
+
+        for (int jumps = 0; !queue.isEmpty(); jumps++) {
+            int levelSize = queue.size();
+            while (levelSize-- > 0) {
+                Pair<Direction, Integer> state = queue.poll();
+                Direction dir = state.getKey();
+                int pos = state.getValue();
+                if (pos == x) return jumps;
+
+                int forward = pos + a;
+                int backward = pos - b;
+
+                // Try forward jump
+                if (forward <= furthest && seenForward.add(forward)) {
+                    queue.offer(new Pair<>(Direction.FORWARD, forward));
+                }
+
+                // Try backward jump, only if last jump was forward
+                if (dir == Direction.FORWARD && backward >= 0 && seenBackward.add(backward)) {
+                    queue.offer(new Pair<>(Direction.BACKWARD, backward));
+                }
+            }
+        }
+        return -1;  // Target unreachable
+    }
+}
