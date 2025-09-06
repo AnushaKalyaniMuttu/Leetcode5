@@ -1,0 +1,24 @@
+import java.util.Arrays;
+
+public class Solution {
+    public String getSmallestString(int n, int k) {
+        char[] ans = new char[n];
+        Arrays.fill(ans, 'a');
+        int i = n - 1;
+        int d = k - n;  // Remaining value to distribute
+        
+        // Greedily place 'z's from the end
+        while (i >= 0 && d > 25) {
+            ans[i] = 'z';
+            d -= 25;
+            i--;
+        }
+        
+        // If there's remaining value, place it at current position
+        if (i >= 0) {
+            ans[i] = (char) (ans[i] + d);
+        }
+        
+        return String.valueOf(ans);
+    }
+}
