@@ -1,0 +1,28 @@
+class Solution {
+    public int waysToMakeFair(int[] nums) {
+        int s1 = 0, s2 = 0;
+        int n = nums.length;
+        // Compute total sums at even and odd indices
+        for (int i = 0; i < n; ++i) {
+            if (i % 2 == 0) s1 += nums[i];
+            else s2 += nums[i];
+        }
+        
+        int t1 = 0, t2 = 0, ans = 0;
+        for (int i = 0; i < n; ++i) {
+            int v = nums[i];
+            if (i % 2 == 0) {
+                // Removing an even-indexed element
+                if (t2 + (s1 - t1 - v) == t1 + (s2 - t2)) ans++;
+            } else {
+                // Removing an odd-indexed element
+                if (t2 + (s1 - t1) == t1 + (s2 - t2 - v)) ans++;
+            }
+            // Update prefix sums
+            if (i % 2 == 0) t1 += v;
+            else t2 += v;
+        }
+        
+        return ans;
+    }
+}
