@@ -1,0 +1,10 @@
+class Solution {
+    public int maxRepeating(String sequence, String word) {
+    int k = 1;
+    while (sequence.contains(word.repeat(k))) {
+        k++;
+    }
+    return k - 1;
+}
+
+}
