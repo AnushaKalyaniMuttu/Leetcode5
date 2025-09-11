@@ -1,0 +1,24 @@
+class Solution {
+    public int[] mostCompetitive(int[] nums, int k) {
+        Deque<Integer> stack = new ArrayDeque<>();
+        int n = nums.length;
+
+        for (int i = 0; i < n; i++) {
+            // If current num is smaller than stack top, and popping still allows enough numbers to reach k
+            while (!stack.isEmpty() && stack.peek() > nums[i] && stack.size() - 1 + (n - i) >= k) {
+                stack.pop();
+            }
+            if (stack.size() < k) {
+                stack.push(nums[i]);
+            }
+        }
+
+        // Build answer array reversed from stack
+        int[] ans = new int[k];
+        for (int i = k - 1; i >= 0; i--) {
+            ans[i] = stack.poll();
+        }
+
+        return ans;
+    }
+}
