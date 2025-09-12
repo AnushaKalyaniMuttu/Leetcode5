@@ -1,0 +1,38 @@
+class Solution {
+    public int minMoves(int[] nums, int limit) {
+        int n = nums.length;
+        // delta array size up to 2*limit + 2 to safely index sums up to 2*limit
+        int[] delta = new int[2 * limit + 2];
+        
+        // Process each pair
+        for (int i = 0; i < n / 2; i++) {
+            int a = nums[i];
+            int b = nums[n - 1 - i];
+            if (a > b) {
+                // ensure a <= b
+                int tmp = a;
+                a = b;
+                b = tmp;
+            }
+            
+            // Two moves needed for all s in [2, 2*limit] initially
+            // We will subtract where fewer moves are needed
+            
+            // If s < a + 1 → need 2 moves
+            // At s = a + 1, the cost drops by 1 (from 2 moves down to 1 move)
+            delta[2] += 2;
+            delta[a + 1] -= 1;
+            
+            // If s = a + b → 0 moves (we subtract another 1 from the 1-move count)
+            delta[a + b] -= 1;
+            delta[a + b + 1] += 1;
+            
+            // If s > b + limit → back to 2 moves
+            // Also, for s > a + b up to b + limit, 1 move is enough
+            delta[b + limit + 1] += 1;
+        }
+        
+        int moves = Integer.MAX_VALUE;
+        int curr = 0;
+        // scan s from 2 to 2*limit
+        for (int s = 2; s
