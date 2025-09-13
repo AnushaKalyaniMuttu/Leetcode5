@@ -1,0 +1,39 @@
+import java.util.PriorityQueue;
+
+public class Solution {
+    public int minimumDeviation(int[] nums) {
+        // Create a max-heap (we use negative values to simulate max-heap in Java)
+        PriorityQueue<Integer> maxHeap = new PriorityQueue<>((a, b) -> b - a);
+        
+        int min = Integer.MAX_VALUE;
+
+        // Step 1: Normalize all numbers to even numbers
+        for (int num : nums) {
+            if (num % 2 == 0) {
+                maxHeap.offer(num);
+                min = Math.min(min, num);
+            } else {
+                // Multiply odd numbers by 2 to make them even
+                maxHeap.offer(num * 2);
+                min = Math.min(min, num * 2);
+            }
+        }
+
+        // Step 2: Try to minimize the max element by repeatedly dividing the largest element
+        int result = Integer.MAX_VALUE;
+        while (!maxHeap.isEmpty()) {
+            int maxNum = maxHeap.poll();
+            result = Math.min(result, maxNum - min);
+            
+            // If the max number is even, divide it by 2
+            if (maxNum % 2 == 0) {
+                maxHeap.offer(maxNum / 2);
+                min = Math.min(min, maxNum / 2);
+            } else {
+                break;  // Can't divide odd numbers, break out of the loop
+            }
+        }
+
+        return result;
+    }
+}
