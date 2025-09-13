@@ -1,0 +1,29 @@
+public class ProductOfNumbers {
+    private List<Integer> prefixProducts;
+    
+    public ProductOfNumbers() {
+        // Initialize the list to store prefix products
+        prefixProducts = new ArrayList<>();
+        prefixProducts.add(1); // Base case: product of zero numbers is 1
+    }
+    
+    public void add(int num) {
+        if (num == 0) {
+            // Reset the list when a zero is added
+            prefixProducts.clear();
+            prefixProducts.add(1);  // Reset the prefix product to 1 after zero
+        } else {
+            // Otherwise, multiply the previous product by the new number
+            prefixProducts.add(prefixProducts.get(prefixProducts.size() - 1) * num);
+        }
+    }
+    
+    public int getProduct(int k) {
+        int size = prefixProducts.size();
+        if (k >= size) {
+            return 0;  // If k is larger than the available prefix products, return 0
+        }
+        // Return the product of the last k numbers
+        return prefixProducts.get(size - 1) / prefixProducts.get(size - k - 1);
+    }
+}
