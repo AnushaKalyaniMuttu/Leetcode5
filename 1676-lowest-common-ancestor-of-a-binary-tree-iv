@@ -1,0 +1,42 @@
+import java.util.HashSet;
+import java.util.Set;
+
+public class Solution {
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode[] nodes) {
+        // Create a set of the target nodes for easy lookup
+        Set<TreeNode> nodeSet = new HashSet<>();
+        for (TreeNode node : nodes) {
+            nodeSet.add(node);
+        }
+
+        // Start DFS traversal from root
+        return dfs(root, nodeSet);
+    }
+
+    private TreeNode dfs(TreeNode root, Set<TreeNode> nodeSet) {
+        // Base case: If root is null or root is one of the target nodes
+        if (root == null || nodeSet.contains(root)) {
+            return root;
+        }
+
+        // Recurse on the left and right subtrees
+        TreeNode left = dfs(root.left, nodeSet);
+        TreeNode right = dfs(root.right, nodeSet);
+
+        // If both sides return non-null, current root is LCA
+        if (left != null && right != null) {
+            return root;
+        }
+
+        // Otherwise, return the non-null side
+        return left != null ? left : right;
+    }
+
+    // TreeNode class definition (for context)
+    public class TreeNode {
+        int val;
+        TreeNode left;
+        TreeNode right;
+        TreeNode(int val) { this.val = val; }
+    }
+}
