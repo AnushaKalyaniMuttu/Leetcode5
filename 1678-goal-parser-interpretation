@@ -1,0 +1,23 @@
+class Solution {
+    public String interpret(String command) {
+        StringBuilder sb = new StringBuilder();
+        int i = 0;
+        int n = command.length();
+        while (i < n) {
+            char c = command.charAt(i);
+            if (c == 'G') {
+                sb.append('G');
+                i++;
+            } else if (i + 1 < n && command.charAt(i + 1) == ')') {
+                // pattern "()"
+                sb.append('o');
+                i += 2; 
+            } else {
+                // pattern "(al)"
+                sb.append("al");
+                i += 4;
+            }
+        }
+        return sb.toString();
+    }
+}
