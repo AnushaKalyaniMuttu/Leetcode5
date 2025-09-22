@@ -1,0 +1,61 @@
+import java.util.*;
+
+public class Solution {
+    public int minimumIncompatibility(int[] nums, int k) {
+        int n = nums.length;
+        int groupSize = n / k;
+        int maxMask = 1 << n;
+
+        // Precompute all valid subsets of size groupSize and their incompatibility
+        Map<Integer, Integer> subsetToIncompatibility = new HashMap<>();
+
+        for (int mask = 0; mask < maxMask; mask++) {
+            if (Integer.bitCount(mask) != groupSize) continue;
+
+            Set<Integer> seen = new HashSet<>();
+            int min = Integer.MAX_VALUE;
+            int max = Integer.MIN_VALUE;
+            boolean valid = true;
+
+            for (int i = 0; i < n; i++) {
+                if ((mask & (1 << i)) != 0) {
+                    if (seen.contains(nums[i])) {
+                        valid = false;
+                        break;
+                    }
+                    seen.add(nums[i]);
+                    min = Math.min(min, nums[i]);
+                    max = Math.max(max, nums[i]);
+                }
+            }
+
+            if (valid) {
+                subsetToIncompatibility.put(mask, max - min);
+            }
+        }
+
+        // Initialize DP array
+        int[] dp = new int[maxMask];
+        Arrays.fill(dp, Integer.MAX_VALUE);
+        dp[0] = 0;
+
+        // DP over all masks
+        for (int mask = 0; mask < maxMask; mask++) {
+            if (dp[mask] == Integer.MAX_VALUE) continue;
+
+            // Find remaining elements (not yet used)
+            int remaining = (~mask) & (maxMask - 1);
+
+            // Try to take a valid subset from remaining elements
+            for (int sub = remaining; sub > 0; sub = (sub - 1) & remaining) {
+                if (!subsetToIncompatibility.containsKey(sub)) continue;
+                if (Integer.bitCount(sub) != groupSize) continue;
+
+                int newMask = mask | sub;
+                dp[newMask] = Math.min(dp[newMask], dp[mask] + subsetToIncompatibility.get(sub));
+            }
+        }
+
+        return dp[maxMask - 1] == Integer.MAX_VALUE ? -1 : dp[maxMask - 1];
+    }
+}
