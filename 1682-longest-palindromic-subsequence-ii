@@ -1,0 +1,49 @@
+import java.util.Arrays;
+
+public class Solution {
+    private int[][][] dp;
+    private String s;
+    private int n;
+
+    public int longestPalindromeSubseq(String s) {
+        this.s = s;
+        this.n = s.length();
+        // dp[i][j][prev] = best for substring s[i..j], with prev being the outer char used before this layer
+        // prev = 0..25 for 'a'..'z', and 26 meaning “no previous character”
+        dp = new int[n][n][27];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                Arrays.fill(dp[i][j], -1);
+            }
+        }
+        // start with the whole string, prev = 26 (none)
+        return dfs(0, n - 1, 26);
+    }
+
+    private int dfs(int i, int j, int prev) {
+        if (i >= j) {
+            return 0;
+        }
+        if (dp[i][j][prev] != -1) {
+            return dp[i][j][prev];
+        }
+        int ans = 0;
+
+        char ci = s.charAt(i);
+        char cj = s.charAt(j);
+
+        if (ci == cj) {
+            int cidx = ci - 'a';
+            if (cidx != prev) {
+                // we can use this matching pair
+                ans = Math.max(ans, 2 + dfs(i + 1, j - 1, cidx));
+            }
+        }
+        // whether or not we matched, try skipping
+        ans = Math.max(ans, dfs(i + 1, j, prev));
+        ans = Math.max(ans, dfs(i, j - 1, prev));
+
+        dp[i][j][prev] = ans;
+        return ans;
+    }
+}
