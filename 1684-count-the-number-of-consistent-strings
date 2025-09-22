@@ -1,0 +1,25 @@
+public class Solution {
+    public int countConsistentStrings(String allowed, String[] words) {
+        // Create lookup array for allowed chars
+        boolean[] isAllowed = new boolean[26];
+        for (char c : allowed.toCharArray()) {
+            isAllowed[c - 'a'] = true;
+        }
+
+        int count = 0;
+        for (String w : words) {
+            boolean consistent = true;
+            for (char c : w.toCharArray()) {
+                if (!isAllowed[c - 'a']) {
+                    consistent = false;
+                    break;
+                }
+            }
+            if (consistent) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+}
