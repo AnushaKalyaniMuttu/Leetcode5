@@ -1,0 +1,7 @@
+class Solution {
+    public int numberOfMatches(int n) {
+        // Since every match eliminates exactly one team,
+        // we need n - 1 matches to reduce from n teams down to 1 winner.
+        return n - 1;
+    }
+}
