@@ -1,0 +1,16 @@
+class Solution {
+    public int minPartitions(String n) {
+        int maxDigit = 0;
+        for (char c : n.toCharArray()) {
+            int digit = c - '0';
+            if (digit > maxDigit) {
+                maxDigit = digit;
+                // Early exit: since digit is from 0‑9, once we see '9' we know it's maximum possible
+                if (maxDigit == 9) {
+                    return 9;
+                }
+            }
+        }
+        return maxDigit;
+    }
+}
