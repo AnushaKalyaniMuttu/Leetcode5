@@ -1,0 +1,63 @@
+class Solution {
+    public int boxDelivering(int[][] boxes, int portsCount, int maxBoxes, int maxWeight) {
+        int n = boxes.length;
+        long[] prefixWeight = new long[n + 1];
+        int[] port = new int[n];
+        // port transitions: between box[i] and box[i+1]
+        int[] portChange = new int[n];
+        
+        for (int i = 0; i < n; i++) {
+            port[i] = boxes[i][0];
+            prefixWeight[i + 1] = prefixWeight[i] + boxes[i][1];
+            if (i > 0) {
+                portChange[i] = portChange[i - 1] + (boxes[i][0] != boxes[i - 1][0] ? 1 : 0);
+            }
+        }
+        
+        int[] dp = new int[n + 1];
+        // initialize; dp[0] = 0 by default
+        
+        Deque<Integer> dq = new ArrayDeque<>();
+        dq.offerLast(0);
+        // We'll maintain dq so it helps in selecting appropriate l's
+        
+        for (int i = 1; i <= n; i++) {
+            // Remove invalid l's from front of deque:
+            // l must satisfy constraints for window [l .. i-1]
+            while (!dq.isEmpty()) {
+                int l = dq.peekFirst();
+                if (i - l > maxBoxes || prefixWeight[i] - prefixWeight[l] > maxWeight) {
+                    dq.pollFirst();
+                } else {
+                    break;
+                }
+            }
+            
+            // Now front of dq is the best candidate for l to compute dp[i]
+            // dp[i] = dp[l] + (number of port changes in [l..i-1]) + 2
+            // +2 because 1 for going from storage & 1 for return to storage
+            // Actually it's: number of portChange in [l..i‑1] + dp[l] + 2
+            int bestL = dq.peekFirst();
+            dp[i] = dp[bestL] + (portChange[i - 1] - portChange[bestL]) + 2;
+            
+            if (i == n) break;  // no need to add i to deque if we won't use it for next
+            
+            // Now maintain deque for future i's
+            // We want to add i to deque, but we will pop from back while dp[...] - portChange[...] >= dp[i] - portChange[i]
+            while (!dq.isEmpty()) {
+                int l = dq.peekLast();
+                // Compare values to maintain monotonicity
+                int valL = dp[l] - portChange[l];
+                int valI = dp[i] - portChange[i];
+                if (valL >= valI) {
+                    dq.pollLast();
+                } else {
+                    break;
+                }
+            }
+            dq.offerLast(i);
+        }
+        
+        return dp[n];
+    }
+}
