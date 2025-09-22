@@ -1,0 +1,25 @@
+class Solution {
+    private static final int MOD = 1_000_000_007;
+
+    // Compute nCr % MOD using DP
+    private long[][] comb;
+
+    public int countWays(int n, int m) {
+        comb = new long[n + m][n + m];
+        for (int i = 0; i < n + m; i++) {
+            comb[i][0] = 1;
+            for (int j = 1; j <= i; j++) {
+                comb[i][j] = (comb[i - 1][j - 1] + comb[i - 1][j]) % MOD;
+            }
+        }
+
+        return (int) comb[m + n - 1][n - 1];
+    }
+
+    public static void main(String[] args) {
+        Solution sol = new Solution();
+        int n = 3; // children
+        int m = 5; // candies
+        System.out.println(sol.countWays(n, m));  // Output: 21
+    }
+}
