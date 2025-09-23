@@ -1,0 +1,36 @@
+class Solution {
+    public String reformatNumber(String number) {
+        // Step 1: Remove spaces and dashes
+        StringBuilder digits = new StringBuilder();
+        for (char c : number.toCharArray()) {
+            if (Character.isDigit(c)) {
+                digits.append(c);
+            }
+        }
+        String s = digits.toString();
+        int n = s.length();
+        
+        StringBuilder sb = new StringBuilder();
+        int i = 0;
+        
+        // Step 2: Take blocks of 3 until remaining <= 4
+        while (n - i > 4) {
+            sb.append(s.substring(i, i + 3));
+            sb.append('-');
+            i += 3;
+        }
+        
+        // Step 3: Handle last part depending on what's left
+        int rem = n - i;
+        if (rem == 4) {
+            sb.append(s.substring(i, i + 2));
+            sb.append('-');
+            sb.append(s.substring(i + 2, i + 4));
+        } else {
+            // rem is 2 or 3 (since rem <= 4 and rem != 4 here)
+            sb.append(s.substring(i));
+        }
+        
+        return sb.toString();
+    }
+}
