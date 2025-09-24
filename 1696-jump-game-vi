@@ -1,0 +1,30 @@
+import java.util.*;
+
+public class Solution {
+    public int maxResult(int[] nums, int k) {
+        int n = nums.length;
+        Deque<Integer> deque = new ArrayDeque<>();
+        int[] dp = new int[n];
+        dp[0] = nums[0];
+        deque.add(0);
+
+        for (int i = 1; i < n; i++) {
+            // Remove indices outside the window (i - k)
+            while (!deque.isEmpty() && deque.peekFirst() < i - k) {
+                deque.pollFirst();
+            }
+
+            // Front of deque has the max dp[j] for j in [i-k, i-1]
+            dp[i] = dp[deque.peekFirst()] + nums[i];
+
+            // Maintain decreasing deque: remove all dp[j] <= dp[i]
+            while (!deque.isEmpty() && dp[deque.peekLast()] <= dp[i]) {
+                deque.pollLast();
+            }
+
+            deque.addLast(i);
+        }
+
+        return dp[n - 1];
+    }
+}
