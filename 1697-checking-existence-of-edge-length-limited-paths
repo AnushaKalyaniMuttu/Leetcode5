@@ -1,0 +1,79 @@
+class Solution {
+    static class UnionFind {
+        int[] parent;
+        int[] rank;
+
+        public UnionFind(int n) {
+            parent = new int[n];
+            rank = new int[n];
+            for (int i = 0; i < n; i++) {
+                parent[i] = i;
+                rank[i] = 0;
+            }
+        }
+
+        public int find(int x) {
+            if (parent[x] != x) {
+                parent[x] = find(parent[x]);
+            }
+            return parent[x];
+        }
+
+        public void union(int a, int b) {
+            int pa = find(a);
+            int pb = find(b);
+            if (pa == pb) return;
+            // attach smaller rank under larger
+            if (rank[pa] < rank[pb]) {
+                parent[pa] = pb;
+            } else if (rank[pa] > rank[pb]) {
+                parent[pb] = pa;
+            } else {
+                parent[pb] = pa;
+                rank[pa]++;
+            }
+        }
+    }
+
+    public boolean[] distanceLimitedPathsExist(int n, int[][] edgeList, int[][] queries) {
+        // result array
+        boolean[] ans = new boolean[queries.length];
+
+        // Prepare a query array that holds [u, v, limit, originalIndex]
+        int m = queries.length;
+        int[][] qs = new int[m][4];
+        for (int i = 0; i < m; i++) {
+            qs[i][0] = queries[i][0];
+            qs[i][1] = queries[i][1];
+            qs[i][2] = queries[i][2];
+            qs[i][3] = i;
+        }
+
+        // Sort qs by limit
+        Arrays.sort(qs, (a, b) -> Integer.compare(a[2], b[2]));
+        // Sort edgeList by weight
+        Arrays.sort(edgeList, (a, b) -> Integer.compare(a[2], b[2]));
+
+        UnionFind uf = new UnionFind(n);
+
+        int ei = 0;  // pointer / index over edgeList
+        for (int[] q : qs) {
+            int u = q[0], v = q[1], limit = q[2], qi = q[3];
+
+            // Add all edges whose weight < limit
+            while (ei < edgeList.length && edgeList[ei][2] < limit) {
+                uf.union(edgeList[ei][0], edgeList[ei][1]);
+                ei++;
+            }
+
+            // After adding, check connectivity
+            if (uf.find(u) == uf.find(v)) {
+                ans[qi] = true;
+            } else {
+                ans[qi] = false;
+            }
+        }
+
+        return ans;
+    }
+}
