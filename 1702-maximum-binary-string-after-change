@@ -1,0 +1,34 @@
+class Solution {
+    public String maximumBinaryString(String binary) {
+        int n = binary.length();
+        // find first zero
+        int firstZero = binary.indexOf('0');
+        if (firstZero == -1) {
+            // no zero — string is already all ones
+            return binary;
+        }
+        // count how many zeros after that (including this one)
+        int zeroCount = 0;
+        for (int i = firstZero; i < n; i++) {
+            if (binary.charAt(i) == '0') {
+                zeroCount++;
+            }
+        }
+        // The final zero index = firstZero + zeroCount - 1
+        int finalZeroPos = firstZero + zeroCount - 1;
+
+        // build the result
+        StringBuilder sb = new StringBuilder();
+        // all ones up to finalZeroPos
+        for (int i = 0; i < finalZeroPos; i++) {
+            sb.append('1');
+        }
+        // the single zero
+        sb.append('0');
+        // rest ones
+        for (int i = finalZeroPos + 1; i < n; i++) {
+            sb.append('1');
+        }
+        return sb.toString();
+    }
+}
