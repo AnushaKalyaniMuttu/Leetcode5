@@ -1,0 +1,16 @@
+class Solution {
+    public int countStudents(int[] students, int[] sandwiches) {
+        int[] cnt = new int[2];  // cnt[0] = number of students who prefer 0, cnt[1] = prefer 1
+        for (int s : students) {
+            cnt[s]++;
+        }
+        for (int v : sandwiches) {
+            if (cnt[v] == 0) {
+                // No one wants this sandwich, so remaining students can’t be served
+                return cnt[0] + cnt[1];
+            }
+            cnt[v]--;
+        }
+        return 0;  // all sandwiches matched
+    }
+}
