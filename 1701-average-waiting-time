@@ -1,0 +1,25 @@
+class Solution {
+    public double averageWaitingTime(int[][] customers) {
+        long totalWaitingTime = 0;
+        long currentTime = 0;
+
+        for (int[] customer : customers) {
+            int arrival = customer[0];
+            int cookTime = customer[1];
+
+            // If chef is idle before customer arrives, jump currentTime to arrival
+            if (currentTime < arrival) {
+                currentTime = arrival;
+            }
+
+            // Chef finishes this order at:
+            currentTime += cookTime;
+
+            // Waiting time = finish_time − arrival
+            totalWaitingTime += (currentTime - arrival);
+        }
+
+        // Average waiting time
+        return (double) totalWaitingTime / customers.length;
+    }
+}
