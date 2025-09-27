@@ -1,0 +1,43 @@
+class Solution {
+    public int minMoves(int[] nums, int k) {
+        List<Integer> arr = new ArrayList<>();
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            if (nums[i] == 1) {
+                arr.add(i);
+            }
+        }
+        int m = arr.size();
+        // prefix sum of positions
+        long[] prefix = new long[m + 1];
+        for (int i = 0; i < m; i++) {
+            prefix[i + 1] = prefix[i] + arr.get(i);
+        }
+        
+        long ans = Long.MAX_VALUE;
+        int x = (k + 1) / 2;      // number of ones including median on left side
+        int y = k - x;            // number of ones on the right side (excluding the median if odd)
+        
+        for (int i = x - 1; i < m - y; i++) {
+            int midPos = arr.get(i);
+            // sum of left side positions (x elements ending at i)
+            long sumLeft = prefix[i + 1] - prefix[i + 1 - x];
+            // sum of right side positions (y elements after i)
+            long sumRight = prefix[i + 1 + y] - prefix[i + 1];
+            
+            // cost to bring left side 1s to positions: [midPos - x + 1, ..., midPos]
+            // target sum of those positions = arithmetic series from (midPos - x + 1) to midPos
+            long targetLeftSum = ((long)midPos + (midPos - x + 1)) * x / 2;
+            long costLeft = targetLeftSum - sumLeft;
+            
+            // cost to bring right side 1s to positions: [midPos + 1, ..., midPos + y]
+            long targetRightSum = ((long)(midPos + 1) + (midPos + y)) * y / 2;
+            long costRight = sumRight - targetRightSum;
+            
+            long totalCost = costLeft + costRight;
+            ans = Math.min(ans, totalCost);
+        }
+        
+        return (int) ans;
+    }
+}
