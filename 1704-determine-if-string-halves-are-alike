@@ -1,0 +1,18 @@
+class Solution {
+    public boolean halvesAreAlike(String s) {
+        String vowels = "aeiouAEIOU";
+        int n = s.length();
+        int half = n / 2;
+        int diff = 0;
+        
+        for (int i = 0; i < half; i++) {
+            if (vowels.indexOf(s.charAt(i)) >= 0) {
+                diff++;
+            }
+            if (vowels.indexOf(s.charAt(i + half)) >= 0) {
+                diff--;
+            }
+        }
+        return diff == 0;
+    }
+}
