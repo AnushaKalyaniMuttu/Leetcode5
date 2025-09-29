@@ -1,0 +1,32 @@
+import java.util.Arrays;
+import java.util.Comparator;
+
+class Solution {
+    public int maximumUnits(int[][] boxTypes, int truckSize) {
+        // Sort boxTypes in descending order by units per box
+        Arrays.sort(boxTypes, new Comparator<int[]>() {
+            public int compare(int[] a, int[] b) {
+                // b[1] – a[1] for descending order
+                return b[1] - a[1];
+            }
+        });
+        
+        int totalUnits = 0;
+        int remainingCapacity = truckSize;
+        
+        for (int[] boxType : boxTypes) {
+            int count = boxType[0];
+            int units = boxType[1];
+            
+            if (remainingCapacity == 0) {
+                break;
+            }
+            
+            int take = Math.min(count, remainingCapacity);
+            totalUnits += take * units;
+            remainingCapacity -= take;
+        }
+        
+        return totalUnits;
+    }
+}
