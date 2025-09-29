@@ -1,0 +1,109 @@
+import java.util.*;
+
+class Solution {
+    // Trie node for bits 0/1
+    static class TrieNode {
+        TrieNode[] children = new TrieNode[2];
+    }
+    
+    static class BitTrie {
+        private final TrieNode root = new TrieNode();
+        private final int MAX_BIT;  // maximum bit index (e.g. 30 or 31)
+        
+        public BitTrie(int maxBit) {
+            this.MAX_BIT = maxBit;
+        }
+        
+        public void insert(int num) {
+            TrieNode node = root;
+            for (int b = MAX_BIT; b >= 0; b--) {
+                int bit = (num >> b) & 1;
+                if (node.children[bit] == null) {
+                    node.children[bit] = new TrieNode();
+                }
+                node = node.children[bit];
+            }
+        }
+        
+        /**
+         * Return the maximum XOR value of `num` with any number inserted in the trie.
+         * If trie is empty, returns -1 (or 0 depending on design, but we check emptiness outside).
+         */
+        public int queryMaxXor(int num) {
+            TrieNode node = root;
+            int res = 0;
+            for (int b = MAX_BIT; b >= 0; b--) {
+                int bit = (num >> b) & 1;
+                int toggled = bit ^ 1;  // prefer opposite bit for maximizing XOR
+                if (node.children[toggled] != null) {
+                    res |= (1 << b);
+                    node = node.children[toggled];
+                } else if (node.children[bit] != null) {
+                    node = node.children[bit];
+                } else {
+                    // No further node, means trie is incomplete
+                    break;
+                }
+            }
+            return res;
+        }
+    }
+    
+    public int[] maximizeXor(int[] nums, int[][] queries) {
+        int n = nums.length;
+        int q = queries.length;
+        // Prepare an array of queries with original indexes
+        class Q {
+            int x, m, idx;
+            Q(int x, int m, int idx) {
+                this.x = x; this.m = m; this.idx = idx;
+            }
+        }
+        Q[] v = new Q[q];
+        for (int i = 0; i < q; i++) {
+            v[i] = new Q(queries[i][0], queries[i][1], i);
+        }
+        // Sort nums ascending
+        Arrays.sort(nums);
+        // Sort queries by m ascending
+        Arrays.sort(v, Comparator.comparingInt(o -> o.m));
+        
+        int[] ans = new int[q];
+        Arrays.fill(ans, -1);
+        
+        // Determine maximum bit we need (based on max nums or max x in queries)
+        int maxNum = 0;
+        for (int num : nums) {
+            if (num > maxNum) maxNum = num;
+        }
+        for (Q qu : v) {
+            if (qu.x > maxNum) {
+                maxNum = qu.x;
+            }
+        }
+        int maxBit = 0;
+        while ((1 << (maxBit + 1)) <= maxNum) {
+            maxBit++;
+        }
+        
+        BitTrie trie = new BitTrie(maxBit);
+        int idxNums = 0;
+        for (Q qu : v) {
+            // Insert all nums <= qu.m into trie
+            while (idxNums < n && nums[idxNums] <= qu.m) {
+                trie.insert(nums[idxNums]);
+                idxNums++;
+            }
+            // If we have inserted at least one, answer query
+            if (idxNums > 0) {
+                // Query max XOR with qu.x
+                int best = trie.queryMaxXor(qu.x);
+                ans[qu.idx] = best;
+            } else {
+                // No nums ≤ m, so answer remains -1
+                ans[qu.idx] = -1;
+            }
+        }
+        return ans;
+    }
+}
