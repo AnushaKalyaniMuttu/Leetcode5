@@ -1,0 +1,38 @@
+class Solution {
+    public int[] findBall(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        int[] result = new int[n];
+        for (int j = 0; j < n; j++) {
+            result[j] = dropBall(grid, 0, j, m, n);
+        }
+        return result;
+    }
+
+    /**
+     * Simulate dropping a ball starting from (row = i, col = j).
+     * Returns the ending column if it exits, or -1 if it gets stuck.
+     */
+    private int dropBall(int[][] grid, int i, int j, int m, int n) {
+        int row = i;
+        int col = j;
+        while (row < m) {
+            int dir = grid[row][col];  // either +1 (to right) or -1 (to left)
+            int nextCol = col + dir;   // attempt to move to this next column
+
+            // Case: goes out of bounds (hits the wall)
+            if (nextCol < 0 || nextCol >= n) {
+                return -1;
+            }
+            // Case: “V” trap: the board in next cell conflicts
+            if (grid[row][nextCol] != dir) {
+                return -1;
+            }
+            // Valid move: go to next row and column
+            row++;
+            col = nextCol;
+        }
+        // If we exit all rows successfully, return the column
+        return col;
+    }
+}
