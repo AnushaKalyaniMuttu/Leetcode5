@@ -1,0 +1,21 @@
+class Solution {
+    public int[] largestSubarray(int[] nums, int k) {
+        int n = nums.length;
+        // Index up to which we can start (inclusive)
+        int maxStart = n - k;
+        int maxIdx = 0;
+        int maxVal = nums[0];
+
+        for (int i = 1; i <= maxStart; i++) {
+            if (nums[i] > maxVal) {
+                maxVal = nums[i];
+                maxIdx = i;
+            }
+        }
+
+        // Copy the subarray from maxIdx to maxIdx + k - 1
+        int[] ans = new int[k];
+        System.arraycopy(nums, maxIdx, ans, 0, k);
+        return ans;
+    }
+}
