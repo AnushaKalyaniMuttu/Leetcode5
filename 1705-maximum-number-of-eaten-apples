@@ -1,0 +1,44 @@
+import java.util.PriorityQueue;
+import java.util.Comparator;
+
+class Solution {
+    public int eatenApples(int[] apples, int[] days) {
+        int n = apples.length;
+        // Priority queue storing [expirationDay, count]
+        PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[0]));
+        int eaten = 0;
+        int day = 0;
+        
+        // Continue while still days to add apples or there are apples left in pq
+        while (day < n || !pq.isEmpty()) {
+            // If apples grow on this day, add them
+            if (day < n && apples[day] > 0) {
+                int expire = day + days[day] - 1;  // last day they are edible
+                if (expire >= day) {  // only if they don't rot immediately
+                    pq.offer(new int[]{expire, apples[day]});
+                }
+            }
+            
+            // Remove rotten apple batches
+            while (!pq.isEmpty() && pq.peek()[0] < day) {
+                pq.poll();
+            }
+            
+            // Eat one apple from the batch expiring soonest
+            if (!pq.isEmpty()) {
+                int[] top = pq.poll();
+                // one apple eaten
+                eaten++;
+                top[1]--;  // reduce count
+                // if still apples left and not expired, push back
+                if (top[1] > 0 && top[0] > day) {
+                    pq.offer(top);
+                }
+            }
+            
+            day++;
+        }
+        
+        return eaten;
+    }
+}
