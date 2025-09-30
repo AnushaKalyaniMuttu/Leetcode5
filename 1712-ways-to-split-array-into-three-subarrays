@@ -1,0 +1,46 @@
+class Solution {
+    private static final int MOD = 1_000_000_007;
+    public int waysToSplit(int[] nums) {
+        int n = nums.length;
+        long[] prefix = new long[n];
+        prefix[0] = nums[0];
+        for (int i = 1; i < n; i++) {
+            prefix[i] = prefix[i - 1] + nums[i];
+        }
+        int ans = 0;
+        for (int i = 0; i < n - 2; i++) {
+            // find smallest j so that sum(mid) >= sum(left)
+            int j = lowerBound(prefix, i + 1, n - 1, 2 * prefix[i]);
+            // find first k such that sum(mid) > sum(right)
+            int k = upperBound(prefix, j, n - 1, (prefix[n - 1] + prefix[i]) / 2);
+            ans = (int) ((ans + (long)(k - j)) % MOD);
+        }
+        return ans;
+    }
+
+    // find first index in [l, r] where prefix[idx] >= target
+    private int lowerBound(long[] arr, int l, int r, long target) {
+        while (l < r) {
+            int m = l + (r - l) / 2;
+            if (arr[m] >= target) {
+                r = m;
+            } else {
+                l = m + 1;
+            }
+        }
+        return l;
+    }
+
+    // find first index in [l, r] where prefix[idx] > target
+    private int upperBound(long[] arr, int l, int r, long target) {
+        while (l < r) {
+            int m = l + (r - l) / 2;
+            if (arr[m] > target) {
+                r = m;
+            } else {
+                l = m + 1;
+            }
+        }
+        return l;
+    }
+}
