@@ -1,0 +1,37 @@
+class Solution {
+    public int minOperations(int[] target, int[] arr) {
+        int n = target.length;
+        // map each target value to its index
+        Map<Integer, Integer> pos = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            pos.put(target[i], i);
+        }
+        // build a list of indices from arr that appear in target
+        List<Integer> seq = new ArrayList<>();
+        for (int v : arr) {
+            if (pos.containsKey(v)) {
+                seq.add(pos.get(v));
+            }
+        }
+        // find length of LIS in seq
+        int lisLen = lengthOfLIS(seq);
+        // operations = target length minus LIS length
+        return n - lisLen;
+    }
+    
+    private int lengthOfLIS(List<Integer> nums) {
+        List<Integer> tails = new ArrayList<>();
+        for (int x : nums) {
+            int i = Collections.binarySearch(tails, x);
+            if (i < 0) {
+                i = -i - 1;
+            }
+            if (i == tails.size()) {
+                tails.add(x);
+            } else {
+                tails.set(i, x);
+            }
+        }
+        return tails.size();
+    }
+}
