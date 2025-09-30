@@ -1,0 +1,20 @@
+class Solution {
+    public int totalMoney(int n) {
+        int weeks = n / 7;
+        int days = n % 7;
+
+        // Sum for full weeks:
+        // In week 1 he deposits 1,2,3,4,5,6,7 → sum = 28
+        // In week 2 he deposits 2,3,4,5,6,7,8 → sum = 28 + 7
+        // …
+        // So full weeks sum = arithmetic series over weeks of base sums
+        int fullWeekSum = (28 + (28 + 7 * (weeks - 1))) * weeks / 2;
+
+        // Remaining days after full weeks
+        // On the next week, he starts at weeks + 1 dollars on Monday
+        // So the amounts are: (weeks + 1), (weeks + 2), … up to days
+        int remainSum = (2 * (weeks + 1) + (days - 1)) * days / 2;
+
+        return fullWeekSum + remainSum;
+    }
+}
