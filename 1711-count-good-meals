@@ -1,0 +1,29 @@
+class Solution {
+    private static final int MOD = 1_000_000_007;
+
+    public int countPairs(int[] deliciousness) {
+        // find maximum possible sum to bound how far powers of two go
+        int max = 0;
+        for (int d : deliciousness) {
+            max = Math.max(max, d);
+        }
+        int maxPower = max * 2;
+
+        long ans = 0;
+        Map<Integer, Integer> count = new HashMap<>();
+
+        for (int d : deliciousness) {
+            // for each possible power of two
+            for (int power = 1; power <= maxPower; power <<= 1) {
+                int need = power - d;
+                if (count.containsKey(need)) {
+                    ans += count.get(need);
+                    ans %= MOD;
+                }
+            }
+            // record current
+            count.put(d, count.getOrDefault(d, 0) + 1);
+        }
+        return (int) ans;
+    }
+}
