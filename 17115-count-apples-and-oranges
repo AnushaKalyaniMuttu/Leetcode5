@@ -1,0 +1,5 @@
+SELECT 
+    SUM(apple_count) AS apple_count,
+    SUM(orange_count) AS orange_count
+FROM 
+    Boxes;
