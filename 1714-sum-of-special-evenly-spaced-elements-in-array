@@ -1,0 +1,37 @@
+class Solution {
+    private static final int MOD = 1_000_000_007;
+
+    public int[] answerQueries(int[] nums, int[][] queries) {
+        int n = nums.length;
+        int q = queries.length;
+        int sqrt = (int) Math.sqrt(n);
+        int[] ans = new int[q];
+        // dp[i][y]: for y < sqrt, stores sum starting at i, stepping by y
+        long[][] dp = new long[n][sqrt];
+
+        for (int i = n - 1; i >= 0; --i) {
+            for (int y = 1; y < sqrt; ++y) {
+                if (i + y < n) {
+                    dp[i][y] = (nums[i] + dp[i + y][y]) % MOD;
+                } else {
+                    dp[i][y] = nums[i] % MOD;
+                }
+            }
+        }
+
+        for (int i = 0; i < q; ++i) {
+            int x = queries[i][0];
+            int y = queries[i][1];
+            long sum = 0;
+            if (y < sqrt) {
+                sum = dp[x][y];
+            } else {
+                for (int j = x; j < n; j += y) {
+                    sum = (sum + nums[j]) % MOD;
+                }
+            }
+            ans[i] = (int) sum;
+        }
+        return ans;
+    }
+}
