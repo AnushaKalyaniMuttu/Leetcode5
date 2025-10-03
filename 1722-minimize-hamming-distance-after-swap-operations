@@ -1,0 +1,63 @@
+import java.util.*;
+
+class Solution {
+    public int minimumHammingDistance(int[] source, int[] target, int[][] allowedSwaps) {
+        int n = source.length;
+        UnionFind uf = new UnionFind(n);
+
+        // Union the indices as per allowedSwaps
+        for (int[] swap : allowedSwaps) {
+            uf.union(swap[0], swap[1]);
+        }
+
+        // Group indices by their root
+        Map<Integer, List<Integer>> groups = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            int root = uf.find(i);
+            groups.computeIfAbsent(root, k -> new ArrayList<>()).add(i);
+        }
+
+        int result = 0;
+
+        // For each group, count unmatched elements
+        for (List<Integer> group : groups.values()) {
+            Map<Integer, Integer> sourceCount = new HashMap<>();
+            Map<Integer, Integer> targetCount = new HashMap<>();
+
+            for (int idx : group) {
+                sourceCount.put(source[idx], sourceCount.getOrDefault(source[idx], 0) + 1);
+                targetCount.put(target[idx], targetCount.getOrDefault(target[idx], 0) + 1);
+            }
+
+            for (int key : targetCount.keySet()) {
+                int targetFreq = targetCount.get(key);
+                int sourceFreq = sourceCount.getOrDefault(key, 0);
+                result += Math.max(0, targetFreq - sourceFreq);
+            }
+        }
+
+        return result;
+    }
+
+    class UnionFind {
+        int[] parent;
+
+        UnionFind(int size) {
+            parent = new int[size];
+            for (int i = 0; i < size; i++) {
+                parent[i] = i;
+            }
+        }
+
+        int find(int x) {
+            if (parent[x] != x) {
+                parent[x] = find(parent[x]);  // Path compression
+            }
+            return parent[x];
+        }
+
+        void union(int x, int y) {
+            parent[find(x)] = find(y);
+        }
+    }
+}
