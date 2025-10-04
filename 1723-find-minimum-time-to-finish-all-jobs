@@ -1,0 +1,46 @@
+import java.util.Arrays;
+
+public class Solution {
+    private int ans = Integer.MAX_VALUE;
+
+    public int minimumTimeRequired(int[] jobs, int k) {
+        Arrays.sort(jobs);  // Sort to assign larger jobs first
+        reverse(jobs);      // Because Arrays.sort is ascending, we reverse it
+
+        int[] workers = new int[k];
+        backtrack(jobs, 0, workers, k);
+        return ans;
+    }
+
+    private void backtrack(int[] jobs, int idx, int[] workers, int k) {
+        if (idx == jobs.length) {
+            int maxTime = 0;
+            for (int time : workers) {
+                maxTime = Math.max(maxTime, time);
+            }
+            ans = Math.min(ans, maxTime);
+            return;
+        }
+
+        for (int i = 0; i < k; i++) {
+            if (workers[i] + jobs[idx] >= ans) continue; // Prune if already worse than best
+            workers[i] += jobs[idx];
+
+            backtrack(jobs, idx + 1, workers, k);
+
+            workers[i] -= jobs[idx]; // Backtrack
+
+            // Symmetry pruning: if this worker had no jobs before, don't try next empty workers
+            if (workers[i] == 0) break;
+        }
+    }
+
+    private void reverse(int[] arr) {
+        int i = 0, j = arr.length - 1;
+        while (i < j) {
+            int tmp = arr[i];
+            arr[i++] = arr[j];
+            arr[j--] = tmp;
+        }
+    }
+}
