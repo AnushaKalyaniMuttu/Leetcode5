@@ -1,0 +1,13 @@
+public class Solution {
+    public boolean checkPowersOfThree(int n) {
+        while (n > 0) {
+            // If n is not divisible by 3 and not equal to 1, return false
+            if (n % 3 == 2) {
+                return false;
+            }
+            // Divide n by 3 to check the next power of 3
+            n /= 3;
+        }
+        return true;
+    }
+}
