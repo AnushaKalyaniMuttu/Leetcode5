@@ -1,0 +1,37 @@
+import java.util.*;
+
+public class Solution {
+    public int countGoodRectangles(int[][] rectangles) {
+        int maxSide = 0;
+        int count = 0;
+
+        // Iterate through each rectangle
+        for (int[] rect : rectangles) {
+            int side = Math.min(rect[0], rect[1]);
+            
+            // If we found a larger side length, update the maxSide and reset count
+            if (side > maxSide) {
+                maxSide = side;
+                count = 1;
+            } 
+            // If we found another rectangle with the same max side length, increment the count
+            else if (side == maxSide) {
+                count++;
+            }
+        }
+        
+        return count;
+    }
+
+    public static void main(String[] args) {
+        Solution sol = new Solution();
+        int[][] rectangles = {
+            {5, 8},
+            {6, 7},
+            {11, 2},
+            {4, 10}
+        };
+        
+        System.out.println("Number of rectangles that can form the largest square: " + sol.countGoodRectangles(rectangles));
+    }
+}
