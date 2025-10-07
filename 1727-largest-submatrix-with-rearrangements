@@ -1,0 +1,36 @@
+import java.util.Arrays;
+
+class Solution {
+    public int largestSubmatrix(int[][] matrix) {
+        int m = matrix.length;
+        int n = matrix[0].length;
+        // Step 1: build “height” in-place: number of consecutive 1s up to this row in each column
+        for (int i = 1; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j] == 1) {
+                    matrix[i][j] = matrix[i - 1][j] + 1;
+                } else {
+                    // matrix[i][j] stays 0
+                }
+            }
+        }
+
+        int ans = 0;
+        // For each row, sort its heights and compute max possible area
+        for (int i = 0; i < m; i++) {
+            // copy the heights of this row
+            int[] rowHeights = matrix[i].clone();  // or directly sort matrix[i] if we don't need original later
+            Arrays.sort(rowHeights);
+            // Now rowHeights[0] <= rowHeights[1] <= … <= rowHeights[n-1]
+            for (int j = 0; j < n; j++) {
+                int height = rowHeights[j];
+                if (height == 0) continue;  // no area if height zero
+                int width = n - j;  // number of columns from j to end
+                int area = height * width;
+                ans = Math.max(ans, area);
+            }
+        }
+
+        return ans;
+    }
+}
