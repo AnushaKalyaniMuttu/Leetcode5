@@ -1,0 +1,81 @@
+class Solution {
+    int[][] directions = {{1,0},{-1,0},{0,1},{0,-1}};
+    int m, n;
+    char[][] grid;
+    int[][][][] dp;
+    int maxTurns;
+
+    public boolean canMouseWin(String[] gridStr, int catJump, int mouseJump) {
+        m = gridStr.length;
+        n = gridStr[0].length();
+        grid = new char[m][n];
+        int catX = 0, catY = 0, mouseX = 0, mouseY = 0;
+
+        for (int i = 0; i < m; ++i) {
+            grid[i] = gridStr[i].toCharArray();
+            for (int j = 0; j < n; ++j) {
+                if (grid[i][j] == 'C') {
+                    catX = i;
+                    catY = j;
+                } else if (grid[i][j] == 'M') {
+                    mouseX = i;
+                    mouseY = j;
+                }
+            }
+        }
+
+        maxTurns = m * n * 2;
+        dp = new int[m][n][m][n][maxTurns];
+        return helper(mouseX, mouseY, catX, catY, 0, mouseJump, catJump);
+    }
+
+    boolean helper(int mx, int my, int cx, int cy, int turn, int mj, int cj) {
+        if (turn >= maxTurns) return false;
+        if (grid[mx][my] == 'F') return true;
+        if (grid[cx][cy] == 'F') return false;
+        if (mx == cx && my == cy) return false;
+
+        if (dp[mx][my][cx][cy][turn] != 0)
+            return dp[mx][my][cx][cy][turn] == 1;
+
+        boolean mouseTurn = (turn % 2 == 0);
+        boolean canWin = false;
+
+        if (mouseTurn) {
+            canWin = false;
+            if (move(mx, my, mj, true, cx, cy, turn, mj, cj)) {
+                dp[mx][my][cx][cy][turn] = 1;
+                return true;
+            }
+        } else {
+            canWin = true;
+            if (!move(cx, cy, cj, false, mx, my, turn, mj, cj)) {
+                dp[mx][my][cx][cy][turn] = 1;
+                return true;
+            }
+        }
+
+        dp[mx][my][cx][cy][turn] = 2;
+        return false;
+    }
+
+    boolean move(int x, int y, int jump, boolean isMouse, int ox, int oy, int turn, int mj, int cj) {
+        for (int[] dir : directions) {
+            for (int j = 0; j <= jump; ++j) {
+                int nx = x + dir[0] * j;
+                int ny = y + dir[1] * j;
+                if (nx < 0 || ny < 0 || nx >= m || ny >= n || grid[nx][ny] == '#') break;
+
+                boolean res;
+                if (isMouse)
+                    res = helper(nx, ny, ox, oy, turn + 1, mj, cj);
+                else
+                    res = helper(ox, oy, nx, ny, turn + 1, mj, cj);
+
+                if (isMouse && res) return true;
+                if (!isMouse && !res) return false;
+            }
+        }
+        return !isMouse;
+    }
+}
