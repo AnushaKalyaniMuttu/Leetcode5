@@ -1,0 +1,48 @@
+class Solution {
+    private final int[] dirs = {-1, 0, 1, 0, -1};  // for 4 directions
+
+    public int getFood(char[][] grid) {
+        int m = grid.length, n = grid[0].length;
+        Deque<int[]> queue = new ArrayDeque<>();
+
+        // 1. find the start position '*'
+        boolean foundStart = false;
+        for (int i = 0; i < m && !foundStart; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == '*') {
+                    queue.offer(new int[]{i, j});
+                    foundStart = true;
+                    break;
+                }
+            }
+        }
+
+        int steps = 0;
+        // 2. BFS
+        while (!queue.isEmpty()) {
+            steps++;
+            int size = queue.size();
+            for (int t = 0; t < size; t++) {
+                int[] cur = queue.poll();
+                int x = cur[0], y = cur[1];
+                for (int d = 0; d < 4; d++) {
+                    int nx = x + dirs[d];
+                    int ny = y + dirs[d + 1];
+                    // bounds check
+                    if (nx < 0 || nx >= m || ny < 0 || ny >= n) continue;
+
+                    if (grid[nx][ny] == '#') {
+                        return steps;
+                    }
+                    if (grid[nx][ny] == 'O') {
+                        // mark visited so we don't revisit
+                        grid[nx][ny] = 'X';
+                        queue.offer(new int[]{nx, ny});
+                    }
+                }
+            }
+        }
+
+        return -1;
+    }
+}
