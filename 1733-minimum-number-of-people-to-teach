@@ -1,0 +1,68 @@
+import java.util.*;
+
+public class Solution {
+    public int minimumTeachings(int n, int[][] languages, int[][] friendships) {
+        int m = languages.length;
+
+        // Convert each user's array of languages into a Set for faster lookup
+        List<Set<Integer>> userLang = new ArrayList<>();
+        for (int i = 0; i < m; i++) {
+            Set<Integer> set = new HashSet<>();
+            for (int lang : languages[i]) {
+                set.add(lang);
+            }
+            userLang.add(set);
+        }
+
+        // Step 1 & 2: find users in friendships that cannot communicate
+        Set<Integer> needTeachUsers = new HashSet<>();
+        for (int[] fr : friendships) {
+            int u = fr[0] - 1;  // convert to 0-based
+            int v = fr[1] - 1;
+            if (!canCommunicate(userLang.get(u), userLang.get(v))) {
+                needTeachUsers.add(u);
+                needTeachUsers.add(v);
+            }
+        }
+
+        // If no problematic users, no teaching needed
+        if (needTeachUsers.isEmpty()) {
+            return 0;
+        }
+
+        // Step 3: count for each language how many of these users already know it
+        int[] count = new int[n + 1];  // languages numbered 1..n
+        for (int u : needTeachUsers) {
+            for (int lang : userLang.get(u)) {
+                count[lang]++;
+            }
+        }
+
+        // Step 4: compute minimum people to teach
+        int best = Integer.MAX_VALUE;
+        int total = needTeachUsers.size();
+        for (int lang = 1; lang <= n; lang++) {
+            int alreadyKnow = count[lang];
+            int toTeach = total - alreadyKnow;
+            best = Math.min(best, toTeach);
+        }
+
+        return best;
+    }
+
+    // Helper: check if two users can communicate already (share at least one common language)
+    private boolean canCommunicate(Set<Integer> s1, Set<Integer> s2) {
+        // iterate over smaller set for efficiency
+        if (s1.size() > s2.size()) {
+            Set<Integer> tmp = s1;
+            s1 = s2;
+            s2 = tmp;
+        }
+        for (int lang : s1) {
+            if (s2.contains(lang)) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
