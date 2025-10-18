@@ -1,0 +1,37 @@
+class Solution {
+    public int minCharacters(String a, String b) {
+        int m = a.length(), n = b.length();
+        int[] cntA = new int[26];
+        int[] cntB = new int[26];
+        for (int i = 0; i < m; i++) {
+            cntA[a.charAt(i) - 'a']++;
+        }
+        for (int i = 0; i < n; i++) {
+            cntB[b.charAt(i) - 'a']++;
+        }
+        int ans = m + n;  // worst case change everything
+        
+        // Condition 3: make both strings consist of only one distinct letter
+        for (int i = 0; i < 26; i++) {
+            ans = Math.min(ans, (m - cntA[i]) + (n - cntB[i]));
+        }
+        
+        // Conditions 1 & 2: all chars in a < all chars in b, or vice‑versa
+        // We'll compute for a < b, then swap for b < a.
+        int prefA = 0, prefB = 0;
+        for (int i = 0; i < 25; i++) {
+            prefA += cntA[i];
+            prefB += cntB[i];
+            // To make a < b by picking boundary at i: 
+            //  change all chars in a that are >= (i+1)  → (m - prefA)
+            //  change all chars in b that are <= i        → (prefB)
+            ans = Math.min(ans, (m - prefA) + prefB);
+            
+            // For b < a: change all chars in b that are >= (i+1) → (n - prefB)
+            //            change all chars in a that are <= i       → (prefA)
+            ans = Math.min(ans, (n - prefB) + prefA);
+        }
+        
+        return ans;
+    }
+}
