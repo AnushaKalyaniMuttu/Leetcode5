@@ -1,0 +1,26 @@
+class Solution {
+    public int countBalls(int lowLimit, int highLimit) {
+        // Since highLimit ≤ 100000 (10^5) (from problem constraints) so digit sum <= 9*5 = 45
+        int[] count = new int[50];  // size 50 is enough
+        int maxCount = 0;
+
+        for (int num = lowLimit; num <= highLimit; num++) {
+            int sum = digitSum(num);
+            count[sum]++;
+            if (count[sum] > maxCount) {
+                maxCount = count[sum];
+            }
+        }
+
+        return maxCount;
+    }
+
+    private int digitSum(int x) {
+        int s = 0;
+        while (x > 0) {
+            s += x % 10;
+            x /= 10;
+        }
+        return s;
+    }
+}
