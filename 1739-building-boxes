@@ -1,32 +1,32 @@
- class Solution {
+class Solution {
     public int minimumBoxes(int n) {
-        long total = 0;
-        long completeLayers = 0;
-        // First, find the maximum k such that sum_{i=1..k} (i*(i+1)/2) ≤ n
-        // That sum = total number of boxes if you have k full levels
-        while (total + completeLayers*(completeLayers+1)/2 <= n) {
-            completeLayers++;
-            total += completeLayers*(completeLayers+1)/2;
+        int base = 0; // number of boxes touching the floor
+        int total = 0; // total number of boxes placed
+
+        // First, find the largest triangular number sum ≤ n
+        int h = 0;
+        while (true) {
+            h++;
+            int tri = h * (h + 1) / 2;
+            total += tri;
+            if (total > n) {
+                total -= tri;
+                h--;
+                break;
+            }
         }
-        // we went one step too far
-        completeLayers--;
-        total -= completeLayers*(completeLayers+1)/2;
 
-        // number of boxes touching floor after full completeLayers levels:
-        int touching = (int)(completeLayers*(completeLayers+1)/2);
+        // Base boxes for full levels
+        base = h * (h + 1) / 2;
 
-        // remaining boxes to place
-        long remain = n - total;
-
-        // we now start adding boxes layer by layer on floor, each extra floor row contributes 1 more
-        long extra = 0;
-        long add = 1;
-        while (remain > 0) {
-            remain -= add;
-            add++;
+        // Place remaining boxes greedily on the floor
+        int remaining = n - total;
+        int extra = 0;
+        for (int i = 1; remaining > 0; i++) {
+            remaining -= i;
             extra++;
         }
 
-        return touching + (int)extra;
+        return base + extra;
     }
 }
