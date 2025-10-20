@@ -1,0 +1,32 @@
+ class Solution {
+    public int minimumBoxes(int n) {
+        long total = 0;
+        long completeLayers = 0;
+        // First, find the maximum k such that sum_{i=1..k} (i*(i+1)/2) ≤ n
+        // That sum = total number of boxes if you have k full levels
+        while (total + completeLayers*(completeLayers+1)/2 <= n) {
+            completeLayers++;
+            total += completeLayers*(completeLayers+1)/2;
+        }
+        // we went one step too far
+        completeLayers--;
+        total -= completeLayers*(completeLayers+1)/2;
+
+        // number of boxes touching floor after full completeLayers levels:
+        int touching = (int)(completeLayers*(completeLayers+1)/2);
+
+        // remaining boxes to place
+        long remain = n - total;
+
+        // we now start adding boxes layer by layer on floor, each extra floor row contributes 1 more
+        long extra = 0;
+        long add = 1;
+        while (remain > 0) {
+            remain -= add;
+            add++;
+            extra++;
+        }
+
+        return touching + (int)extra;
+    }
+}
