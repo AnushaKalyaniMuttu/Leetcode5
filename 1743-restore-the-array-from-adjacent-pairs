@@ -1,0 +1,34 @@
+class Solution {
+    public int[] restoreArray(int[][] adjacentPairs) {
+        int n = adjacentPairs.length + 1;
+        // Build adjacency list: number → list of its neighbours
+        Map<Integer, List<Integer>> graph = new HashMap<>();
+        for (int[] pair : adjacentPairs) {
+            int a = pair[0], b = pair[1];
+            graph.computeIfAbsent(a, k -> new ArrayList<>()).add(b);
+            graph.computeIfAbsent(b, k -> new ArrayList<>()).add(a);
+        }
+        // Find one end of the array: a node with degree = 1
+        int start = 0;
+        for (Map.Entry<Integer, List<Integer>> entry : graph.entrySet()) {
+            if (entry.getValue().size() == 1) {
+                start = entry.getKey();
+                break;
+            }
+        }
+        // Prepare result
+        int[] result = new int[n];
+        result[0] = start;
+        // The second element is the unique neighbour of the start
+        result[1] = graph.get(start).get(0);
+        // Fill the rest by walking forward
+        for (int i = 2; i < n; i++) {
+            List<Integer> neighbours = graph.get(result[i-1]);
+            // neighbours size is either 1 (if end) or 2
+            // One neighbour is the previous element result[i‑2], the other is the next
+            int next = neighbours.get(0) == result[i-2] ? neighbours.get(1) : neighbours.get(0);
+            result[i] = next;
+        }
+        return result;
+    }
+}
