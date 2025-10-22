@@ -1,0 +1,24 @@
+class Solution {
+    public boolean checkPartitioning(String s) {
+        int n = s.length();
+        boolean[][] isPal = new boolean[n][n];
+        // build palindrome table
+        for (int i = n - 1; i >= 0; i--) {
+            for (int j = i; j < n; j++) {
+                if (s.charAt(i) == s.charAt(j) && (j - i < 2 || isPal[i+1][j-1])) {
+                    isPal[i][j] = true;
+                }
+            }
+        }
+        // try two cut points: [0..i], [i+1..j], [j+1..n‑1]
+        for (int i = 0; i < n - 2; i++) {
+            if (!isPal[0][i]) continue;
+            for (int j = i + 1; j < n - 1; j++) {
+                if (isPal[i+1][j] && isPal[j+1][n-1]) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+}
