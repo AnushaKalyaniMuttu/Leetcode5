@@ -1,0 +1,16 @@
+class Solution {
+    public int sumOfUnique(int[] nums) {
+        final int MAX = 100;
+        int[] count = new int[MAX + 1];
+        for (int num : nums) {
+            count[num]++;
+        }
+        int sum = 0;
+        for (int i = 1; i <= MAX; i++) {
+            if (count[i] == 1) {
+                sum += i;
+            }
+        }
+        return sum;
+    }
+}
