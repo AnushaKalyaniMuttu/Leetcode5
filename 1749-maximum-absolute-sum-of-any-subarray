@@ -1,0 +1,15 @@
+class Solution {
+    public int maxAbsoluteSum(int[] nums) {
+        int maxEndingHere = 0;
+        int minEndingHere = 0;
+        int ans = 0;  // since empty subarray has sum = 0, ans ≥ 0
+
+        for (int x : nums) {
+            maxEndingHere = Math.max(maxEndingHere + x, x);
+            minEndingHere = Math.min(minEndingHere + x, x);
+            ans = Math.max(ans, Math.max(maxEndingHere, -minEndingHere));
+        }
+
+        return ans;
+    }
+}
