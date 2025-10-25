@@ -1,0 +1,14 @@
+class Solution {
+    public int maximumScore(int a, int b, int c) {
+        int sum = a + b + c;
+        int maxPile = Math.max(a, Math.max(b, c));
+        int otherSum = sum - maxPile;
+        if (maxPile > otherSum) {
+            // Largest pile is too big — you’ll run out of others to pair with
+            return otherSum;
+        } else {
+            // Otherwise you can pair until total stones are used up two at a time
+            return sum / 2;
+        }
+    }
+}
