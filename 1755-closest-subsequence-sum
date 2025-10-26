@@ -1,0 +1,60 @@
+import java.util.*;
+
+class Solution {
+    public int minAbsDifference(int[] nums, int goal) {
+        int n = nums.length;
+        int mid = n / 2;
+        // Split into two halves
+        int[] left = Arrays.copyOfRange(nums, 0, mid);
+        int[] right = Arrays.copyOfRange(nums, mid, n);
+        
+        // Generate subset sums for left half
+        List<Integer> leftSums = new ArrayList<>();
+        generateSums(left, 0, 0, leftSums);
+        // Generate subset sums for right half
+        List<Integer> rightSums = new ArrayList<>();
+        generateSums(right, 0, 0, rightSums);
+        
+        // Sort rightSums for binary search
+        Collections.sort(rightSums);
+        
+        int result = Integer.MAX_VALUE;
+        // Check each sum in leftSums, and try best match in rightSums
+        for (int ls : leftSums) {
+            // If left sum alone is already close to goal
+            result = Math.min(result, Math.abs(ls - goal));
+            
+            int need = goal - ls;
+            // Find index of closest value to need in rightSums
+            int idx = Collections.binarySearch(rightSums, need);
+            if (idx >= 0) {
+                // perfect match found, difference = 0
+                return 0;
+            } else {
+                // binarySearch returns (-(insertion point) - 1)
+                int insertion = -idx - 1;
+                // check insertion position and the previous one
+                if (insertion < rightSums.size()) {
+                    result = Math.min(result, Math.abs(ls + rightSums.get(insertion) - goal));
+                }
+                if (insertion - 1 >= 0) {
+                    result = Math.min(result, Math.abs(ls + rightSums.get(insertion - 1) - goal));
+                }
+            }
+        }
+        
+        return result;
+    }
+    
+    // Helper to generate all subset sums of arr starting at index, current sum = cur
+    private void generateSums(int[] arr, int index, int current, List<Integer> sums) {
+        if (index == arr.length) {
+            sums.add(current);
+            return;
+        }
+        // Option: exclude arr[index]
+        generateSums(arr, index + 1, current, sums);
+        // Option: include arr[index]
+        generateSums(arr, index + 1, current + arr[index], sums);
+    }
+}
