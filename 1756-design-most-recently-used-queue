@@ -1,0 +1,22 @@
+import java.util.*;
+
+class MRUQueue {
+    private LinkedList<Integer> list;
+
+    public MRUQueue(int n) {
+        list = new LinkedList<>();
+        for (int i = 1; i <= n; i++) {
+            list.add(i);
+        }
+    }
+
+    public int fetch(int k) {
+        // k is 1-indexed
+        int idx = k - 1;
+        // remove the element at idx
+        int val = list.remove(idx);
+        // append it to end
+        list.addLast(val);
+        return val;
+    }
+}
