@@ -1,0 +1,25 @@
+class Solution {
+    public int countHomogenous(String s) {
+        final int MOD = 1_000_000_007;
+        long result = 0;
+        int n = s.length();
+        int i = 0;
+        
+        while (i < n) {
+            int j = i + 1;
+            // advance j while characters remain the same
+            while (j < n && s.charAt(j) == s.charAt(i)) {
+                j++;
+            }
+            int cnt = j - i;  // length of current homogeneous block
+            // number of homogenous substrings in this block:
+            long toAdd = (long) cnt * (cnt + 1) / 2;
+            result = (result + toAdd) % MOD;
+            
+            // move i to the next new character
+            i = j;
+        }
+        
+        return (int) result;
+    }
+}
