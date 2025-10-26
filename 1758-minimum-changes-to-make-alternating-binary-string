@@ -1,0 +1,23 @@
+class Solution {
+    public int minOperations(String s) {
+        int n = s.length();
+        int costA = 0; // cost to make it "010101..."
+        int costB = 0; // cost to make it "101010..."
+        
+        for (int i = 0; i < n; i++) {
+            char c = s.charAt(i);
+            // For pattern A: expect '0' at even, '1' at odd
+            char expectA = (i % 2 == 0) ? '0' : '1';
+            if (c != expectA) {
+                costA++;
+            }
+            // For pattern B: expect '1' at even, '0' at odd
+            char expectB = (i % 2 == 0) ? '1' : '0';
+            if (c != expectB) {
+                costB++;
+            }
+        }
+        
+        return Math.min(costA, costB);
+    }
+}
