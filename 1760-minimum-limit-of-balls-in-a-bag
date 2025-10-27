@@ -1,0 +1,28 @@
+class Solution {
+    public int minimumSize(int[] nums, int maxOperations) {
+        int left = 1, right = 0;
+        for (int n : nums) {
+            right = Math.max(right, n);
+        }
+
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (canDivide(nums, maxOperations, mid)) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+
+        return left;
+    }
+
+    private boolean canDivide(int[] nums, int maxOperations, int maxBalls) {
+        int ops = 0;
+        for (int n : nums) {
+            ops += (n - 1) / maxBalls;
+            if (ops > maxOperations) return false;
+        }
+        return true;
+    }
+}
