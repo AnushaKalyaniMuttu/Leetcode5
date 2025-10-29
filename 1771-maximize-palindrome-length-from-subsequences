@@ -1,0 +1,33 @@
+class Solution {
+    public int longestPalindrome(String word1, String word2) {
+        String s = word1 + word2;
+        int n = s.length();
+        int[][] dp = new int[n][n];
+        // dp[i][j] = length of longest palindromic subsequence in s[i..j]
+
+        for (int i = 0; i < n; i++) {
+            dp[i][i] = 1;
+        }
+
+        int ans = 0;
+        int len1 = word1.length();
+
+        // fill for increasing length d = j-i
+        for (int d = 1; d < n; d++) {
+            for (int i = 0; i + d < n; i++) {
+                int j = i + d;
+                if (s.charAt(i) == s.charAt(j)) {
+                    dp[i][j] = dp[i + 1][j - 1] + 2;
+                    // check if one char is from word1 and the other from word2
+                    if (i < len1 && j >= len1) {
+                        ans = Math.max(ans, dp[i][j]);
+                    }
+                } else {
+                    dp[i][j] = Math.max(dp[i + 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+
+        return ans;
+    }
+}
