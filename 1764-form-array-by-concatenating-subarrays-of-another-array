@@ -1,0 +1,31 @@
+class Solution {
+    public boolean canChoose(int[][] groups, int[] nums) {
+        int i = 0; // index for groups
+        int j = 0; // index for nums
+
+        while (i < groups.length && j < nums.length) {
+            if (isMatch(groups[i], nums, j)) {
+                // found groups[i] at nums starting at j
+                j += groups[i].length;  // move j past this matched subarray
+                i++;                     // move to next group to match
+            } else {
+                j++;  // try matching from next position in nums
+            }
+        }
+
+        return (i == groups.length);
+    }
+
+    // helper: checks if group[] matches nums[] starting from index j
+    private boolean isMatch(int[] group, int[] nums, int j) {
+        if (j + group.length > nums.length) {
+            return false;
+        }
+        for (int k = 0; k < group.length; k++) {
+            if (nums[j + k] != group[k]) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
