@@ -1,0 +1,75 @@
+class Solution {
+    private static final int MAX_VAL = 50;  // since nums[i] ≤ 50
+
+    private List<Integer>[] tree;
+    private int[] nums;
+    private int[] ans;
+    // For each value v from 1..MAX_VAL, store a stack of (nodeIndex, depth)
+    private Deque<int[]>[] stacks;
+
+    public int[] getCoprimes(int[] nums, int[][] edges) {
+        int n = nums.length;
+        this.nums = nums;
+        ans = new int[n];
+        Arrays.fill(ans, -1);
+
+        // Build adjacency list
+        tree = new ArrayList[n];
+        for (int i = 0; i < n; i++) {
+            tree[i] = new ArrayList<>();
+        }
+        for (int[] e : edges) {
+            int u = e[0], v = e[1];
+            tree[u].add(v);
+            tree[v].add(u);
+        }
+
+        // Initialize stacks for each possible value
+        stacks = new Deque[MAX_VAL + 1];
+        for (int v = 1; v <= MAX_VAL; v++) {
+            stacks[v] = new ArrayDeque<>();
+        }
+
+        // Pre-compute coprime relationships optionally (to reduce gcd calls) —
+        // Here we’ll just compute on the fly for clarity.
+
+        dfs(0, -1, 0);
+
+        return ans;
+    }
+
+    private void dfs(int node, int parent, int depth) {
+        int val = nums[node];
+        // Find best ancestor with value coprime to val
+        int bestIndex = -1;
+        int bestDepth = -1;
+        for (int v = 1; v <= MAX_VAL; v++) {
+            if (!stacks[v].isEmpty() && gcd(val, v) == 1) {
+                int[] top = stacks[v].peek();
+                int idx = top[0], d = top[1];
+                if (d > bestDepth) {
+                    bestDepth = d;
+                    bestIndex = idx;
+                }
+            }
+        }
+        ans[node] = bestIndex;
+
+        // Push this node on stack for its value
+        stacks[val].push(new int[]{node, depth});
+
+        // Recurse
+        for (int nei : tree[node]) {
+            if (nei == parent) continue;
+            dfs(nei, node, depth + 1);
+        }
+
+        // Backtrack: pop this node
+        stacks[val].pop();
+    }
+
+    private int gcd(int a, int b) {
+        if (b == 0) return a;
+        return gcd(b, a % b);
+    }
+}
