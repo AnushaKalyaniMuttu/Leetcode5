@@ -1,0 +1,47 @@
+import java.util.*;
+
+public class Solution {
+    public String[] sortFeatures(String[] features, String[] responses) {
+        // map to count how many responses each feature appears in
+        Map<String, Integer> count = new HashMap<>();
+
+        // for each response
+        for (String response : responses) {
+            // split into words
+            String[] words = response.split(" ");
+            // use a Set to ensure we count a feature at most once per response
+            Set<String> seen = new HashSet<>(Arrays.asList(words));
+            for (String w : seen) {
+                // if this word is one of the features, increment its count
+                if (count.containsKey(w) || Arrays.asList(features).contains(w)) {
+                    count.put(w, count.getOrDefault(w, 0) + 1);
+                }
+            }
+        }
+
+        int n = features.length;
+        Integer[] idx = new Integer[n];
+        for (int i = 0; i < n; i++) {
+            idx[i] = i;
+            // initialize count for features not seen yet
+            count.putIfAbsent(features[i], 0);
+        }
+
+        // sort indices based on popularity descending, then index ascending
+        Arrays.sort(idx, (i, j) -> {
+            int ci = count.getOrDefault(features[i], 0);
+            int cj = count.getOrDefault(features[j], 0);
+            if (ci != cj) {
+                return cj - ci;           // higher count first
+            } else {
+                return i - j;             // earlier index first
+            }
+        });
+
+        String[] ans = new String[n];
+        for (int i = 0; i < n; i++) {
+            ans[i] = features[idx[i]];
+        }
+        return ans;
+    }
+}
