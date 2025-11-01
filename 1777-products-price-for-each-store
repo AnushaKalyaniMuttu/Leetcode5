@@ -1,0 +1,22 @@
+class Solution {
+    public int nearestValidPoint(int x, int y, int[][] points) {
+        int minDist = Integer.MAX_VALUE;
+        int index = -1;
+        
+        for (int i = 0; i < points.length; i++) {
+            int px = points[i][0], py = points[i][1];
+            
+            // Check if valid (same x or y)
+            if (px == x || py == y) {
+                int dist = Math.abs(x - px) + Math.abs(y - py);
+                
+                if (dist < minDist) {
+                    minDist = dist;
+                    index = i;
+                }
+            }
+        }
+        
+        return index;
+    }
+}
