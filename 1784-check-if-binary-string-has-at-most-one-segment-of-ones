@@ -1,0 +1,7 @@
+class Solution {
+    public boolean checkOnesSegment(String s) {
+        // If the string contains "01", it means there's a break in ones
+        // and a later segment of ones would appear => invalid.
+        return !s.contains("01");
+    }
+}
