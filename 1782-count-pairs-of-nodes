@@ -1,0 +1,49 @@
+class Solution {
+    public int[] countPairs(int n, int[][] edges, int[] queries) {
+        int[] degree = new int[n + 1];
+        Map<Long, Integer> shared = new HashMap<>();
+        // Count degrees and shared edges
+        for (int[] e : edges) {
+            int u = e[0], v = e[1];
+            degree[u]++;
+            degree[v]++;
+            int a = Math.min(u, v), b = Math.max(u, v);
+            long key = ((long)a << 32) | b;
+            shared.put(key, shared.getOrDefault(key, 0) + 1);
+        }
+        // copy degrees to array for sorting (ignore index 0)
+        int[] degSorted = new int[n];
+        for (int i = 1; i <= n; i++) {
+            degSorted[i - 1] = degree[i];
+        }
+        Arrays.sort(degSorted);
+        int[] ans = new int[queries.length];
+        for (int qi = 0; qi < queries.length; qi++) {
+            int q = queries[qi];
+            // two pointers to count pairs with sum > q
+            int cnt = 0;
+            int i = 0, j = n - 1;
+            while (i < j) {
+                if (degSorted[i] + degSorted[j] > q) {
+                    cnt += (j - i);
+                    j--;
+                } else {
+                    i++;
+                }
+            }
+            // now subtract the over‐counted ones due to shared edges
+            for (Map.Entry<Long, Integer> entry : shared.entrySet()) {
+                long key = entry.getKey();
+                int k = entry.getValue();  // number of direct edges between a and b
+                int a = (int)(key >> 32);
+                int b = (int)(key & 0xFFFFFFFFL);
+                // actual incident = degree[a] + degree[b] - k
+                if (degree[a] + degree[b] > q && degree[a] + degree[b] - k <= q) {
+                    cnt--;
+                }
+            }
+            ans[qi] = cnt;
+        }
+        return ans;
+    }
+}
