@@ -1,0 +1,72 @@
+class Solution {
+    static final int MOD = 1_000_000_007;
+
+    public int countRestrictedPaths(int n, int[][] edges) {
+        // Build adjacency list
+        List<List<Pair>> graph = new ArrayList<>();
+        for (int i = 0; i <= n; i++) {
+            graph.add(new ArrayList<>());
+        }
+        for (int[] e : edges) {
+            int u = e[0], v = e[1], w = e[2];
+            graph.get(u).add(new Pair(v, w));
+            graph.get(v).add(new Pair(u, w));
+        }
+
+        // Step 1: Dijkstra from node n to compute distToLastNode for all nodes
+        long[] dist = new long[n + 1];
+        Arrays.fill(dist, Long.MAX_VALUE);
+        dist[n] = 0;
+
+        PriorityQueue<Pair> pq = new PriorityQueue<>((a,b) -> Long.compare(a.cost, b.cost));
+        pq.offer(new Pair(n, 0));
+
+        while (!pq.isEmpty()) {
+            Pair cur = pq.poll();
+            int u = cur.node;
+            long d = cur.cost;
+            if (d > dist[u]) continue;
+            for (Pair nei : graph.get(u)) {
+                int v = nei.node;
+                long w = nei.cost;
+                if (dist[v] > dist[u] + w) {
+                    dist[v] = dist[u] + w;
+                    pq.offer(new Pair(v, dist[v]));
+                }
+            }
+        }
+
+        // Step 2: DP / memoization from node 1 to count restricted paths
+        Integer[] memo = new Integer[n + 1];
+        return dfsCount(1, n, graph, dist, memo);
+    }
+
+    private int dfsCount(int u, int n, List<List<Pair>> graph, long[] dist, Integer[] memo) {
+        if (u == n) {
+            return 1;
+        }
+        if (memo[u] != null) {
+            return memo[u];
+        }
+        long ways = 0;
+        for (Pair nei : graph.get(u)) {
+            int v = nei.node;
+            // Only go to v if dist[u] > dist[v] (strictly decreasing)
+            if (dist[u] > dist[v]) {
+                ways = (ways + dfsCount(v, n, graph, dist, memo)) % MOD;
+            }
+        }
+        memo[u] = (int)ways;
+        return memo[u];
+    }
+
+    // Helper class
+    static class Pair {
+        int node;
+        long cost;
+        Pair(int n, long c) {
+            node = n;
+            cost = c;
+        }
+    }
+}
