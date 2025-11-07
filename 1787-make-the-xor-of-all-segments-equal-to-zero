@@ -1,0 +1,64 @@
+class Solution {
+    public int minChanges(int[] nums, int k) {
+        final int MAX = 1 << 10;  // 1024
+        int n = nums.length;
+
+        // counts[i] will map value -> frequency for group i (i = 0..k-1)
+        List<Map<Integer, Integer>> counts = new ArrayList<>();
+        int[] size = new int[k];
+        for (int i = 0; i < k; ++i) {
+            counts.add(new HashMap<>());
+            size[i] = 0;
+        }
+        for (int i = 0; i < n; ++i) {
+            int grp = i % k;
+            counts.get(grp).put(nums[i], counts.get(grp).getOrDefault(nums[i], 0) + 1);
+            size[grp]++;
+        }
+
+        // dp[j] = min changes so far so that XOR result = j after processing some groups
+        int[] dp = new int[MAX];
+        final int INF = Integer.MAX_VALUE / 2;
+        Arrays.fill(dp, INF);
+        dp[0] = 0;
+
+        for (int i = 0; i < k; ++i) {
+            int[] newDp = new int[MAX];
+            Arrays.fill(newDp, INF);
+
+            // The worst case for this group: change all its elements
+            int changeAll = Integer.MAX_VALUE;
+            int minSoFar = INF;
+            for (int x = 0; x < MAX; ++x) {
+                if (dp[x] < minSoFar) {
+                    minSoFar = dp[x];
+                }
+            }
+            changeAll = minSoFar + size[i];
+
+            // initialize newDp with the scenario where we change all in this group
+            for (int x = 0; x < MAX; ++x) {
+                newDp[x] = changeAll;
+            }
+
+            // try using each actual value in counts[i]
+            for (Map.Entry<Integer, Integer> entry : counts.get(i).entrySet()) {
+                int val = entry.getKey();
+                int freq = entry.getValue();
+                int costToMakeThisVal = size[i] - freq; // change all others in group to val
+
+                for (int prevXor = 0; prevXor < MAX; ++prevXor) {
+                    if (dp[prevXor] != INF) {
+                        int newXor = prevXor ^ val;
+                        newDp[newXor] = Math.min(newDp[newXor], dp[prevXor] + costToMakeThisVal);
+                    }
+                }
+            }
+
+            dp = newDp;
+        }
+
+        // We want XOR == 0 after all k groups
+        return dp[0];
+    }
+}
