@@ -1,0 +1,31 @@
+import java.util.*;
+
+public class Solution {
+    public long maximumBeauty(int[] flowers) {
+        int n = flowers.length;
+        long[] prefix = new long[n + 1];
+        
+        for (int i = 0; i < n; i++) {
+            prefix[i + 1] = prefix[i] + flowers[i];
+        }
+
+        Map<Integer, Long> minPrefix = new HashMap<>();
+        long result = Long.MIN_VALUE;
+
+        for (int i = 0; i < n; i++) {
+            int flower = flowers[i];
+            long currSum = prefix[i + 1];
+
+            if (minPrefix.containsKey(flower)) {
+                // Potential subarray ending at i with same starting flower
+                result = Math.max(result, currSum - minPrefix.get(flower));
+                // Update min prefix to keep smallest for this flower type
+                minPrefix.put(flower, Math.min(minPrefix.get(flower), prefix[i]));
+            } else {
+                // First time seeing this flower, record its prefix
+                minPrefix.put(flower, prefix[i]);
+            }
+        }
+        return result;
+    }
+}
