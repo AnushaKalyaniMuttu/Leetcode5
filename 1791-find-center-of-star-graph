@@ -1,0 +1,14 @@
+class Solution {
+    public int findCenter(int[][] edges) {
+        // The center node is common to both the first two edges.
+        // The first edge is edges[0] = [a, b] and the second edge is edges[1] = [c, d]
+        
+        // Check if the first node in edge 0 is the same as the first node in edge 1
+        if (edges[0][0] == edges[1][0] || edges[0][0] == edges[1][1]) {
+            return edges[0][0]; // If so, it's the center node
+        }
+        
+        // Otherwise, the second node in edge 0 must be the center
+        return edges[0][1];
+    }
+}
