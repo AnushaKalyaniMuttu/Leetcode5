@@ -1,0 +1,17 @@
+import java.util.Arrays;
+
+class Solution {
+    public int getMaximumConsecutive(int[] coins) {
+        Arrays.sort(coins);
+        long reachable = 0;  // use long to avoid overflow
+        
+        for (int coin : coins) {
+            if (coin > reachable + 1) {
+                break;  // gap found
+            }
+            reachable += coin;
+        }
+        
+        return (int) (reachable + 1);
+    }
+}
