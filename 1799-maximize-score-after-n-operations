@@ -1,0 +1,50 @@
+class Solution {
+    public int maxScore(int[] nums) {
+        int n = nums.length;
+        int m = 1 << n;
+        
+        // Precompute gcd for every pair
+        int[][] gcd = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                gcd[i][j] = gcd(nums[i], nums[j]);
+            }
+        }
+
+        int[] dp = new int[m];
+        
+        // Iterate all masks
+        for (int mask = 0; mask < m; mask++) {
+            int bitsUsed = Integer.bitCount(mask);
+            
+            // Operation index = number of pairs already used + 1
+            int op = bitsUsed / 2 + 1;
+
+            // If bitsUsed is odd, cannot form a pair
+            if (bitsUsed % 2 == 1) continue;
+            
+            // Try all pairs (i, j)
+            for (int i = 0; i < n; i++) {
+                if ((mask & (1 << i)) != 0) continue;
+                for (int j = i + 1; j < n; j++) {
+                    if ((mask & (1 << j)) != 0) continue;
+                    
+                    int nextMask = mask | (1 << i) | (1 << j);
+                    dp[nextMask] = Math.max(dp[nextMask],
+                        dp[mask] + op * gcd[i][j]);
+                }
+            }
+        }
+        
+        return dp[m - 1];
+    }
+
+    private int gcd(int a, int b) {
+        while (b != 0) {
+            int t = a % b;
+            a = b;
+            b = t;
+        }
+        return a;
+    }
+}
