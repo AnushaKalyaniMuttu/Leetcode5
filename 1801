@@ -1,0 +1,42 @@
+public class NumberOfOrdersInTheBacklog {
+    public int getNumberOfBacklogOrders(int[][] orders) {
+        // Max-heap for buy orders: highest price first
+        PriorityQueue<int[]> buy = new PriorityQueue<>((a, b) -> Integer.compare(b[0], a[0]));
+        // Min-heap for sell orders: lowest price first
+        PriorityQueue<int[]> sell = new PriorityQueue<>((a, b) -> Integer.compare(a[0], b[0]));
+        final int MOD = 1_000_000_007;
+
+        for (int[] order : orders) {
+            int price = order[0];
+            int amount = order[1];
+            int type = order[2];
+
+            if (type == 0) { // buy order
+                // Try to match with lowest-priced sell orders
+                while (amount > 0 && !sell.isEmpty() && sell.peek()[0] <= price) {
+                    int[] s = sell.peek();
+                    int match = Math.min(amount, s[1]);
+                    amount -= match;
+                    s[1] -= match;
+                    if (s[1] == 0) sell.poll();
+                }
+                if (amount > 0) buy.offer(new int[]{price, amount});
+            } else { // sell order
+                // Try to match with highest-priced buy orders
+                while (amount > 0 && !buy.isEmpty() && buy.peek()[0] >= price) {
+                    int[] b = buy.peek();
+                    int match = Math.min(amount, b[1]);
+                    amount -= match;
+                    b[1] -= match;
+                    if (b[1] == 0) buy.poll();
+                }
+                if (amount > 0) sell.offer(new int[]{price, amount});
+            }
+        }
+
+        long res = 0;
+        while (!buy.isEmpty()) res = (res + buy.poll()[1]) % MOD;
+        while (!sell.isEmpty()) res = (res + sell.poll()[1]) % MOD;
+        return (int) res;
+    }
+}
