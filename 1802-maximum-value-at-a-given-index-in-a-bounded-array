@@ -1,0 +1,54 @@
+class Solution {
+    public int maxValue(int n, int index, int maxSum) {
+        // We subtract n because we assume every position has at least value = 1
+        maxSum -= n;
+
+        int left = 0;
+        int right = maxSum;  // the extra value on top of 1
+
+        while (left < right) {
+            int mid = (left + right + 1) / 2;
+            long needed = minSum(n, index, mid);
+            if (needed <= maxSum) {
+                left = mid;
+            } else {
+                right = mid - 1;
+            }
+        }
+
+        // +1 because left is how much above "1" we can go
+        return left + 1;
+    }
+
+    // Compute the sum of "extra" above 1 for the whole array, assuming nums[index] = mid + 1
+    private long minSum(int n, int index, int mid) {
+        // mid is how much above 1 at index, so value at index = mid + 1
+        long sum = 0;
+
+        // left side
+        int leftCount = index;
+        sum += sumOfPyramid(mid, leftCount);
+
+        // right side
+        int rightCount = n - index - 1;
+        sum += sumOfPyramid(mid, rightCount);
+
+        // subtract mid because we've added the peak twice
+        return sum - mid;
+    }
+
+    // Compute sum of a decreasing sequence from (mid) down to 1 (or until length reached)
+    private long sumOfPyramid(int height, int count) {
+        if (height > count) {
+            // full pyramid
+            long bottom = height - count + 1;
+            return (long)(height + bottom) * count / 2;
+        } else {
+            // pyramid will hit 1 before filling "count" items
+            // sum of (1 + height) * height / 2 and then remaining are all 1
+            long pyramid = (long)(1 + height) * height / 2;
+            long remaining = count - height;
+            return pyramid + remaining;
+        }
+    }
+}
