@@ -1,0 +1,33 @@
+class Solution {
+    private static final long MOD = 1_000_000_007;
+
+    public int maxNiceDivisors(int primeFactors) {
+        if (primeFactors <= 3) return primeFactors;
+
+        long n = primeFactors;
+
+        if (n % 3 == 0) {
+            return (int) modPow(3, n / 3, MOD);
+        } 
+        else if (n % 3 == 1) {
+            return (int) ((modPow(3, (n - 4) / 3, MOD) * 4) % MOD);
+        } 
+        else { // n % 3 == 2
+            return (int) ((modPow(3, n / 3, MOD) * 2) % MOD);
+        }
+    }
+
+    private long modPow(long base, long exp, long mod) {
+        long result = 1;
+        base %= mod;
+
+        while (exp > 0) {
+            if ((exp & 1) == 1) {
+                result = (result * base) % mod;
+            }
+            base = (base * base) % mod;
+            exp >>= 1;
+        }
+        return result;
+    }
+}
