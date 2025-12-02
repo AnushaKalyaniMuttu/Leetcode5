@@ -1,0 +1,100 @@
+// LeetCode 1810 Minimum Path Cost in a Hidden Grid
+// Note: This assumes the existence of a “Master” interface given by LeetCode for the hidden grid,
+// with methods like boolean canMove(Direction d), int move(Direction d), void moveBack(Direction d),
+// and int getCost() — exact API names might differ. Adjust names accordingly.
+
+import java.util.*;
+
+public class MinimumPathCostInAHiddenGrid {
+    private static final int[][] DIRS = {{-1,0},{1,0},{0,-1},{0,1}};
+    private static final char[] DIR_CHARS = {'U','D','L','R'};
+    private static final char[] OPPOSITE = new char[]{'D','U','R','L'};
+
+    // helper to represent a cell in explored map
+    static class Cell {
+        int x, y;
+        int cost;
+        Cell(int x, int y, int cost) { this.x = x; this.y = y; this.cost = cost; }
+    }
+
+    private Map<Long, Integer> costMap = new HashMap<>();
+    private int targetX = Integer.MIN_VALUE, targetY = Integer.MIN_VALUE;
+    private boolean foundTarget = false;
+
+    private long key(int x, int y) {
+        return (((long)x) << 32) ^ (y & 0xffffffffL);
+    }
+
+    // DFS to explore reachable cells — treat this like building a graph
+    private void dfs(int x, int y, Master master) {
+        int cost = master.getCost();
+        costMap.put(key(x, y), cost);
+
+        if (master.isTarget()) {
+            targetX = x;
+            targetY = y;
+            foundTarget = true;
+        }
+
+        for (int i = 0; i < 4; i++) {
+            char d = DIR_CHARS[i];
+            if (!master.canMove(d)) continue;
+            master.move(d);
+            int nx = x + DIRS[i][0];
+            int ny = y + DIRS[i][1];
+            long nkey = key(nx, ny);
+            if (!costMap.containsKey(nkey)) {
+                dfs(nx, ny, master);
+            }
+            master.move(OPPOSITE[i]);
+        }
+    }
+
+    public int findShortestPath(Master master) {
+        // explore
+        dfs(0, 0, master);
+
+        if (!foundTarget) return -1;  // no path
+
+        // Dijkstra on the discovered graph
+        PriorityQueue<Cell> pq = new PriorityQueue<>(Comparator.comparingInt(c -> c.cost));
+        Map<Long, Integer> dist = new HashMap<>();
+        long startKey = key(0, 0);
+        dist.put(startKey, 0);
+        pq.add(new Cell(0, 0, 0));
+
+        int best = Integer.MAX_VALUE;
+
+        while (!pq.isEmpty()) {
+            Cell cur = pq.poll();
+            long ck = key(cur.x, cur.y);
+            if (cur.cost > dist.get(ck)) continue;
+            if (cur.x == targetX && cur.y == targetY) {
+                best = cur.cost;
+                break;
+            }
+
+            for (int i = 0; i < 4; i++) {
+                int nx = cur.x + DIRS[i][0];
+                int ny = cur.y + DIRS[i][1];
+                long nk = key(nx, ny);
+                if (!costMap.containsKey(nk)) continue;
+                int nextCost = cur.cost + costMap.get(nk);
+                if (nextCost < dist.getOrDefault(nk, Integer.MAX_VALUE)) {
+                    dist.put(nk, nextCost);
+                    pq.add(new Cell(nx, ny, nextCost));
+                }
+            }
+        }
+
+        return best == Integer.MAX_VALUE ? -1 : best;
+    }
+
+    // Dummy interface — replace with actual Master API
+    interface Master {
+        boolean canMove(char direction);
+        void move(char direction);
+        int getCost();
+        boolean isTarget();
+    }
+}
