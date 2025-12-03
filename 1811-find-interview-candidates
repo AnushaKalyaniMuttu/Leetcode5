@@ -1,0 +1,36 @@
+import java.util.Arrays;
+
+public class MinimumAbsoluteSumDifference {
+    public int minAbsoluteSumDiff(int[] nums1, int[] nums2) {
+        int MOD = 1_000_000_007;
+        int n = nums1.length;
+        long sum = 0;
+        int[] sortedNums1 = nums1.clone();
+        Arrays.sort(sortedNums1);
+
+        int maxGain = 0;
+
+        for (int i = 0; i < n; i++) {
+            int diff = Math.abs(nums1[i] - nums2[i]);
+            sum += diff;
+
+            // Binary search for closest number to nums2[i]
+            int idx = Arrays.binarySearch(sortedNums1, nums2[i]);
+            if (idx < 0) {
+                idx = -idx - 1;
+            }
+
+            int best = diff;
+            if (idx < n) {
+                best = Math.min(best, Math.abs(sortedNums1[idx] - nums2[i]));
+            }
+            if (idx > 0) {
+                best = Math.min(best, Math.abs(sortedNums1[idx - 1] - nums2[i]));
+            }
+
+            maxGain = Math.max(maxGain, diff - best);
+        }
+
+        return (int)((sum - maxGain) % MOD);
+    }
+}
