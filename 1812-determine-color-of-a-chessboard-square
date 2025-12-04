@@ -1,0 +1,12 @@
+public class Solution {
+
+    public boolean squareIsWhite(String coordinates) {
+        char col = coordinates.charAt(0);
+        char row = coordinates.charAt(1);
+
+        int colNum = col - 'a' + 1;  // a=1, b=2, ...
+        int rowNum = row - '0';      // '1' -> 1, etc.
+
+        return (colNum + rowNum) % 2 == 1;
+    }
+}
