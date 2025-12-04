@@ -1,0 +1,30 @@
+import java.util.HashMap;
+import java.util.Map;
+
+public class Solution {
+
+    private static final int MOD = 1_000_000_007;
+
+    public int countNicePairs(int[] nums) {
+        Map<Integer, Long> freq = new HashMap<>();
+        long result = 0;
+
+        for (int num : nums) {
+            int diff = num - reverse(num);
+            long count = freq.getOrDefault(diff, 0L);
+            result = (result + count) % MOD;
+            freq.put(diff, count + 1);
+        }
+
+        return (int) result;
+    }
+
+    private int reverse(int n) {
+        int rev = 0;
+        while (n > 0) {
+            rev = rev * 10 + (n % 10);
+            n /= 10;
+        }
+        return rev;
+    }
+}
