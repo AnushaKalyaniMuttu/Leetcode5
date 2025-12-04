@@ -1,0 +1,54 @@
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+public class Solution {
+
+    private int batchSize;
+    private Map<String, Integer> memo = new HashMap<>();
+
+    public int maxHappyGroups(int batchSize, int[] groups) {
+        this.batchSize = batchSize;
+
+        int[] count = new int[batchSize];
+        int result = 0;
+
+        // Count remainder groups
+        for (int g : groups) {
+            count[g % batchSize]++;
+        }
+
+        // Groups with remainder 0 are always happy
+        result += count[0];
+        count[0] = 0;
+
+        return result + dfs(count, 0);
+    }
+
+    private int dfs(int[] count, int currentRemainder) {
+        String key = Arrays.toString(count) + "-" + currentRemainder;
+        if (memo.containsKey(key)) {
+            return memo.get(key);
+        }
+
+        int best = 0;
+
+        for (int r = 1; r < batchSize; r++) {
+            if (count[r] == 0) continue;
+
+            count[r]--;
+
+            int nextRemainder = (currentRemainder + r) % batchSize;
+
+            int gained = (nextRemainder == 0 ? 1 : 0)
+                    + dfs(count, nextRemainder);
+
+            best = Math.max(best, gained);
+
+            count[r]++;  // backtrack
+        }
+
+        memo.put(key, best);
+        return best;
+    }
+}
