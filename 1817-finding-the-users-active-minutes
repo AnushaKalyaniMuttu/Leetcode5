@@ -1,0 +1,25 @@
+import java.util.*;
+
+public class Solution {
+
+    public int[] findingUsersActiveMinutes(int[][] logs, int k) {
+        // userId -> distinct minutes
+        Map<Integer, Set<Integer>> map = new HashMap<>();
+
+        for (int[] log : logs) {
+            int user = log[0];
+            int minute = log[1];
+            map.computeIfAbsent(user, x -> new HashSet<>()).add(minute);
+        }
+
+        int[] result = new int[k];
+
+        // count how many users have x active minutes
+        for (Set<Integer> minutes : map.values()) {
+            int uam = minutes.size();  // user's active minutes
+            if (uam <= k) result[uam - 1]++;  // place in result array
+        }
+
+        return result;
+    }
+}
