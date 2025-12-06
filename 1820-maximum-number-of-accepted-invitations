@@ -1,0 +1,42 @@
+public class Solution {
+
+    public int maximumInvitations(int[][] grid) {
+        int boys = grid.length;
+        int girls = grid[0].length;
+
+        int[] matchGirl = new int[girls];
+        // -1 means girl not yet matched
+        for (int i = 0; i < girls; i++) {
+            matchGirl[i] = -1;
+        }
+
+        int count = 0;
+
+        // Try to match each boy
+        for (int b = 0; b < boys; b++) {
+            boolean[] visited = new boolean[girls];
+            if (dfs(b, grid, visited, matchGirl)) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    private boolean dfs(int boy, int[][] grid, boolean[] visited, int[] matchGirl) {
+        int girls = grid[0].length;
+
+        for (int g = 0; g < girls; g++) {
+            if (grid[boy][g] == 1 && !visited[g]) {
+                visited[g] = true;
+
+                // If girl is free OR her matched boy can be rematched somewhere else
+                if (matchGirl[g] == -1 || dfs(matchGirl[g], grid, visited, matchGirl)) {
+                    matchGirl[g] = boy;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+}
