@@ -1,0 +1,45 @@
+import java.util.*;
+
+public class Solution {
+
+    public int countDifferentSubsequenceGCDs(int[] nums) {
+        int max = 0;
+        for (int num : nums) {
+            max = Math.max(max, num);
+        }
+
+        boolean[] present = new boolean[max + 1];
+        for (int num : nums) {
+            present[num] = true;
+        }
+
+        int count = 0;
+
+        // For every possible GCD candidate from 1 to max
+        for (int g = 1; g <= max; g++) {
+            int currentGcd = 0;
+
+            // Scan all multiples of g
+            for (int multiple = g; multiple <= max; multiple += g) {
+                if (present[multiple]) {
+                    currentGcd = gcd(currentGcd, multiple);
+                    if (currentGcd == g) {
+                        count++;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return count;
+    }
+
+    private int gcd(int a, int b) {
+        while (b != 0) {
+            int t = b;
+            b = a % b;
+            a = t;
+        }
+        return a;
+    }
+}
