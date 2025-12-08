@@ -1,0 +1,41 @@
+public class FaultySensor {
+
+    public int badSensor(int[] sensor1, int[] sensor2) {
+        int n = sensor1.length;
+
+        // Find the first mismatch index
+        int i = 0;
+        while (i < n && sensor1[i] == sensor2[i]) {
+            i++;
+        }
+
+        // Fully identical? No way to know
+        if (i == n) return -1;
+
+        // Case 1: Assume sensor1 is faulty (sensor1 skips one value)
+        int j1 = i + 1;
+        int j2 = i;
+
+        while (j1 < n && j2 < n && sensor1[j1] == sensor2[j2]) {
+            j1++;
+            j2++;
+        }
+        // If sensor2 fully consumed first → sensor1 faulty
+        boolean sensor1Faulty = (j2 == n);
+
+        // Case 2: Assume sensor2 is faulty (sensor2 skips one value)
+        int k1 = i;
+        int k2 = i + 1;
+
+        while (k1 < n && k2 < n && sensor1[k1] == sensor2[k2]) {
+            k1++;
+            k2++;
+        }
+        boolean sensor2Faulty = (k1 == n);
+
+        if (sensor1Faulty && !sensor2Faulty) return 1;
+        if (sensor2Faulty && !sensor1Faulty) return 2;
+
+        return -1;
+    }
+}
