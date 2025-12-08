@@ -1,0 +1,54 @@
+import java.util.*;
+
+public class Solution {
+
+    public int[] getOrder(int[][] tasks) {
+        int n = tasks.length;
+        int[][] extended = new int[n][3];
+
+        // store: enqueueTime, processingTime, index
+        for (int i = 0; i < n; i++) {
+            extended[i][0] = tasks[i][0];
+            extended[i][1] = tasks[i][1];
+            extended[i][2] = i;
+        }
+
+        // sort by enqueue time
+        Arrays.sort(extended, (a, b) -> Integer.compare(a[0], b[0]));
+
+        int[] result = new int[n];
+        int rIndex = 0;
+        long currentTime = 0;
+
+        // min-heap: by processingTime, then index
+        PriorityQueue<int[]> pq = new PriorityQueue<>(
+            (a, b) -> {
+                if (a[1] != b[1]) return a[1] - b[1];
+                return a[2] - b[2];
+            }
+        );
+
+        int i = 0; // pointer over tasks
+
+        while (i < n || !pq.isEmpty()) {
+
+            // if no tasks available, jump to next enqueue time
+            if (pq.isEmpty() && currentTime < extended[i][0]) {
+                currentTime = extended[i][0];
+            }
+
+            // enqueue tasks available at currentTime
+            while (i < n && extended[i][0] <= currentTime) {
+                pq.add(extended[i]);
+                i++;
+            }
+
+            // process one task
+            int[] task = pq.poll();
+            result[rIndex++] = task[2];
+            currentTime += task[1];
+        }
+
+        return result;
+    }
+}
