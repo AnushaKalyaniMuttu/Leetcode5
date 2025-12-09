@@ -1,0 +1,31 @@
+public class Solution {
+
+    public ListNode deleteDuplicatesUnsorted(ListNode head) {
+        Map<Integer, Integer> freq = new HashMap<>();
+
+        // First pass: count frequency
+        ListNode curr = head;
+        while (curr != null) {
+            freq.put(curr.val, freq.getOrDefault(curr.val, 0) + 1);
+            curr = curr.next;
+        }
+
+        // Second pass: build filtered list
+        ListNode dummy = new ListNode(0);
+        ListNode tail = dummy;
+        curr = head;
+
+        while (curr != null) {
+            if (freq.get(curr.val) == 1) {
+                tail.next = curr;
+                tail = tail.next;
+            }
+            curr = curr.next;
+        }
+
+        // Terminate list
+        tail.next = null;
+
+        return dummy.next;
+    }
+}
