@@ -1,46 +1,56 @@
 import java.util.*;
 
-public class MaximumBuildingHeight {
+public class Solution {
 
     public int maxBuilding(int n, int[][] restrictions) {
-        // Step 1: Add the mandatory restriction for building 1.
         List<int[]> list = new ArrayList<>();
+
+        // Building 1 is always height 0
         list.add(new int[]{1, 0});
-        if (restrictions != null) {
-            for (int[] r : restrictions) {
-                list.add(r);
-            }
+
+        // Add given restrictions
+        for (int[] r : restrictions) {
+            list.add(r);
         }
 
-        // Step 2: Sort by building index
+        // If n is not in restrictions, add a "soft" restriction
+        // Maximum possible height of building n is (n-1) due to slope from building 1
+        boolean hasN = false;
+        for (int[] r : list) {
+            if (r[0] == n) {
+                hasN = true;
+                break;
+            }
+        }
+        if (!hasN) {
+            list.add(new int[]{n, n - 1});
+        }
+
+        // Sort restrictions by building index
         list.sort(Comparator.comparingInt(a -> a[0]));
 
-        // Step 3: Forward pass (left to right)
+        // Forward pass
         for (int i = 1; i < list.size(); i++) {
             int[] prev = list.get(i - 1);
             int[] curr = list.get(i);
-            int dist = curr[0] - prev[0];
-            curr[1] = Math.min(curr[1], prev[1] + dist);
+            curr[1] = Math.min(curr[1], prev[1] + (curr[0] - prev[0]));
         }
 
-        // Step 4: Backward pass (right to left)
+        // Backward pass
         for (int i = list.size() - 2; i >= 0; i--) {
             int[] next = list.get(i + 1);
             int[] curr = list.get(i);
-            int dist = next[0] - curr[0];
-            curr[1] = Math.min(curr[1], next[1] + dist);
+            curr[1] = Math.min(curr[1], next[1] + (next[0] - curr[0]));
         }
 
-        // Step 5: Compute maximum height between every consecutive restriction pair
+        // Compute maximum peak between pairs
         int max = 0;
         for (int i = 1; i < list.size(); i++) {
-            int[] left = list.get(i - 1);
-            int[] right = list.get(i);
+            int[] L = list.get(i - 1);
+            int[] R = list.get(i);
 
-            int d = right[0] - left[0];
-            // peak height is achieved where slopes meet:
-            // (left.h + right.h + d) / 2
-            int peak = (left[1] + right[1] + d) / 2;
+            int d = R[0] - L[0];
+            int peak = (L[1] + R[1] + d) / 2;
             max = Math.max(max, peak);
         }
 
