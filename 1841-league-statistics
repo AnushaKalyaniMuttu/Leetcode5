@@ -1,0 +1,37 @@
+import java.util.*;
+
+public class LeagueStatistics {
+
+    public List<List<String>> getLeagueTable(String[][] matches) {
+        Map<String, Integer> points = new HashMap<>();
+
+        // Process each match
+        for (String[] match : matches) {
+            String winner = match[0];
+            String loser = match[1];
+
+            points.put(winner, points.getOrDefault(winner, 0) + 3);
+            points.putIfAbsent(loser, 0);
+        }
+
+        // Convert map to list
+        List<List<String>> result = new ArrayList<>();
+        for (String team : points.keySet()) {
+            List<String> entry = new ArrayList<>();
+            entry.add(team);
+            entry.add(String.valueOf(points.get(team)));
+            result.add(entry);
+        }
+
+        // Sort by points DESC, team name ASC
+        result.sort((a, b) -> {
+            int pa = Integer.parseInt(a.get(1));
+            int pb = Integer.parseInt(b.get(1));
+
+            if (pa != pb) return pb - pa;      // Higher points first
+            return a.get(0).compareTo(b.get(0)); // Alphabetical if tie
+        });
+
+        return result;
+    }
+}
