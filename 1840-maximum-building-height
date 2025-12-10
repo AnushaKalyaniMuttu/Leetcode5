@@ -1,0 +1,49 @@
+import java.util.*;
+
+public class MaximumBuildingHeight {
+
+    public int maxBuilding(int n, int[][] restrictions) {
+        // Step 1: Add the mandatory restriction for building 1.
+        List<int[]> list = new ArrayList<>();
+        list.add(new int[]{1, 0});
+        if (restrictions != null) {
+            for (int[] r : restrictions) {
+                list.add(r);
+            }
+        }
+
+        // Step 2: Sort by building index
+        list.sort(Comparator.comparingInt(a -> a[0]));
+
+        // Step 3: Forward pass (left to right)
+        for (int i = 1; i < list.size(); i++) {
+            int[] prev = list.get(i - 1);
+            int[] curr = list.get(i);
+            int dist = curr[0] - prev[0];
+            curr[1] = Math.min(curr[1], prev[1] + dist);
+        }
+
+        // Step 4: Backward pass (right to left)
+        for (int i = list.size() - 2; i >= 0; i--) {
+            int[] next = list.get(i + 1);
+            int[] curr = list.get(i);
+            int dist = next[0] - curr[0];
+            curr[1] = Math.min(curr[1], next[1] + dist);
+        }
+
+        // Step 5: Compute maximum height between every consecutive restriction pair
+        int max = 0;
+        for (int i = 1; i < list.size(); i++) {
+            int[] left = list.get(i - 1);
+            int[] right = list.get(i);
+
+            int d = right[0] - left[0];
+            // peak height is achieved where slopes meet:
+            // (left.h + right.h + d) / 2
+            int peak = (left[1] + right[1] + d) / 2;
+            max = Math.max(max, peak);
+        }
+
+        return max;
+    }
+}
