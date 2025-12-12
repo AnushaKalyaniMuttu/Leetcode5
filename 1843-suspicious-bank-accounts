@@ -1,0 +1,42 @@
+import java.util.*;
+
+public class Solution {
+    public List<Integer> suspiciousBankAccounts(int[][] transactions) {
+        Map<Integer, Long> balance = new HashMap<>();
+        Map<Integer, Long> deposits = new HashMap<>();
+        Map<Integer, Long> withdrawals = new HashMap<>();
+        Set<Integer> suspicious = new HashSet<>();
+
+        for (int[] t : transactions) {
+            int acc = t[0];
+            long amt = t[1];
+
+            balance.put(acc, balance.getOrDefault(acc, 0L) + amt);
+
+            if (amt >= 0) {
+                deposits.put(acc, deposits.getOrDefault(acc, 0L) + amt);
+            } else {
+                withdrawals.put(acc, withdrawals.getOrDefault(acc, 0L) + Math.abs(amt));
+            }
+
+            // Rule 1 – balance negative at any point
+            if (balance.get(acc) < 0) {
+                suspicious.add(acc);
+            }
+        }
+
+        // Rule 2 – withdrawals > 3 * deposits
+        for (int acc : balance.keySet()) {
+            long dep = deposits.getOrDefault(acc, 0L);
+            long wdr = withdrawals.getOrDefault(acc, 0L);
+
+            if (wdr > 3L * dep) {
+                suspicious.add(acc);
+            }
+        }
+
+        List<Integer> result = new ArrayList<>(suspicious);
+        Collections.sort(result);
+        return result;
+    }
+}
