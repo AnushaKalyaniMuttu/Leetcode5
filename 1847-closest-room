@@ -1,0 +1,59 @@
+import java.util.*;
+
+class Solution {
+
+    public int[] closestRoom(int[][] rooms, int[][] queries) {
+        int n = rooms.length;
+        int m = queries.length;
+
+        // Sort rooms by size descending
+        Arrays.sort(rooms, (a, b) -> b[1] - a[1]);
+
+        // Store queries with original index
+        int[][] qs = new int[m][3];
+        for (int i = 0; i < m; i++) {
+            qs[i][0] = queries[i][0]; // preferredId
+            qs[i][1] = queries[i][1]; // minSize
+            qs[i][2] = i;             // original index
+        }
+
+        // Sort queries by minSize descending
+        Arrays.sort(qs, (a, b) -> b[1] - a[1]);
+
+        TreeSet<Integer> ids = new TreeSet<>();
+        int[] result = new int[m];
+
+        int i = 0;
+        for (int[] q : qs) {
+            int preferred = q[0];
+            int minSize = q[1];
+            int idx = q[2];
+
+            // Add all rooms with size >= minSize
+            while (i < n && rooms[i][1] >= minSize) {
+                ids.add(rooms[i][0]);
+                i++;
+            }
+
+            if (ids.isEmpty()) {
+                result[idx] = -1;
+                continue;
+            }
+
+            Integer floor = ids.floor(preferred);
+            Integer ceil = ids.ceiling(preferred);
+
+            if (floor == null) {
+                result[idx] = ceil;
+            } else if (ceil == null) {
+                result[idx] = floor;
+            } else {
+                int d1 = Math.abs(floor - preferred);
+                int d2 = Math.abs(ceil - preferred);
+                result[idx] = (d1 <= d2) ? floor : ceil;
+            }
+        }
+
+        return result;
+    }
+}
