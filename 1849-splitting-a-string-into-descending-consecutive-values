@@ -1,0 +1,38 @@
+import java.math.BigInteger;
+
+class Solution {
+
+    public boolean splitString(String s) {
+        int n = s.length();
+
+        for (int i = 1; i < n; i++) {
+            BigInteger first = new BigInteger(s.substring(0, i));
+            if (dfs(s, i, first)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean dfs(String s, int index, BigInteger prev) {
+        if (index == s.length()) {
+            return true;
+        }
+
+        for (int i = index + 1; i <= s.length(); i++) {
+            BigInteger curr = new BigInteger(s.substring(index, i));
+
+            if (curr.equals(prev.subtract(BigInteger.ONE))) {
+                if (dfs(s, i, curr)) {
+                    return true;
+                }
+            }
+
+            if (curr.compareTo(prev) >= 0) {
+                break;
+            }
+        }
+
+        return false;
+    }
+}
