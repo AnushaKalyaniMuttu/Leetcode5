@@ -1,0 +1,35 @@
+import java.util.*;
+
+public class Solution {
+
+    public int[] distinctNumbers(int[] nums, int k) {
+        int n = nums.length;
+        int[] result = new int[n - k + 1];
+
+        Map<Integer, Integer> freqMap = new HashMap<>();
+        int left = 0;
+
+        for (int right = 0; right < n; right++) {
+            // Add current element
+            freqMap.put(nums[right], freqMap.getOrDefault(nums[right], 0) + 1);
+
+            // If window size exceeds k, remove left element
+            if (right - left + 1 > k) {
+                int count = freqMap.get(nums[left]) - 1;
+                if (count == 0) {
+                    freqMap.remove(nums[left]);
+                } else {
+                    freqMap.put(nums[left], count);
+                }
+                left++;
+            }
+
+            // When window size is exactly k, record result
+            if (right - left + 1 == k) {
+                result[left] = freqMap.size();
+            }
+        }
+
+        return result;
+    }
+}
