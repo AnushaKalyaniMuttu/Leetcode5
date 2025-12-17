@@ -1,0 +1,28 @@
+public class Solution {
+
+    public int maximumPopulation(int[][] logs) {
+        // range of years is [1950, 2050]
+        int offset = 1950;
+        int[] delta = new int[101]; // holds population change
+
+        // record births and deaths
+        for (int[] log : logs) {
+            delta[log[0] - offset]++;   // start counting from birth
+            delta[log[1] - offset]--;   // stop counting at death
+        }
+
+        int maxPopulation = 0;
+        int bestYear = 1950;
+        int currentPopulation = 0;
+
+        // compute prefix sums and find the year with max population
+        for (int i = 0; i < delta.length; i++) {
+            currentPopulation += delta[i];
+            if (currentPopulation > maxPopulation) {
+                maxPopulation = currentPopulation;
+                bestYear = i + offset;
+            }
+        }
+        return bestYear;
+    }
+}
