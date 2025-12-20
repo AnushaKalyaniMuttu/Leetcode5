@@ -1,0 +1,36 @@
+import java.util.Arrays;
+
+public class Solution {
+
+    public char[][] rotateTheBox(char[][] box) {
+        int m = box.length;
+        int n = box[0].length;
+        // Create result array with rotated dimensions n x m
+        char[][] ans = new char[n][m];
+        
+        // Initialize with empty spaces
+        for (char[] row : ans) {
+            Arrays.fill(row, '.');
+        }
+
+        // Process each row: apply simulated gravity and place into rotated array
+        for (int i = 0; i < m; i++) {
+            // place stones and obstacles for this row  
+            // j scans from rightmost to left
+            int placePos = n - 1; // next position to place stone (#)
+            for (int j = n - 1; j >= 0; j--) {
+                if (box[i][j] == '*') {
+                    // obstacle resets place position
+                    ans[j][m - 1 - i] = '*';
+                    placePos = j - 1;
+                } else if (box[i][j] == '#') {
+                    // place stone at the farthest available position
+                    ans[placePos][m - 1 - i] = '#';
+                    placePos--;
+                }
+                // '.' case: nothing to assign here; remain '.'
+            }
+        }
+        return ans;
+    }
+}
