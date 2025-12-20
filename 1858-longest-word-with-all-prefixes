@@ -1,0 +1,55 @@
+class Solution {
+
+    // Trie node definition
+    static class TrieNode {
+        TrieNode[] children = new TrieNode[26];
+        boolean isWord;  // marks end of a word
+    }
+
+    private TrieNode root = new TrieNode();
+
+    public String longestWord(String[] words) {
+        // Insert all words into trie
+        for (String w : words) {
+            insert(w);
+        }
+
+        String answer = "";
+        for (String w : words) {
+            if (allPrefixesExist(w)) {
+                // Choose better result: longer or lexicographically smaller
+                if (w.length() > answer.length() || (
+                    w.length() == answer.length() && w.compareTo(answer) < 0)) {
+                    answer = w;
+                }
+            }
+        }
+        return answer;
+    }
+
+    // Insert a word into the Trie
+    private void insert(String word) {
+        TrieNode node = root;
+        for (char c : word.toCharArray()) {
+            int idx = c - 'a';
+            if (node.children[idx] == null) {
+                node.children[idx] = new TrieNode();
+            }
+            node = node.children[idx];
+        }
+        node.isWord = true;
+    }
+
+    // Check if all prefixes of the word exist as complete words
+    private boolean allPrefixesExist(String word) {
+        TrieNode node = root;
+        for (char c : word.toCharArray()) {
+            node = node.children[c - 'a'];
+            // If a prefix doesn't exist or is not a complete word → invalid
+            if (node == null || !node.isWord) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
