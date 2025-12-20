@@ -1,0 +1,38 @@
+public class Solution {
+
+    public int minSwaps(String s) {
+        int zeros = 0, ones = 0;
+        for (char c : s.toCharArray()) {
+            if (c == '0') zeros++;
+            else ones++;
+        }
+
+        // If difference > 1, impossible to alternate
+        if (Math.abs(zeros - ones) > 1) return -1;
+
+        // If equal counts, try both patterns
+        if (zeros == ones) {
+            return Math.min(countSwaps(s, '0'), countSwaps(s, '1'));
+        }
+        // If more zeros, pattern must start with '0'
+        if (zeros > ones) {
+            return countSwaps(s, '0');
+        }
+        // If more ones, pattern must start with '1'
+        return countSwaps(s, '1');
+    }
+
+    // Helper counts mismatches for a pattern starting with `startChar`
+    private int countSwaps(String s, char startChar) {
+        int mismatches = 0;
+        char expected = startChar;
+        for (char c : s.toCharArray()) {
+            if (c != expected) {
+                mismatches++;
+            }
+            // flip expected for next position
+            expected = (expected == '0') ? '1' : '0';
+        }
+        return mismatches / 2;
+    }
+}
