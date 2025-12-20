@@ -1,0 +1,35 @@
+import java.util.Arrays;
+
+public class Solution {
+    public int sumOfFlooredPairs(int[] nums) {
+        final int MOD = 1_000_000_007;
+        int n = nums.length;
+        if (n == 0) return 0;
+
+        int maxVal = Arrays.stream(nums).max().orElse(0);
+        // Frequency prefix: count[i] will become number <= i
+        int[] count = new int[maxVal + 1];
+        for (int num : nums) {
+            count[num]++;
+        }
+        for (int i = 1; i <= maxVal; i++) {
+            count[i] += count[i - 1];
+        }
+
+        long ans = 0;
+        // Enumerate denominators (values that appear)
+        for (int y = 1; y <= maxVal; y++) {
+            int freqY = count[y] - (y > 0 ? count[y - 1] : 0);
+            if (freqY == 0) continue;
+
+            // For quotient d from 1 up to maxVal / y
+            for (int d = 1; d * y <= maxVal; d++) {
+                int lo = d * y - 1;
+                int hi = Math.min(maxVal, (d + 1) * y - 1);
+                long numerators = count[hi] - (lo >= 0 ? count[lo] : 0);
+                ans = (ans + (long) d * numerators % MOD * freqY) % MOD;
+            }
+        }
+        return (int) ans;
+    }
+}
