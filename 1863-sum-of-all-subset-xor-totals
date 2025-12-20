@@ -1,0 +1,23 @@
+public class Solution {
+
+    public int subsetXORSum(int[] nums) {
+        return dfs(nums, 0, 0);
+    }
+
+    // dfs returns the sum of XOR totals for all subsets of nums starting at index i
+    // with current XOR value currXor
+    private int dfs(int[] nums, int i, int currXor) {
+        // if we've considered all elements, return the XOR value for this subset
+        if (i == nums.length) {
+            return currXor;
+        }
+
+        // sum of totals without including nums[i]
+        int exclude = dfs(nums, i + 1, currXor);
+        // sum of totals including nums[i] (we XOR it in)
+        int include = dfs(nums, i + 1, currXor ^ nums[i]);
+
+        // return sum from both branches
+        return exclude + include;
+    }
+}
