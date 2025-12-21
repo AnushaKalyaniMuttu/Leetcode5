@@ -1,0 +1,50 @@
+import java.util.*;
+
+class Solution {
+
+    static class OrderDetail {
+        int orderId;
+        int productId;
+        int quantity;
+
+        OrderDetail(int orderId, int productId, int quantity) {
+            this.orderId = orderId;
+            this.productId = productId;
+            this.quantity = quantity;
+        }
+    }
+
+    public List<Integer> ordersAboveAverage(List<OrderDetail> details) {
+        Map<Integer, List<Integer>> orderMap = new HashMap<>();
+
+        // Group quantities by order_id
+        for (OrderDetail d : details) {
+            orderMap
+                .computeIfAbsent(d.orderId, k -> new ArrayList<>())
+                .add(d.quantity);
+        }
+
+        List<Integer> result = new ArrayList<>();
+
+        // Process each order
+        for (Map.Entry<Integer, List<Integer>> entry : orderMap.entrySet()) {
+            List<Integer> quantities = entry.getValue();
+
+            int max = 0;
+            int sum = 0;
+
+            for (int q : quantities) {
+                max = Math.max(max, q);
+                sum += q;
+            }
+
+            double avg = (double) sum / quantities.size();
+
+            if (max > avg) {
+                result.add(entry.getKey());
+            }
+        }
+
+        return result;
+    }
+}
