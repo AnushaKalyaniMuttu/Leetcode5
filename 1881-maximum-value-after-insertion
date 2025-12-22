@@ -1,0 +1,26 @@
+class Solution {
+    public String maxValue(String n, int x) {
+        char xChar = (char) ('0' + x);
+        StringBuilder sb = new StringBuilder();
+        
+        boolean negative = (n.charAt(0) == '-');
+        int i = (negative ? 1 : 0);
+
+        // Find the insertion position
+        while (i < n.length()) {
+            char c = n.charAt(i);
+            if (!negative && c < xChar) {
+                break;
+            }
+            if (negative && c > xChar) {
+                break;
+            }
+            i++;
+        }
+
+        sb.append(n, 0, i);
+        sb.append(xChar);
+        sb.append(n.substring(i));
+        return sb.toString();
+    }
+}
