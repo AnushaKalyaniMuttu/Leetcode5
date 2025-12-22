@@ -1,0 +1,13 @@
+class Solution {
+    public boolean isSumEqual(String firstWord, String secondWord, String targetWord) {
+        return toNumber(firstWord) + toNumber(secondWord) == toNumber(targetWord);
+    }
+
+    private int toNumber(String s) {
+        int num = 0;
+        for (char c : s.toCharArray()) {
+            num = num * 10 + (c - 'a');
+        }
+        return num;
+    }
+}
