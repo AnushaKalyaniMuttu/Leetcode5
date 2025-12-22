@@ -1,0 +1,41 @@
+import java.util.Arrays;
+
+class Solution {
+    public long countPairs(int[] nums1, int[] nums2) {
+        int n = nums1.length;
+        long count = 0;
+
+        // Compute difference array
+        long[] diff = new long[n];
+        for (int i = 0; i < n; i++) {
+            diff[i] = (long)nums1[i] - nums2[i];
+        }
+
+        Arrays.sort(diff);
+
+        // Two pointers / binary search
+        for (int i = 0; i < n; i++) {
+            if (diff[i] <= 0) { 
+                // find j > i where diff[j] > -diff[i]
+                int lo = i + 1, hi = n - 1;
+                long target = -diff[i] + 1;
+                int pos = n;
+                while (lo <= hi) {
+                    int mid = lo + (hi - lo) / 2;
+                    if (diff[mid] >= target) {
+                        pos = mid;
+                        hi = mid - 1;
+                    } else {
+                        lo = mid + 1;
+                    }
+                }
+                count += (n - pos);
+            } else {
+                // all following are >0 anyway
+                count += (n - i - 1);
+            }
+        }
+
+        return count;
+    }
+}
