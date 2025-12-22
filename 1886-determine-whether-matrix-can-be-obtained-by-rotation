@@ -1,0 +1,33 @@
+import java.util.Arrays;
+
+class Solution {
+    public boolean findRotation(int[][] mat, int[][] target) {
+        // Try all 4 possible orientations
+        for (int i = 0; i < 4; i++) {
+            if (Arrays.deepEquals(mat, target)) {
+                return true;
+            }
+            rotate90(mat);
+        }
+        return false;
+    }
+
+    // Rotate the matrix 90 degrees clockwise in place
+    private void rotate90(int[][] mat) {
+        int n = mat.length;
+        // Step 1: Reverse the rows
+        for (int i = 0, j = n - 1; i < j; i++, j--) {
+            int[] temp = mat[i];
+            mat[i] = mat[j];
+            mat[j] = temp;
+        }
+        // Step 2: Transpose the matrix
+        for (int r = 0; r < n; r++) {
+            for (int c = r + 1; c < n; c++) {
+                int tmp = mat[r][c];
+                mat[r][c] = mat[c][r];
+                mat[c][r] = tmp;
+            }
+        }
+    }
+}
