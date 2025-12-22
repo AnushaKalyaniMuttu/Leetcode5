@@ -1,0 +1,58 @@
+import java.util.PriorityQueue;
+import java.util.Comparator;
+
+class Solution {
+    public int[] assignTasks(int[] servers, int[] tasks) {
+        int n = servers.length, m = tasks.length;
+        int[] ans = new int[m];
+
+        // idle servers: (weight, index)
+        PriorityQueue<int[]> idle = new PriorityQueue<>(
+            (a, b) -> a[0] == b[0] ? a[1] - b[1] : a[0] - b[0]
+        );
+
+        // busy servers: (freeTime, weight, index)
+        PriorityQueue<int[]> busy = new PriorityQueue<>(
+            (a, b) -> {
+                if (a[0] != b[0]) return a[0] - b[0];
+                if (a[1] != b[1]) return a[1] - b[1];
+                return a[2] - b[2];
+            }
+        );
+
+        // Initially all servers are idle
+        for (int i = 0; i < n; i++) {
+            idle.offer(new int[]{servers[i], i});
+        }
+
+        int time = 0;
+        for (int j = 0; j < m; j++) {
+            time = Math.max(time, j);
+
+            // free up servers that have completed by current time
+            while (!busy.isEmpty() && busy.peek()[0] <= time) {
+                int[] srv = busy.poll();
+                idle.offer(new int[]{srv[1], srv[2]});
+            }
+
+            // if no idle servers, wait for next busy server
+            if (idle.isEmpty()) {
+                int[] srv = busy.poll();
+                time = srv[0];  // jump to when this server is free
+                // free up any servers that are done by this new time
+                while (!busy.isEmpty() && busy.peek()[0] <= time) {
+                    int[] next = busy.poll();
+                    idle.offer(new int[]{next[1], next[2]});
+                }
+                idle.offer(new int[]{srv[1], srv[2]});
+            }
+
+            // assign current task
+            int[] server = idle.poll();
+            ans[j] = server[1];
+            busy.offer(new int[]{time + tasks[j], server[0], server[1]});
+        }
+
+        return ans;
+    }
+}
