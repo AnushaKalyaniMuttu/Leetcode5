@@ -1,0 +1,32 @@
+class Solution {
+   public int minFlips(String s) {
+        int n = s.length();
+        // If the string is rotated, we can simulate it by doubling the string
+        String t = s + s;
+        int minFlips = Integer.MAX_VALUE;
+
+        // Pattern 1: "010101..."
+        // Pattern 2: "101010..."
+        for (int pattern = 0; pattern < 2; pattern++) {
+            int flips = 0;
+            for (int i = 0; i < 2 * n; i++) {
+                char expected = ((i + pattern) % 2 == 0) ? '0' : '1';
+                if (t.charAt(i) != expected) flips++;
+
+                // Maintain window size n
+                if (i >= n) {
+                    char outgoing = t.charAt(i - n);
+                    char expectedOutgoing = ((i - n + pattern) % 2 == 0) ? '0' : '1';
+                    if (outgoing != expectedOutgoing) flips--;
+                }
+
+                if (i >= n - 1) {
+                    minFlips = Math.min(minFlips, flips);
+                }
+            }
+        }
+
+        return minFlips;
+    }
+
+}
