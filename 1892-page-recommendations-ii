@@ -1,0 +1,19 @@
+WITH UserToFriends AS (
+    SELECT user1_id AS user_id, user2_id AS friend_id
+    FROM Friendship
+    UNION ALL
+    SELECT user2_id AS user_id, user1_id AS friend_id
+    FROM Friendship
+)
+SELECT
+    uf.user_id,
+    l.page_id,
+    COUNT(DISTINCT uf.friend_id) AS friends_likes
+FROM UserToFriends uf
+JOIN Likes l
+    ON uf.friend_id = l.user_id
+LEFT JOIN Likes ul
+    ON uf.user_id = ul.user_id
+    AND l.page_id = ul.page_id
+WHERE ul.page_id IS NULL
+GROUP BY uf.user_id, l.page_id;
