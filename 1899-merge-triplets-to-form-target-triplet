@@ -1,0 +1,13 @@
+class Solution {
+    public boolean mergeTriplets(int[][] triplets, int[] target) {
+        int t0 = 0, t1 = 0, t2 = 0;
+        for (int[] triplet : triplets) {
+            if (triplet[0] <= target[0] && triplet[1] <= target[1] && triplet[2] <= target[2]) {
+                t0 = Math.max(t0, triplet[0]);
+                t1 = Math.max(t1, triplet[1]);
+                t2 = Math.max(t2, triplet[2]);
+            }
+        }
+        return t0 == target[0] && t1 == target[1] && t2 == target[2];
+    }
+}
