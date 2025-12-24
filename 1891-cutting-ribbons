@@ -1,0 +1,35 @@
+class Solution {
+
+    public int maxLength(int[] ribbons, int k) {
+        int left = 1;
+        int right = 0;
+
+        for (int r : ribbons) {
+            right = Math.max(right, r);
+        }
+
+        int result = 0;
+
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+
+            if (canCut(ribbons, k, mid)) {
+                result = mid;
+                left = mid + 1;   // try longer length
+            } else {
+                right = mid - 1;  // try shorter length
+            }
+        }
+
+        return result;
+    }
+
+    private boolean canCut(int[] ribbons, int k, int length) {
+        long pieces = 0;
+        for (int r : ribbons) {
+            pieces += r / length;
+            if (pieces >= k) return true;
+        }
+        return false;
+    }
+}
