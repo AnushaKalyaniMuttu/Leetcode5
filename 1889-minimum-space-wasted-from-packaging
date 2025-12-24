@@ -1,0 +1,57 @@
+import java.util.*;
+
+class Solution {
+
+    private static final int MOD = 1_000_000_007;
+
+    public int minWastedSpace(int[] packages, int[][] boxes) {
+        Arrays.sort(packages);
+        int n = packages.length;
+
+        long[] prefixSum = new long[n + 1];
+        for (int i = 0; i < n; i++) {
+            prefixSum[i + 1] = prefixSum[i] + packages[i];
+        }
+
+        long minWaste = Long.MAX_VALUE;
+
+        for (int[] supplierBoxes : boxes) {
+            Arrays.sort(supplierBoxes);
+
+            // If largest box can't fit the largest package, skip
+            if (supplierBoxes[supplierBoxes.length - 1] < packages[n - 1]) {
+                continue;
+            }
+
+            long waste = 0;
+            int prevIndex = 0;
+
+            for (int box : supplierBoxes) {
+                int idx = upperBound(packages, box);
+                if (idx > prevIndex) {
+                    long packageSum = prefixSum[idx] - prefixSum[prevIndex];
+                    waste += (long) box * (idx - prevIndex) - packageSum;
+                    prevIndex = idx;
+                }
+                if (prevIndex == n) break;
+            }
+
+            minWaste = Math.min(minWaste, waste);
+        }
+
+        return minWaste == Long.MAX_VALUE ? -1 : (int) (minWaste % MOD);
+    }
+
+    private int upperBound(int[] arr, int target) {
+        int left = 0, right = arr.length;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (arr[mid] <= target) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        return left;
+    }
+}
