@@ -1,0 +1,127 @@
+import java.util.*;
+
+class Solution {
+
+    static class Node {
+        int min0; // min cost to make this subexpression 0
+        int min1; // min cost to make this subexpression 1
+
+        Node(int min0, int min1) {
+            this.min0 = min0;
+            this.min1 = min1;
+        }
+    }
+
+    public int minOperationsToFlip(String expression) {
+        Deque<Node> valStack = new ArrayDeque<>();
+        Deque<Character> opStack = new ArrayDeque<>();
+
+        int n = expression.length();
+        for (int i = 0; i < n; i++) {
+            char c = expression.charAt(i);
+            if (c == '(') {
+                opStack.push(c);
+            } else if (c == '0' || c == '1') {
+                Node node = c == '0' ? new Node(0, 1) : new Node(1, 0);
+                valStack.push(node);
+                combineStack(valStack, opStack);
+            } else if (c == '&' || c == '|') {
+                opStack.push(c);
+            } else if (c == ')') {
+                while (opStack.peek() != '(') {
+                    Node right = valStack.pop();
+                    Node left = valStack.pop();
+                    char op = opStack.pop();
+                    valStack.push(combine(left, right, op));
+                }
+                opStack.pop(); // remove '('
+                combineStack(valStack, opStack);
+            }
+        }
+
+        while (!opStack.isEmpty()) {
+            Node right = valStack.pop();
+            Node left = valStack.pop();
+            char op = opStack.pop();
+            valStack.push(combine(left, right, op));
+        }
+
+        Node root = valStack.pop();
+        // The final value is evaluated left-to-right ignoring precedence
+        int finalVal = eval(expression);
+        return finalVal == 1 ? root.min0 : root.min1;
+    }
+
+    private void combineStack(Deque<Node> valStack, Deque<Character> opStack) {
+        while (!opStack.isEmpty() && (opStack.peek() == '&' || opStack.peek() == '|')) {
+            Node right = valStack.pop();
+            Node left = valStack.pop();
+            char op = opStack.pop();
+            valStack.push(combine(left, right, op));
+        }
+    }
+
+    private Node combine(Node left, Node right, char op) {
+        int min0 = Integer.MAX_VALUE;
+        int min1 = Integer.MAX_VALUE;
+        if (op == '&') {
+            min1 = left.min1 + right.min1;
+            min0 = Math.min(left.min0 + right.min0, Math.min(left.min0 + right.min1, left.min1 + right.min0));
+            // flip &
+            min1 = Math.min(min1, 1 + Math.min(Math.min(left.min1 + right.min1, left.min1 + right.min0), left.min0 + right.min1));
+            min0 = Math.min(min0, 1 + Math.min(Math.min(left.min0 + right.min0, left.min0 + right.min1), left.min1 + right.min0));
+        } else { // '|'
+            min0 = left.min0 + right.min0;
+            min1 = Math.min(left.min1 + right.min1, Math.min(left.min1 + right.min0, left.min0 + right.min1));
+            // flip |
+            min1 = Math.min(min1, 1 + Math.min(Math.min(left.min1 + right.min1, left.min1 + right.min0), left.min0 + right.min1));
+            min0 = Math.min(min0, 1 + Math.min(Math.min(left.min0 + right.min0, left.min0 + right.min1), left.min1 + right.min0));
+        }
+        return new Node(min0, min1);
+    }
+
+    private int eval(String expr) {
+        Deque<Integer> valStack = new ArrayDeque<>();
+        Deque<Character> opStack = new ArrayDeque<>();
+        int n = expr.length();
+        for (int i = 0; i < n; i++) {
+            char c = expr.charAt(i);
+            if (c == '(') opStack.push(c);
+            else if (c == '0' || c == '1') {
+                valStack.push(c - '0');
+                while (!opStack.isEmpty() && (opStack.peek() == '&' || opStack.peek() == '|')) {
+                    int b = valStack.pop();
+                    int a = valStack.pop();
+                    char op = opStack.pop();
+                    valStack.push(apply(a, b, op));
+                }
+            } else if (c == '&' || c == '|') opStack.push(c);
+            else if (c == ')') {
+                while (opStack.peek() != '(') {
+                    int b = valStack.pop();
+                    int a = valStack.pop();
+                    char op = opStack.pop();
+                    valStack.push(apply(a, b, op));
+                }
+                opStack.pop(); // remove '('
+                while (!opStack.isEmpty() && (opStack.peek() == '&' || opStack.peek() == '|')) {
+                    int b = valStack.pop();
+                    int a = valStack.pop();
+                    char op = opStack.pop();
+                    valStack.push(apply(a, b, op));
+                }
+            }
+        }
+        while (!opStack.isEmpty()) {
+            int b = valStack.pop();
+            int a = valStack.pop();
+            char op = opStack.pop();
+            valStack.push(apply(a, b, op));
+        }
+        return valStack.pop();
+    }
+
+    private int apply(int a, int b, char op) {
+        return op == '&' ? (a & b) : (a | b);
+    }
+}
