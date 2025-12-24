@@ -1,0 +1,57 @@
+class Solution
+ {
+
+    public int largestMagicSquare(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+
+        // Row prefix sums and column prefix sums
+        int[][] rowPrefix = new int[m][n + 1];
+        int[][] colPrefix = new int[n][m + 1];
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                rowPrefix[i][j + 1] = rowPrefix[i][j] + grid[i][j];
+                colPrefix[j][i + 1] = colPrefix[j][i] + grid[i][j];
+            }
+        }
+
+        int maxSize = Math.min(m, n);
+
+        for (int k = maxSize; k >= 2; k--) {
+            for (int i = 0; i + k <= m; i++) {
+                for (int j = 0; j + k <= n; j++) {
+                    if (isMagic(grid, rowPrefix, colPrefix, i, j, k)) {
+                        return k;
+                    }
+                }
+            }
+        }
+
+        return 1;
+    }
+
+    private boolean isMagic(int[][] grid, int[][] rowPrefix, int[][] colPrefix,
+                            int row, int col, int size) {
+        // Compute diagonal and anti-diagonal sum
+        int diagSum = 0, antiDiagSum = 0;
+        for (int d = 0; d < size; d++) {
+            diagSum += grid[row + d][col + d];
+            antiDiagSum += grid[row + d][col + size - 1 - d];
+        }
+        if (diagSum != antiDiagSum) return false;
+
+        // Check row sums and column sums
+        for (int d = 0; d < size; d++) {
+            // row sum
+            if (rowPrefix[row + d][col + size] - rowPrefix[row + d][col] != diagSum) {
+                return false;
+            }
+            // col sum
+            if (colPrefix[col + d][row + size] - colPrefix[col + d][row] != diagSum) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
