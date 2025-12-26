@@ -1,0 +1,26 @@
+class Solution {
+
+    public int numberOfRounds(String loginTime, String logoutTime) {
+        int start = toMinutes(loginTime);
+        int end = toMinutes(logoutTime);
+
+        // Handle crossing midnight
+        if (end < start) {
+            end += 24 * 60;
+        }
+
+        // Round start up to next multiple of 15
+        start = ((start + 14) / 15) * 15;
+
+        // Round end down to previous multiple of 15
+        end = (end / 15) * 15;
+
+        return Math.max(0, (end - start) / 15);
+    }
+
+    private int toMinutes(String time) {
+        int h = Integer.parseInt(time.substring(0, 2));
+        int m = Integer.parseInt(time.substring(3));
+        return h * 60 + m;
+    }
+}
