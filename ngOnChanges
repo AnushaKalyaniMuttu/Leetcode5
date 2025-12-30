@@ -1,0 +1,122 @@
+@Component({
+  selector: 'app-parent',
+  template: `
+    <button (click)="changeName()">Change Name</button>
+    <app-child [username]="name"></app-child>
+  `
+})
+export class ParentComponent {
+  name = 'Anusha';
+
+  changeName() {
+    this.name = 'Kalyani';
+  }
+}
+
+------
+
+
+
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+
+@Component({
+  selector: 'app-child',
+  template: `<h3>Hello {{ username }}</h3>`
+})
+export class ChildComponent implements OnChanges {
+
+  @Input() username!: string;
+
+  ngOnChanges(changes: SimpleChanges) {
+    console.log(changes);
+
+    if (changes['username']) {
+      console.log('Previous:', changes['username'].previousValue);
+      console.log('Current:', changes['username'].currentValue);
+      console.log('First Change:', changes['username'].firstChange);
+    }
+  }
+}
+
+
+---
+Previous: Anusha
+Current: Kalyani
+First Change: false
+-----------------------------------------------------------------------------------------------------------------------------------------------
+@Component({
+  selector: 'app-parent',
+  template: `
+    <button (click)="increase()">Increase</button>
+    <app-child [count]="counter"></app-child>
+  `
+})
+export class ParentComponent {
+  counter = 1;
+
+  increase() {
+    this.counter++;
+  }
+}
+--------------------------------------
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+
+@Component({
+  selector: 'app-child',
+  template: `<p>Count: {{ count }}</p>`
+})
+export class ChildComponent implements OnChanges {
+
+  @Input() count!: number;
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['count']) {
+      console.log(
+        'Old:', changes['count'].previousValue,
+        'New:', changes['count'].currentValue
+      );
+    }
+  }
+}
+
+---------------------------------------------------------------------------------------------------------------------------------------------------
+@Component({
+  selector: 'app-parent',
+  template: `
+    <button (click)="updateUser()">Update User</button>
+    <app-child [user]="user"></app-child>
+  `
+})
+export class ParentComponent {
+  user = { name: 'Anusha', age: 22 };
+
+  updateUser() {
+    // New object reference
+    this.user = { ...this.user, age: 23 };
+  }
+}
+
+
+-------------------------------------------
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+
+@Component({
+  selector: 'app-child',
+  template: `
+    <h3>{{ user.name }}</h3>
+    <p>Age: {{ user.age }}</p>
+  `
+})
+export class ChildComponent implements OnChanges {
+
+  @Input() user!: { name: string; age: number };
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['user']) {
+      console.log('User changed:', changes['user'].currentValue);
+    }
+  }
+}
+
+------------------------------------------------
+
