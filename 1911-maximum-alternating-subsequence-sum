@@ -1,0 +1,16 @@
+class Solution {
+
+    public long maxAlternatingSum(int[] nums) {
+        long even = 0; // best alternating sum ending at an “even” position
+        long odd = 0;  // best alternating sum ending at an “odd” position
+
+        for (int num : nums) {
+            long newEven = Math.max(even, odd + num);
+            long newOdd = newEven - num;
+            even = newEven;
+            odd = newOdd;
+        }
+
+        return even;
+    }
+}
