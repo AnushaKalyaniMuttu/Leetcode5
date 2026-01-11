@@ -1,0 +1,70 @@
+import java.util.*;
+class Solution {
+    private static final long MOD = 1_000_000_007;
+    private List<List<Integer>> children;
+    private long[] fact, invFact;
+
+    public int waysToBuildRooms(int[] prevRoom) {
+        int n = prevRoom.length;
+
+        // Build tree
+        children = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            children.add(new ArrayList<>());
+        }
+        for (int i = 1; i < n; i++) {
+            children.get(prevRoom[i]).add(i);
+        }
+
+        // Precompute factorials + inverse factorials
+        fact = new long[n+1];
+        invFact = new long[n+1];
+        fact[0] = 1;
+        for (int i = 1; i <= n; i++) {
+            fact[i] = fact[i-1] * i % MOD;
+        }
+        invFact[n] = modPow(fact[n], MOD - 2);
+        for (int i = n; i > 0; i--) {
+            invFact[i-1] = invFact[i] * i % MOD;
+        }
+
+        return (int) dfs(0)[1];
+    }
+
+    // DFS returns an array: [sizeOfSubtree, waysOfSubtree]
+    private long[] dfs(int node) {
+        long size = 1;   // this node itself
+        long ways = 1;   // ways to build this subtree
+
+        for (int c : children.get(node)) {
+            long[] childRes = dfs(c);
+            long childSize = childRes[0];
+            long childWays = childRes[1];
+
+            // Multiply ways from subtree
+            ways = ways * childWays % MOD;
+            // Multiply ways to interleave with already accumulated nodes
+            ways = ways * invFact[(int) childSize] % MOD;
+
+            size += childSize;
+        }
+
+        // Combine factorial of total subtree size - 1
+        ways = ways * fact[(int) (size - 1)] % MOD;
+
+        return new long[]{size, ways};
+    }
+
+    // Fast exponentiation modulo MOD
+    private long modPow(long base, long exp) {
+        long result = 1;
+        while (exp > 0) {
+            if ((exp & 1) != 0) {
+                result = result * base % MOD;
+            }
+            base = base * base % MOD;
+            exp >>= 1;
+        }
+        return result;
+    }
+}
