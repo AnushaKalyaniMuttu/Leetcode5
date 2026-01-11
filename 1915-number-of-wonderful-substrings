@@ -1,0 +1,34 @@
+import java.util.HashMap;
+import java.util.Map;
+
+class Solution {
+    public long wonderfulSubstrings(String s) {
+        // Map to store frequency of each mask
+        Map<Integer, Integer> freq = new HashMap<>();
+        // initial mask 0 (all even counts)
+        freq.put(0, 1);
+
+        int mask = 0;
+        long result = 0;
+
+        for (char c : s.toCharArray()) {
+            // Toggle the bit corresponding to c
+            int bit = c - 'a';
+            mask ^= (1 << bit);
+
+            // Substrings where parity mask matches exactly
+            result += freq.getOrDefault(mask, 0);
+
+            // Substrings where parity differs by exactly one bit
+            for (int i = 0; i < 10; i++) {
+                int flipped = mask ^ (1 << i);
+                result += freq.getOrDefault(flipped, 0);
+            }
+
+            // Update frequency of this mask
+            freq.put(mask, freq.getOrDefault(mask, 0) + 1);
+        }
+
+        return result;
+    }
+}
