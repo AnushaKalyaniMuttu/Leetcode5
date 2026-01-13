@@ -1,0 +1,36 @@
+class KthSmallestSubarraySum {
+
+    public int kthSmallestSubarraySum(int[] nums, int k) {
+        int n = nums.length;
+        int low = 0, high = 0;
+
+        for (int num : nums) {
+            high += num;
+        }
+
+        while (low < high) {
+            int mid = low + (high - low) / 2;
+            if (countSubarrays(nums, mid) >= k) {
+                high = mid;
+            } else {
+                low = mid + 1;
+            }
+        }
+        return low;
+    }
+
+    private int countSubarrays(int[] nums, int target) {
+        int count = 0;
+        int sum = 0;
+        int left = 0;
+
+        for (int right = 0; right < nums.length; right++) {
+            sum += nums[right];
+            while (sum > target) {
+                sum -= nums[left++];
+            }
+            count += right - left + 1;
+        }
+        return count;
+    }
+}
