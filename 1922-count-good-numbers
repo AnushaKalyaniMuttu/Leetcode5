@@ -1,0 +1,28 @@
+class Solution {
+    private static final long MOD = 1_000_000_007;
+
+    public int countGoodNumbers(long n) {  // n can be large
+        long half = n / 2;       // odd indices
+        long otherHalf = n - half; // even indices
+
+        long evenPow = modPow(5, otherHalf);
+        long oddPow = modPow(4, half);
+
+        return (int)((evenPow * oddPow) % MOD); // safe cast after mod
+    }
+
+    // fast exponentiation
+    private long modPow(long base, long exp) {
+        long result = 1;
+        base = base % MOD;
+
+        while (exp > 0) {
+            if ((exp & 1) == 1) {
+                result = (result * base) % MOD;
+            }
+            base = (base * base) % MOD;
+            exp >>= 1;
+        }
+        return result;
+    }
+}
