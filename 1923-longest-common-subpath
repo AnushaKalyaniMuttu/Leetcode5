@@ -1,0 +1,77 @@
+import java.util.*;
+
+public class Solution {
+  public int longestCommonSubpath(int n, int[][] paths) {
+        int left = 1, right = Integer.MAX_VALUE;
+        for (int[] path : paths) right = Math.min(right, path.length);
+        int ans = 0;
+
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (check(paths, mid)) {
+                ans = mid;
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return ans;
+    }
+
+    private boolean check(int[][] paths, int length) {
+        long mod1 = 1000000007L, mod2 = 1000000009L;
+        long base1 = 100007L, base2 = 100021L;
+        Set<Pair> common = null;
+
+        for (int[] path : paths) {
+            Set<Pair> curr = new HashSet<>();
+            long hash1 = 0, hash2 = 0;
+            long power1 = 1, power2 = 1;
+
+            for (int i = 0; i < length; i++) {
+                hash1 = (hash1 * base1 + path[i]) % mod1;
+                hash2 = (hash2 * base2 + path[i]) % mod2;
+                if (i < length - 1) {
+                    power1 = (power1 * base1) % mod1;
+                    power2 = (power2 * base2) % mod2;
+                }
+            }
+            curr.add(new Pair(hash1, hash2));
+
+            for (int i = length; i < path.length; i++) {
+                hash1 = (hash1 - path[i - length] * power1 % mod1 + mod1) % mod1;
+                hash1 = (hash1 * base1 + path[i]) % mod1;
+
+                hash2 = (hash2 - path[i - length] * power2 % mod2 + mod2) % mod2;
+                hash2 = (hash2 * base2 + path[i]) % mod2;
+
+                curr.add(new Pair(hash1, hash2));
+            }
+
+            if (common == null) common = curr;
+            else {
+                common.retainAll(curr);
+                if (common.isEmpty()) return false;
+            }
+        }
+        return !common.isEmpty();
+    }
+
+    static class Pair {
+        long a, b;
+        Pair(long a, long b) { this.a = a; this.b = b; }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Pair)) return false;
+            Pair p = (Pair) o;
+            return a == p.a && b == p.b;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(a, b);
+        }
+    }
+}
