@@ -1,0 +1,48 @@
+import java.util.*;
+
+class Solution {
+    public int minCost(int maxTime, int[][] edges, int[] passingFees) {
+        int n = passingFees.length;
+
+        // Graph: city -> {neighbor, time}
+        List<int[]>[] graph = new ArrayList[n];
+        for (int i = 0; i < n; i++) graph[i] = new ArrayList<>();
+
+        for (int[] e : edges) {
+            graph[e[0]].add(new int[]{e[1], e[2]});
+            graph[e[1]].add(new int[]{e[0], e[2]});
+        }
+
+        // dp[city][time] = min cost
+        int[][] dp = new int[n][maxTime + 1];
+        for (int[] row : dp) Arrays.fill(row, Integer.MAX_VALUE);
+
+        PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[0]));
+        // {cost, city, time}
+        pq.offer(new int[]{passingFees[0], 0, 0});
+        dp[0][0] = passingFees[0];
+
+        while (!pq.isEmpty()) {
+            int[] cur = pq.poll();
+            int cost = cur[0], city = cur[1], time = cur[2];
+
+            if (city == n - 1) return cost;
+
+            if (cost > dp[city][time]) continue;
+
+            for (int[] nei : graph[city]) {
+                int nextCity = nei[0];
+                int nextTime = time + nei[1];
+                if (nextTime > maxTime) continue;
+
+                int nextCost = cost + passingFees[nextCity];
+                if (nextCost < dp[nextCity][nextTime]) {
+                    dp[nextCity][nextTime] = nextCost;
+                    pq.offer(new int[]{nextCost, nextCity, nextTime});
+                }
+            }
+        }
+
+        return -1;
+    }
+}
