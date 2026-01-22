@@ -1,0 +1,62 @@
+import java.util.*;
+
+class Solution {
+    private static final int MOD = 1_000_000_007;
+
+    public int colorTheGrid(int m, int n) {
+        List<int[]> states = new ArrayList<>();
+        generateStates(m, new int[m], 0, states);
+
+        int size = states.size();
+
+        // Precompute compatibility
+        boolean[][] ok = new boolean[size][size];
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                ok[i][j] = compatible(states.get(i), states.get(j));
+            }
+        }
+
+        long[] dp = new long[size];
+        Arrays.fill(dp, 1); // first column
+
+        for (int col = 1; col < n; col++) {
+            long[] next = new long[size];
+            for (int i = 0; i < size; i++) {
+                for (int j = 0; j < size; j++) {
+                    if (ok[i][j]) {
+                        next[j] = (next[j] + dp[i]) % MOD;
+                    }
+                }
+            }
+            dp = next;
+        }
+
+        long ans = 0;
+        for (long val : dp) {
+            ans = (ans + val) % MOD;
+        }
+        return (int) ans;
+    }
+
+    // Generate all valid column states
+    private void generateStates(int m, int[] curr, int idx, List<int[]> res) {
+        if (idx == m) {
+            res.add(curr.clone());
+            return;
+        }
+        for (int c = 0; c < 3; c++) {
+            if (idx > 0 && curr[idx - 1] == c) continue;
+            curr[idx] = c;
+            generateStates(m, curr, idx + 1, res);
+        }
+    }
+
+    // Check horizontal compatibility
+    private boolean compatible(int[] a, int[] b) {
+        for (int i = 0; i < a.length; i++) {
+            if (a[i] == b[i]) return false;
+        }
+        return true;
+    }
+}
