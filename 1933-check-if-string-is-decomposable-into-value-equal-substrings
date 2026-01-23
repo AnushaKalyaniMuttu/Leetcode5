@@ -1,0 +1,36 @@
+public class Solution {
+
+    public boolean isDecomposable(String s) {
+        boolean hasLengthTwo = false;
+        int n = s.length();
+
+        for (int i = 0; i < n; ) {
+            int j = i;
+
+            // Count same digit group
+            while (j < n && s.charAt(j) == s.charAt(i)) {
+                j++;
+            }
+
+            int len = j - i;
+
+            if (len == 1) return false;
+
+            if (len == 2) {
+                hasLengthTwo = true;
+            } else if (len == 3) {
+                // valid, nothing special
+            } else {
+                // For length >= 4
+                if (len % 3 == 1) {
+                    // e.g., 4, 7, 10 → need at least one 2
+                    hasLengthTwo = true;
+                }
+            }
+
+            i = j;
+        }
+
+        return hasLengthTwo;
+    }
+}
