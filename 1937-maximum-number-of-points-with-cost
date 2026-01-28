@@ -1,0 +1,45 @@
+class Solution {
+    public long maxPoints(int[][] points) {
+        int rows = points.length;
+        int cols = points[0].length;
+
+        long[] prev = new long[cols];
+
+        // Initialize with first row
+        for (int j = 0; j < cols; j++) {
+            prev[j] = points[0][j];
+        }
+
+        for (int i = 1; i < rows; i++) {
+            long[] left = new long[cols];
+            long[] right = new long[cols];
+            long[] curr = new long[cols];
+
+            // Left to right
+            left[0] = prev[0];
+            for (int j = 1; j < cols; j++) {
+                left[j] = Math.max(prev[j], left[j - 1] - 1);
+            }
+
+            // Right to left
+            right[cols - 1] = prev[cols - 1];
+            for (int j = cols - 2; j >= 0; j--) {
+                right[j] = Math.max(prev[j], right[j + 1] - 1);
+            }
+
+            // Current row DP
+            for (int j = 0; j < cols; j++) {
+                curr[j] = points[i][j] + Math.max(left[j], right[j]);
+            }
+
+            prev = curr;
+        }
+
+        long ans = 0;
+        for (long val : prev) {
+            ans = Math.max(ans, val);
+        }
+
+        return ans;
+    }
+}
