@@ -1,0 +1,38 @@
+import java.util.*;
+
+class Solution {
+    class TrieNode {
+        TrieNode[] children = new TrieNode[2];
+    }
+
+    private void insert(TrieNode root, int num) {
+        TrieNode node = root;
+        for (int i = 17; i >= 0; i--) { // since constraints are nums <= 10^5 (~17 bits)
+            int bit = (num >> i) & 1;
+            if (node.children[bit] == null) {
+                node.children[bit] = new TrieNode();
+            }
+            node = node.children[bit];
+        }
+    }
+
+    private int getMaxXor(TrieNode root, int num) {
+        TrieNode node = root;
+        int xor = 0;
+        for (int i = 17; i >= 0; i--) {
+            int bit = (num >> i) & 1;
+            if (node.children[bit ^ 1] != null) {
+                xor |= (1 << i);
+                node = node.children[bit ^ 1];
+            } else {
+                node = node.children[bit];
+            }
+        }
+        return xor;
+    }
+
+    public int[] maxGeneticDifference(int[] parents, int[][] queries) {
+        int n = parents.length;
+        Map<Integer, List<Integer>> tree = new HashMap<>();
+        int root = -1;
+        for (i
