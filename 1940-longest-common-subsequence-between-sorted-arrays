@@ -1,0 +1,25 @@
+import java.util.*;
+
+public class Solution {
+
+    public List<Integer> longestCommonSubsequence(int[][] arrays) {
+        Map<Integer, Integer> freq = new HashMap<>();
+        int rows = arrays.length;
+
+        for (int[] row : arrays) {
+            for (int num : row) {
+                freq.put(num, freq.getOrDefault(num, 0) + 1);
+            }
+        }
+
+        List<Integer> result = new ArrayList<>();
+        for (Map.Entry<Integer, Integer> entry : freq.entrySet()) {
+            if (entry.getValue() == rows) {
+                result.add(entry.getKey());
+            }
+        }
+
+        Collections.sort(result);
+        return result;
+    }
+}
