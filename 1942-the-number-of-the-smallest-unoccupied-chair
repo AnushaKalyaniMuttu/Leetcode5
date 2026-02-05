@@ -1,0 +1,53 @@
+import java.util.*;
+
+class Solution {
+
+    public int smallestChair(int[][] times, int targetFriend) {
+        int n = times.length;
+
+        // Add friend index to each entry
+        int[][] friends = new int[n][3];
+        for (int i = 0; i < n; i++) {
+            friends[i][0] = times[i][0]; // arrival
+            friends[i][1] = times[i][1]; // leaving
+            friends[i][2] = i;           // friend index
+        }
+
+        // Sort by arrival time
+        Arrays.sort(friends, Comparator.comparingInt(a -> a[0]));
+
+        // Min-heap for available chairs
+        PriorityQueue<Integer> availableChairs = new PriorityQueue<>();
+        for (int i = 0; i < n; i++) {
+            availableChairs.offer(i);
+        }
+
+        // Min-heap for occupied chairs: [leavingTime, chairNumber]
+        PriorityQueue<int[]> occupied =
+                new PriorityQueue<>(Comparator.comparingInt(a -> a[0]));
+
+        for (int[] friend : friends) {
+            int arrival = friend[0];
+            int leaving = friend[1];
+            int index = friend[2];
+
+            // Free chairs of friends who have left
+            while (!occupied.isEmpty() && occupied.peek()[0] <= arrival) {
+                availableChairs.offer(occupied.poll()[1]);
+            }
+
+            // Assign smallest available chair
+            int chair = availableChairs.poll();
+
+            // If this is the target friend, return chair
+            if (index == targetFriend) {
+                return chair;
+            }
+
+            // Mark chair as occupied
+            occupied.offer(new int[]{leaving, chair});
+        }
+
+        return -1; // should never reach here
+    }
+}
