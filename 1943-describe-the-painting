@@ -1,0 +1,39 @@
+import java.util.*;
+
+class Solution {
+
+    public List<List<Long>> splitPainting(int[][] segments) {
+        // position -> color change
+        TreeMap<Integer, Long> map = new TreeMap<>();
+
+        for (int[] seg : segments) {
+            int start = seg[0];
+            int end = seg[1];
+            int color = seg[2];
+
+            map.put(start, map.getOrDefault(start, 0L) + color);
+            map.put(end, map.getOrDefault(end, 0L) - color);
+        }
+
+        List<List<Long>> result = new ArrayList<>();
+        long currentColor = 0;
+        int prevPos = -1;
+
+        for (Map.Entry<Integer, Long> entry : map.entrySet()) {
+            int pos = entry.getKey();
+
+            if (prevPos != -1 && currentColor != 0) {
+                result.add(Arrays.asList(
+                        (long) prevPos,
+                        (long) pos,
+                        currentColor
+                ));
+            }
+
+            currentColor += entry.getValue();
+            prevPos = pos;
+        }
+
+        return result;
+    }
+}
