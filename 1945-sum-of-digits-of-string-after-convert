@@ -1,0 +1,28 @@
+class Solution {
+
+    public int getLucky(String s, int k) {
+        int sum = 0;
+
+        // Step 1: convert characters to numbers and sum digits
+        for (char c : s.toCharArray()) {
+            int value = c - 'a' + 1;
+            sum += value / 10 + value % 10;
+        }
+
+        // Step 2: repeat digit sum k-1 times
+        for (int i = 1; i < k; i++) {
+            sum = digitSum(sum);
+        }
+
+        return sum;
+    }
+
+    private int digitSum(int num) {
+        int s = 0;
+        while (num > 0) {
+            s += num % 10;
+            num /= 10;
+        }
+        return s;
+    }
+}
