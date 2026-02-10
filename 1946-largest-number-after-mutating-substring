@@ -1,0 +1,21 @@
+class Solution {
+    public String maximumNumber(String num, int[] change) {
+        char[] chars = num.toCharArray();
+        boolean started = false;
+
+        for (int i = 0; i < chars.length; i++) {
+            int digit = chars[i] - '0';
+            int mutated = change[digit];
+
+            if (mutated > digit) {
+                chars[i] = (char) (mutated + '0');
+                started = true;
+            } else if (mutated == digit && started) {
+                chars[i] = (char) (mutated + '0');
+            } else if (started) {
+                break;
+            }
+        }
+        return new String(chars);
+    }
+}
