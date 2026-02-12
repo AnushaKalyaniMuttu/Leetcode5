@@ -1,0 +1,77 @@
+import java.util.*;
+
+class Solution {
+
+    static class TrieNode {
+        Map<String, TrieNode> children = new HashMap<>();
+        String serial = "";
+        boolean deleted = false;
+    }
+
+    public List<List<String>> deleteDuplicateFolder(List<List<String>> paths) {
+        TrieNode root = new TrieNode();
+
+        // Step 1: Build Trie
+        for (List<String> path : paths) {
+            TrieNode curr = root;
+            for (String folder : path) {
+                curr.children.putIfAbsent(folder, new TrieNode());
+                curr = curr.children.get(folder);
+            }
+        }
+
+        // Step 2: Serialize and count frequency
+        Map<String, Integer> freq = new HashMap<>();
+        serialize(root, freq);
+
+        // Step 3: Mark duplicates
+        markDuplicates(root, freq);
+
+        // Step 4: Collect result
+        List<List<String>> result = new ArrayList<>();
+        collect(root, new ArrayList<>(), result);
+
+        return result;
+    }
+
+    private String serialize(TrieNode node, Map<String, Integer> freq) {
+        if (node.children.isEmpty()) {
+            return "";
+        }
+
+        List<String> list = new ArrayList<>();
+        for (Map.Entry<String, TrieNode> entry : node.children.entrySet()) {
+            String childSerial = serialize(entry.getValue(), freq);
+            list.add("(" + entry.getKey() + childSerial + ")");
+        }
+
+        Collections.sort(list); // ensure canonical form
+        String serial = String.join("", list);
+        node.serial = serial;
+
+        freq.put(serial, freq.getOrDefault(serial, 0) + 1);
+
+        return serial;
+    }
+
+    private void markDuplicates(TrieNode node, Map<String, Integer> freq) {
+        for (TrieNode child : node.children.values()) {
+            if (!child.serial.isEmpty() && freq.get(child.serial) > 1) {
+                child.deleted = true;
+            }
+            markDuplicates(child, freq);
+        }
+    }
+
+    private void collect(TrieNode node, List<String> path, List<List<String>> result) {
+        for (Map.Entry<String, TrieNode> entry : node.children.entrySet()) {
+            TrieNode child = entry.getValue();
+            if (!child.deleted) {
+                path.add(entry.getKey());
+                result.add(new ArrayList<>(path));
+                collect(child, path, result);
+                path.remove(path.size() - 1);
+            }
+        }
+    }
+}
