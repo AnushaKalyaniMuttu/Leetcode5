@@ -1,0 +1,43 @@
+import java.util.*;
+
+class Solution {
+    
+    public List<int[]> maxCommonFollowers(int[][] followers) {
+        int n = followers.length;
+        
+        List<Set<Integer>> sets = new ArrayList<>();
+        for (int[] arr : followers) {
+            Set<Integer> set = new HashSet<>();
+            for (int f : arr) {
+                set.add(f);
+            }
+            sets.add(set);
+        }
+        
+        int max = 0;
+        List<int[]> result = new ArrayList<>();
+        
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                
+                int common = 0;
+                
+                for (int f : sets.get(i)) {
+                    if (sets.get(j).contains(f)) {
+                        common++;
+                    }
+                }
+                
+                if (common > max) {
+                    max = common;
+                    result.clear();
+                    result.add(new int[]{i, j});
+                } else if (common == max) {
+                    result.add(new int[]{i, j});
+                }
+            }
+        }
+        
+        return result;
+    }
+}
