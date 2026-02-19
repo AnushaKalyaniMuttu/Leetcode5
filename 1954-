@@ -1,0 +1,14 @@
+class Solution {
+    
+    public long minimumPerimeter(long neededApples) {
+        long n = 0;
+        long totalApples = 0;
+        
+        while (totalApples < neededApples) {
+            n++;
+            totalApples = 2 * n * (n + 1) * (2 * n + 1);
+        }
+        
+        return 8 * n;
+    }
+}
