@@ -1,0 +1,30 @@
+import java.util.*;
+
+class Solution {
+
+    public int widestPairOfIndices(int[] nums1, int[] nums2) {
+        int n = nums1.length;
+
+        Map<Integer, Integer> firstIndex = new HashMap<>();
+        firstIndex.put(0, -1);  // base case
+
+        int prefix1 = 0;
+        int prefix2 = 0;
+        int maxWidth = 0;
+
+        for (int i = 0; i < n; i++) {
+            prefix1 += nums1[i];
+            prefix2 += nums2[i];
+
+            int diff = prefix1 - prefix2;
+
+            if (firstIndex.containsKey(diff)) {
+                maxWidth = Math.max(maxWidth, i - firstIndex.get(diff));
+            } else {
+                firstIndex.put(diff, i);
+            }
+        }
+
+        return maxWidth;
+    }
+}
