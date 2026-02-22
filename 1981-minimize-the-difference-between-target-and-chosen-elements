@@ -1,0 +1,38 @@
+import java.util.*;
+
+class Solution {
+    
+    public int minimizeTheDifference(int[][] mat, int target) {
+        int m = mat.length;
+        int maxSum = 70 * 70; // max possible
+        
+        boolean[] dp = new boolean[maxSum + 1];
+        dp[0] = true;
+        
+        for (int[] row : mat) {
+            boolean[] next = new boolean[maxSum + 1];
+            
+            for (int sum = 0; sum <= maxSum; sum++) {
+                if (!dp[sum]) continue;
+                
+                for (int val : row) {
+                    if (sum + val <= maxSum) {
+                        next[sum + val] = true;
+                    }
+                }
+            }
+            
+            dp = next;
+        }
+        
+        int answer = Integer.MAX_VALUE;
+        
+        for (int sum = 0; sum <= maxSum; sum++) {
+            if (dp[sum]) {
+                answer = Math.min(answer, Math.abs(sum - target));
+            }
+        }
+        
+        return answer;
+    }
+}
