@@ -1,0 +1,34 @@
+import java.util.*;
+
+public class Solution {
+
+    public Map<String, Integer> findCutoffScore(
+            String[] schools,
+            int[] scores,
+            int k) {
+
+        Map<String, List<Integer>> map = new HashMap<>();
+
+        // Step 1: group scores by school
+        for (int i = 0; i < schools.length; i++) {
+            map.computeIfAbsent(schools[i], x -> new ArrayList<>())
+               .add(scores[i]);
+        }
+
+        Map<String, Integer> result = new HashMap<>();
+
+        // Step 2: compute cutoff for each school
+        for (Map.Entry<String, List<Integer>> entry : map.entrySet()) {
+            List<Integer> list = entry.getValue();
+
+            if (list.size() < k) {
+                result.put(entry.getKey(), -1);
+            } else {
+                list.sort(Collections.reverseOrder());
+                result.put(entry.getKey(), list.get(k - 1));
+            }
+        }
+
+        return result;
+    }
+}
