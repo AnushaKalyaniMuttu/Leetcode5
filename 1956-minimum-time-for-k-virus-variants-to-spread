@@ -1,0 +1,41 @@
+class Solution {
+
+    public double minTime(int[][] points, int[] speed) {
+        int n = points.length;
+
+        double left = 0, right = 1e9;
+
+        for (int iter = 0; iter < 100; iter++) {
+            double mid = (left + right) / 2;
+
+            if (canMeet(points, speed, mid)) {
+                right = mid;
+            } else {
+                left = mid;
+            }
+        }
+
+        return right;
+    }
+
+    private boolean canMeet(int[][] points, int[] speed, double time) {
+        double minX = -1e18, maxX = 1e18;
+        double minY = -1e18, maxY = 1e18;
+
+        for (int i = 0; i < points.length; i++) {
+            double dist = speed[i] * time;
+
+            minX = Math.max(minX, points[i][0] - dist);
+            maxX = Math.min(maxX, points[i][0] + dist);
+
+            minY = Math.max(minY, points[i][1] - dist);
+            maxY = Math.min(maxY, points[i][1] + dist);
+
+            if (minX > maxX || minY > maxY) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
