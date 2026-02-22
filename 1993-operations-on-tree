@@ -1,0 +1,73 @@
+import java.util.*;
+
+class LockingTree {
+
+    int[] parent;
+    List<Integer>[] children;
+    int[] lockedBy;
+
+    public LockingTree(int[] parent) {
+        int n = parent.length;
+        this.parent = parent;
+        this.lockedBy = new int[n];
+        this.children = new List[n];
+        for (int i = 0; i < n; i++) children[i] = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            if (parent[i] != -1) {
+                children[parent[i]].add(i);
+            }
+        }
+    }
+    
+    public boolean lock(int num, int user) {
+        if (lockedBy[num] != 0) return false;
+        lockedBy[num] = user;
+        return true;
+    }
+    
+    public boolean unlock(int num, int user) {
+        if (lockedBy[num] != user) return false;
+        lockedBy[num] = 0;
+        return true;
+    }
+    
+    public boolean upgrade(int num, int user) {
+        if (lockedBy[num] != 0) return false;
+        if (hasLockedAncestor(num)) return false;
+
+        List<Integer> lockedDescendants = new ArrayList<>();
+        collectLockedDescendants(num, lockedDescendants);
+        if (lockedDescendants.isEmpty()) return false;
+
+        // Unlock all descendants
+        for (int node : lockedDescendants) lockedBy[node] = 0;
+
+        // Lock current node
+        lockedBy[num] = user;
+        return true;
+    }
+
+    private boolean hasLockedAncestor(int node) {
+        int p = parent[node];
+        while (p != -1) {
+            if (lockedBy[p] != 0) return true;
+            p = parent[p];
+        }
+        return false;
+    }
+
+    private void collectLockedDescendants(int node, List<Integer> lockedList) {
+        for (int child : children[node]) {
+            if (lockedBy[child] != 0) lockedList.add(child);
+            collectLockedDescendants(child, lockedList);
+        }
+    }
+}
+
+/**
+ * Your LockingTree object will be instantiated and called as such:
+ * LockingTree obj = new LockingTree(parent);
+ * boolean param_1 = obj.lock(num,user);
+ * boolean param_2 = obj.unlock(num,user);
+ * boolean param_3 = obj.upgrade(num,user);
+ */
