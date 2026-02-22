@@ -1,0 +1,15 @@
+import java.util.*;
+
+class Solution {
+
+    public String kthLargestNumber(String[] nums, int k) {
+        Arrays.sort(nums, (a, b) -> {
+            if (a.length() != b.length()) {
+                return b.length() - a.length();  // larger length first
+            }
+            return b.compareTo(a);  // lexicographically descending
+        });
+
+        return nums[k - 1];
+    }
+}
