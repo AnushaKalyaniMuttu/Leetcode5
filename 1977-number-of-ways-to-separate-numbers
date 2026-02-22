@@ -1,0 +1,58 @@
+import java.util.*;
+
+class Solution {
+    
+    static final int MOD = 1_000_000_007;
+
+    public int numberOfCombinations(String num) {
+        int n = num.length();
+        if (num.charAt(0) == '0') return 0;
+
+        // Precompute LCP (Longest Common Prefix)
+        int[][] lcp = new int[n + 1][n + 1];
+        for (int i = n - 1; i >= 0; i--) {
+            for (int j = n - 1; j >= 0; j--) {
+                if (num.charAt(i) == num.charAt(j)) {
+                    lcp[i][j] = 1 + lcp[i + 1][j + 1];
+                }
+            }
+        }
+
+        int[][] dp = new int[n + 1][n + 1];
+        dp[0][0] = 1;
+
+        for (int i = 1; i <= n; i++) {
+            for (int len = 1; len <= i; len++) {
+                if (num.charAt(i - len) == '0') continue;
+
+                int prevStart = i - len;
+                int total = 0;
+
+                for (int prevLen = 1; prevLen <= prevStart; prevLen++) {
+                    if (prevStart - prevLen < 0) continue;
+                    
+                    if (prevLen < len) {
+                        total = (total + dp[prevStart][prevLen]) % MOD;
+                    } else if (prevLen == len) {
+                        int a = prevStart - prevLen;
+                        int b = prevStart;
+                        int common = lcp[a][b];
+                        if (common >= len || 
+                            num.charAt(a + common) <= num.charAt(b + common)) {
+                            total = (total + dp[prevStart][prevLen]) % MOD;
+                        }
+                    }
+                }
+
+                dp[i][len] = total;
+            }
+        }
+
+        int result = 0;
+        for (int len = 1; len <= n; len++) {
+            result = (result + dp[n][len]) % MOD;
+        }
+
+        return result;
+    }
+}
