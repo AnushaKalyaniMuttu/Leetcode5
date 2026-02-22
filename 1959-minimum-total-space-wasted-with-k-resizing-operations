@@ -1,0 +1,43 @@
+class Solution {
+
+    public int minSpaceWastedKResizing(int[] nums, int k) {
+        int n = nums.length;
+
+        int[][] dp = new int[n + 1][k + 2];
+
+        for (int i = 0; i <= n; i++) {
+            for (int j = 0; j <= k + 1; j++) {
+                dp[i][j] = Integer.MAX_VALUE / 2;
+            }
+        }
+
+        dp[0][0] = 0;
+
+        for (int i = 1; i <= n; i++) {
+            for (int j = 0; j <= k; j++) {
+
+                int max = 0;
+                int sum = 0;
+
+                // Try all previous partition points
+                for (int p = i; p >= 1; p--) {
+                    max = Math.max(max, nums[p - 1]);
+                    sum += nums[p - 1];
+
+                    if (dp[p - 1][j] != Integer.MAX_VALUE / 2) {
+                        int waste = max * (i - p + 1) - sum;
+                        dp[i][j + 1] = Math.min(dp[i][j + 1],
+                                dp[p - 1][j] + waste);
+                    }
+                }
+            }
+        }
+
+        int answer = Integer.MAX_VALUE;
+        for (int j = 1; j <= k + 1; j++) {
+            answer = Math.min(answer, dp[n][j]);
+        }
+
+        return answer;
+    }
+}
