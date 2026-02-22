@@ -1,0 +1,17 @@
+class Solution {
+    
+    public int minTimeToType(String word) {
+        int totalTime = 0;
+        char current = 'a';
+        
+        for (char ch : word.toCharArray()) {
+            int diff = Math.abs(ch - current);
+            int move = Math.min(diff, 26 - diff);
+            
+            totalTime += move + 1;  // +1 for typing
+            current = ch;
+        }
+        
+        return totalTime;
+    }
+}
