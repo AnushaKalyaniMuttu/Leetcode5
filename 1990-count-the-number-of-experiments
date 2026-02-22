@@ -1,0 +1,26 @@
+WITH Platforms AS (
+  SELECT 'Android' AS platform
+  UNION ALL
+  SELECT 'IOS'
+  UNION ALL
+  SELECT 'Web'
+),
+ExperimentNames AS (
+  SELECT 'Reading' AS experiment_name
+  UNION ALL
+  SELECT 'Sports'
+  UNION ALL
+  SELECT 'Programming'
+)
+SELECT
+  p.platform,
+  e.experiment_name,
+  COUNT(x.experiment_id) AS num_experiments
+FROM Platforms p
+CROSS JOIN ExperimentNames e
+LEFT JOIN Experiments x
+  ON p.platform = x.platform
+ AND e.experiment_name = x.experiment_name
+GROUP BY
+  p.platform,
+  e.experiment_name;
