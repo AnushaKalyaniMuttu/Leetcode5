@@ -1,0 +1,24 @@
+import java.util.Arrays;
+
+class Solution {
+
+    public int[] rearrangeArray(int[] nums) {
+        Arrays.sort(nums);
+        int n = nums.length;
+
+        int[] result = new int[n];
+        int idx = 0;
+
+        // Fill even indices
+        for (int i = 0; i < n; i += 2) {
+            result[i] = nums[idx++];
+        }
+
+        // Fill odd indices
+        for (int i = 1; i < n; i += 2) {
+            result[i] = nums[idx++];
+        }
+
+        return result;
+    }
+}
