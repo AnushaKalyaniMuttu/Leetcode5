@@ -1,0 +1,29 @@
+import java.util.PriorityQueue;
+
+class Solution {
+
+    public int minStoneSum(int[] piles, int k) {
+        PriorityQueue<Integer> maxHeap = 
+                new PriorityQueue<>((a, b) -> b - a);
+
+        int total = 0;
+
+        for (int pile : piles) {
+            maxHeap.add(pile);
+            total += pile;
+        }
+
+        while (k-- > 0) {
+            int largest = maxHeap.poll();
+
+            int removed = largest / 2;
+            largest -= removed;
+
+            total -= removed;
+
+            maxHeap.add(largest);
+        }
+
+        return total;
+    }
+}
