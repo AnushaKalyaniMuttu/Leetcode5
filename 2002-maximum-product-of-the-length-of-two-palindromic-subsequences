@@ -1,0 +1,55 @@
+class Solution {
+
+    public int maxProduct(String s) {
+        int n = s.length();
+        int totalMasks = 1 << n;
+
+        int[] palLength = new int[totalMasks];
+
+        // Step 1: Check all subsequences
+        for (int mask = 1; mask < totalMasks; mask++) {
+            StringBuilder sb = new StringBuilder();
+
+            for (int i = 0; i < n; i++) {
+                if ((mask & (1 << i)) != 0) {
+                    sb.append(s.charAt(i));
+                }
+            }
+
+            if (isPalindrome(sb)) {
+                palLength[mask] = sb.length();
+            }
+        }
+
+        int maxProduct = 0;
+
+        // Step 2: Compare non-overlapping masks
+        for (int mask1 = 1; mask1 < totalMasks; mask1++) {
+            if (palLength[mask1] == 0) continue;
+
+            for (int mask2 = mask1 + 1; mask2 < totalMasks; mask2++) {
+                if ((mask1 & mask2) == 0 && palLength[mask2] > 0) {
+                    maxProduct = Math.max(
+                        maxProduct,
+                        palLength[mask1] * palLength[mask2]
+                    );
+                }
+            }
+        }
+
+        return maxProduct;
+    }
+
+    private boolean isPalindrome(StringBuilder sb) {
+        int left = 0;
+        int right = sb.length() - 1;
+
+        while (left < right) {
+            if (sb.charAt(left++) != sb.charAt(right--)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
