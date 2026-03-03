@@ -1,0 +1,81 @@
+import java.util.*;
+
+class Solution {
+    List<Integer>[] graph;
+    int[] size;
+    boolean[] removed;
+    List<Integer> fib = new ArrayList<>();
+    Map<Integer, Integer> fibIndex = new HashMap<>();
+
+    public boolean canWin(int n, int[][] edges) {
+        buildFibonacci(n);
+        if (!fibIndex.containsKey(n)) return false;
+
+        graph = new ArrayList[n];
+        size = new int[n];
+        removed = new boolean[n];
+
+        for (int i = 0; i < n; i++) {
+            graph[i] = new ArrayList<>();
+        }
+
+        for (int[] e : edges) {
+            graph[e[0]].add(e[1]);
+            graph[e[1]].add(e[0]);
+        }
+
+        return dfsCheck(0, n);
+    }
+
+    private boolean dfsCheck(int root, int totalSize) {
+        if (totalSize <= 3) return true;
+
+        int idx = fibIndex.get(totalSize);
+        int f1 = fib.get(idx - 1);
+        int f2 = fib.get(idx - 2);
+
+        computeSize(root, -1);
+
+        for (int i = 0; i < graph.length; i++) {
+            if (removed[i]) continue;
+
+            for (int nei : graph[i]) {
+                if (removed[nei]) continue;
+
+                if (size[nei] == f1 || size[nei] == f2) {
+                    removed[nei] = true;
+
+                    boolean left = dfsCheck(nei, size[nei]);
+                    boolean right = dfsCheck(i, totalSize - size[nei]);
+
+                    removed[nei] = false;
+
+                    if (!left && !right) return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private int computeSize(int node, int parent) {
+        size[node] = 1;
+        for (int nei : graph[node]) {
+            if (nei == parent || removed[nei]) continue;
+            size[node] += computeSize(nei, node);
+        }
+        return size[node];
+    }
+
+    private void buildFibonacci(int n) {
+        fib.add(1);
+        fib.add(1);
+        while (fib.get(fib.size() - 1) < n) {
+            int sz = fib.size();
+            fib.add(fib.get(sz - 1) + fib.get(sz - 2));
+        }
+        for (int i = 0; i < fib.size(); i++) {
+            fibIndex.put(fib.get(i), i);
+        }
+    }
+}
