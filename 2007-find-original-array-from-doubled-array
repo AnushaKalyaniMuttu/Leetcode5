@@ -1,0 +1,37 @@
+import java.util.*;
+
+class Solution {
+    public int[] findOriginalArray(int[] changed) {
+
+        int n = changed.length;
+        if (n % 2 != 0) return new int[0];
+
+        Arrays.sort(changed);
+
+        Map<Integer,Integer> count = new HashMap<>();
+        for (int x : changed)
+            count.put(x, count.getOrDefault(x,0) + 1);
+
+        if (count.getOrDefault(0,0) % 2 != 0)
+            return new int[0];
+
+        int[] original = new int[n/2];
+        int idx = 0;
+
+        for (int x : changed) {
+
+            if (count.get(x) == 0)
+                continue;
+
+            if (count.getOrDefault(x*2,0) == 0)
+                return new int[0];
+
+            original[idx++] = x;
+
+            count.put(x, count.get(x)-1);
+            count.put(x*2, count.get(x*2)-1);
+        }
+
+        return original;
+    }
+}
