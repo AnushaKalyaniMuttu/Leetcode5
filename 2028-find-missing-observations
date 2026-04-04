@@ -1,0 +1,22 @@
+class Solution {
+    public int[] missingRolls(int[] rolls, int mean, int n) {
+        int m = rolls.length;
+        int sumRolls = 0;
+        for(int roll : rolls) sumRolls += roll;
+        
+        int total = mean * (m + n);
+        int sumMissing = total - sumRolls;
+        
+        if(sumMissing < n || sumMissing > 6 * n) return new int[0]; // impossible
+        
+        int base = sumMissing / n;
+        int remainder = sumMissing % n;
+        int[] result = new int[n];
+        
+        for(int i = 0; i < n; i++){
+            result[i] = base + (i < remainder ? 1 : 0);
+        }
+        
+        return result;
+    }
+}
