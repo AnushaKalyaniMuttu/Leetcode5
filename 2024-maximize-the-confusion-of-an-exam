@@ -1,0 +1,22 @@
+class Solution {
+    public int maxConsecutiveAnswers(String answerKey, int k) {
+        int ans = 0;
+        int maxCount = 0;
+        int[] count = new int[2]; // count[0] for 'F', count[1] for 'T'
+
+        for (int left = 0, right = 0; right < answerKey.length(); right++) {
+            int idx = answerKey.charAt(right) == 'T' ? 1 : 0;
+            maxCount = Math.max(maxCount, ++count[idx]);
+            
+            // If we need more than k flips, shrink window
+            while (maxCount + k < right - left + 1) {
+                int removeIdx = answerKey.charAt(left) == 'T' ? 1 : 0;
+                count[removeIdx]--;
+                left++;
+            }
+
+            ans = Math.max(ans, right - left + 1);
+        }
+        return ans;
+    }
+}
