@@ -1,0 +1,27 @@
+class Solution {
+    public long gridGame(int[][] grid) {
+        int n = grid[0].length;
+        // total sum of top row
+        long topSum = 0;
+        for (int i = 0; i < n; i++) {
+            topSum += grid[0][i];
+        }
+        long bottomSum = 0;
+        long result = Long.MAX_VALUE;
+
+        for (int i = 0; i < n; i++) {
+            // Robot1 goes through cell (0,i), so remove from topSum
+            topSum -= grid[0][i];
+
+            // If Robot2 starts after i on top row, he can collect topSum
+            // If Robot2 starts on bottom before i, he collects bottomSum
+            long secondRobotScore = Math.max(topSum, bottomSum);
+            result = Math.min(result, secondRobotScore);
+
+            // Now Robot1 will take the bottom cell at i too eventually, so add to bottomSum
+            bottomSum += grid[1][i];
+        }
+
+        return result;
+    }
+}
