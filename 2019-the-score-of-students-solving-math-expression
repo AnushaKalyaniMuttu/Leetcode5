@@ -1,0 +1,79 @@
+class Solution {
+    public int scoreOfStudents(String s, int[] answers) {
+        int n = s.length();
+        // 1) Calculate the correct result using normal precedence
+        int correctValue = calcCorrect(s);
+
+        // number of operands = (length+1)/2
+        int m = (n + 1) >> 1;
+
+        // dp[i][j] stores all possible results from operand i to operand j
+        Set<Integer>[][] dp = new Set[m][m];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < m; j++) {
+                dp[i][j] = new HashSet<>();
+            }
+            // single operand value
+            dp[i][i].add(s.charAt(i * 2) - '0');
+        }
+
+        // build DP for larger intervals
+        for (int len = 1; len < m; len++) {
+            for (int i = 0; i + len < m; i++) {
+                int j = i + len;
+                for (int k = i; k < j; k++) {
+                    char op = s.charAt(k * 2 + 1);
+                    for (int leftVal : dp[i][k]) {
+                        for (int rightVal : dp[k + 1][j]) {
+                            int result;
+                            if (op == '+') result = leftVal + rightVal;
+                            else result = leftVal * rightVal;
+
+                            // only include results <= 1000 (problem constraint)
+                            if (result <= 1000) {
+                                dp[i][j].add(result);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // score
+        Map<Integer, Integer> count = new HashMap<>();
+        for (int ans : answers) {
+            count.put(ans, count.getOrDefault(ans, 0) + 1);
+        }
+
+        int totalScore = 0;
+        for (Map.Entry<Integer, Integer> entry : count.entrySet()) {
+            int ans = entry.getKey(), freq = entry.getValue();
+
+            if (ans == correctValue) {
+                totalScore += 5 * freq;
+            } else if (dp[0][m - 1].contains(ans)) {
+                totalScore += 2 * freq;
+            }
+        }
+
+        return totalScore;
+    }
+
+    // Calculate correct value with proper precedence: * first, then +
+    private int calcCorrect(String s) {
+        int res = 0;
+        int prev = s.charAt(0) - '0';
+        for (int i = 1; i < s.length(); i += 2) {
+            char op = s.charAt(i);
+            int cur = s.charAt(i + 1) - '0';
+            if (op == '*') {
+                prev *= cur;
+            } else {
+                res += prev;
+                prev = cur;
+            }
+        }
+        res += prev;
+        return res;
+    }
+}
