@@ -1,0 +1,59 @@
+import java.util.*;
+
+class DetectSquares {
+
+    // Map<x, Map<y, count>>
+    private Map<Integer, Map<Integer, Integer>> map;
+
+    public DetectSquares() {
+        map = new HashMap<>();
+    }
+    
+    public void add(int[] point) {
+        int x = point[0], y = point[1];
+        map.putIfAbsent(x, new HashMap<>());
+        Map<Integer, Integer> yMap = map.get(x);
+        yMap.put(y, yMap.getOrDefault(y, 0) + 1);
+    }
+    
+    public int count(int[] point) {
+        int x = point[0], y = point[1];
+        
+        if (!map.containsKey(x)) return 0;
+        
+        int res = 0;
+        Map<Integer, Integer> yMap = map.get(x);
+        
+        // iterate all points with same x (vertical line)
+        for (int y2 : yMap.keySet()) {
+            if (y2 == y) continue;
+            
+            int countVertical = yMap.get(y2);
+            int d = y2 - y;
+            
+            // Right square
+            res += countVertical *
+                   getCount(x + d, y) *
+                   getCount(x + d, y2);
+            
+            // Left square
+            res += countVertical *
+                   getCount(x - d, y) *
+                   getCount(x - d, y2);
+        }
+        
+        return res;
+    }
+    
+    private int getCount(int x, int y) {
+        if (!map.containsKey(x)) return 0;
+        return map.get(x).getOrDefault(y, 0);
+    }
+}
+
+/**
+ * Your DetectSquares object will be instantiated and called as such:
+ * DetectSquares obj = new DetectSquares();
+ * obj.add(point);
+ * int param_2 = obj.count(point);
+ */
