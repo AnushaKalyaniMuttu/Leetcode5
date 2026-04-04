@@ -1,0 +1,54 @@
+import java.util.*;
+
+class Solution {
+    public List<List<Long>> averageHeightOfBuildings(int[][] buildings) {
+        List<long[]> events = new ArrayList<>();
+
+        // Create events
+        for (int[] b : buildings) {
+            int start = b[0], end = b[1], h = b[2];
+            events.add(new long[]{start, h, 1});   // add
+            events.add(new long[]{end, -h, -1});   // remove
+        }
+
+        // Sort by position
+        Collections.sort(events, (a, b) -> Long.compare(a[0], b[0]));
+
+        List<List<Long>> result = new ArrayList<>();
+
+        long totalHeight = 0;
+        long count = 0;
+        long prevX = 0;
+
+        int i = 0;
+        while (i < events.size()) {
+            long currX = events.get(i)[0];
+
+            // process segment [prevX, currX)
+            if (prevX < currX && count > 0) {
+                long avg = totalHeight / count;
+
+                // merge if same average
+                if (!result.isEmpty() &&
+                    result.get(result.size() - 1).get(2) == avg &&
+                    result.get(result.size() - 1).get(1) == prevX) {
+
+                    result.get(result.size() - 1).set(1, currX);
+                } else {
+                    result.add(Arrays.asList(prevX, currX, avg));
+                }
+            }
+
+            // process all events at currX
+            while (i < events.size() && events.get(i)[0] == currX) {
+                totalHeight += events.get(i)[1];
+                count += events.get(i)[2];
+                i++;
+            }
+
+            prevX = currX;
+        }
+
+        return result;
+    }
+}
