@@ -1,0 +1,44 @@
+class Solution {
+    private int m, n;
+    private char[][] board;
+    private String word;
+
+    public boolean placeWordInCrossword(char[][] board, String word) {
+        this.m = board.length;
+        this.n = board[0].length;
+        this.board = board;
+        this.word = word;
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                // Try all four possible directions
+                if ((j == 0 || board[i][j - 1] == '#') && check(i, j, 0, 1)) return true;
+                if ((j == n - 1 || board[i][j + 1] == '#') && check(i, j, 0, -1)) return true;
+                if ((i == 0 || board[i - 1][j] == '#') && check(i, j, 1, 0)) return true;
+                if ((i == m - 1 || board[i + 1][j] == '#') && check(i, j, -1, 0)) return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean check(int i, int j, int di, int dj) {
+        int len = word.length();
+        int x = i + di * len, y = j + dj * len;
+
+        // The cell after the end must be blocked or off-board
+        if (x >= 0 && x < m && y >= 0 && y < n && board[x][y] != '#') {
+            return false;
+        }
+
+        // Match each character
+        for (int k = 0; k < len; k++) {
+            if (i < 0 || i >= m || j < 0 || j >= n) return false;
+            char c = board[i][j];
+            if (c != ' ' && c != word.charAt(k)) return false;
+
+            i += di;
+            j += dj;
+        }
+        return true;
+    }
+}
