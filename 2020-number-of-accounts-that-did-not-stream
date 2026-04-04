@@ -1,0 +1,10 @@
+SELECT COUNT(*) AS accounts_count
+FROM Subscriptions s
+WHERE s.start_date <= '2021-12-31'
+  AND s.end_date >= '2021-01-01'
+  AND NOT EXISTS (
+        SELECT 1
+        FROM Streams t
+        WHERE t.account_id = s.account_id
+          AND t.stream_date BETWEEN '2021-01-01' AND '2021-12-31'
+      );
