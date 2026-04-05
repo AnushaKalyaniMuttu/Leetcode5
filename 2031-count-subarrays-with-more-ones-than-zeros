@@ -1,0 +1,70 @@
+class Solution {
+    public int subarraysWithMoreZerosThanOnes(int[] nums) {
+        int n = nums.length;
+        int MOD = 1_000_000_007;
+
+        // Convert 0 -> -1
+        int[] arr = new int[n];
+        for (int i = 0; i < n; i++) {
+            arr[i] = nums[i] == 1 ? 1 : -1;
+        }
+
+        // Prefix sum
+        int[] prefix = new int[n + 1];
+        for (int i = 0; i < n; i++) {
+            prefix[i + 1] = prefix[i] + arr[i];
+        }
+
+        // Coordinate compression
+        int[] sorted = prefix.clone();
+        Arrays.sort(sorted);
+
+        Map<Integer, Integer> map = new HashMap<>();
+        int idx = 1;
+        for (int val : sorted) {
+            if (!map.containsKey(val)) {
+                map.put(val, idx++);
+            }
+        }
+
+        // Fenwick Tree
+        Fenwick tree = new Fenwick(idx + 2);
+        long result = 0;
+
+        for (int val : prefix) {
+            int compressed = map.get(val);
+
+            // count how many prefix sums < current
+            result += tree.query(compressed - 1);
+            result %= MOD;
+
+            tree.update(compressed, 1);
+        }
+
+        return (int) result;
+    }
+
+    class Fenwick {
+        int[] tree;
+
+        Fenwick(int size) {
+            tree = new int[size];
+        }
+
+        void update(int i, int delta) {
+            while (i < tree.length) {
+                tree[i] += delta;
+                i += i & -i;
+            }
+        }
+
+        int query(int i) {
+            int sum = 0;
+            while (i > 0) {
+                sum += tree[i];
+                i -= i & -i;
+            }
+            return sum;
+        }
+    }
+}
