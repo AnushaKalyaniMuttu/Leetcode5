@@ -1,0 +1,39 @@
+class Bank {
+    private long[] balances;
+
+    public Bank(long[] balance) {
+        this.balances = balance;
+    }
+
+    private boolean valid(int account) {
+        return account >= 1 && account <= balances.length;
+    }
+
+    public boolean transfer(int from, int to, long amount) {
+        if (!valid(from) || !valid(to)) return false;
+        if (balances[from - 1] < amount) return false;
+        balances[from - 1] -= amount;
+        balances[to - 1] += amount;
+        return true;
+    }
+
+    public boolean deposit(int account, long amount) {
+        if (!valid(account)) return false;
+        balances[account - 1] += amount;
+        return true;
+    }
+
+    public boolean withdraw(int account, long amount) {
+        if (!valid(account)) return false;
+        if (balances[account - 1] < amount) return false;
+        balances[account - 1] -= amount;
+        return true;
+    }
+}
+/**
+ * Your Bank object will be instantiated and called as such:
+ * Bank obj = new Bank(balance);
+ * boolean param_1 = obj.transfer(account1,account2,money);
+ * boolean param_2 = obj.deposit(account,money);
+ * boolean param_3 = obj.withdraw(account,money);
+ */
