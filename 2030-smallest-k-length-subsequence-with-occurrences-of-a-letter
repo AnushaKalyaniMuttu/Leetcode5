@@ -1,0 +1,44 @@
+class Solution {
+    public String smallestSubsequence(String s, int k, char letter, int repetition) {
+        int n = s.length();
+        int remainingLetter = 0;
+
+        // Count total occurrences of 'letter'
+        for (char c : s.toCharArray()) {
+            if (c == letter) remainingLetter++;
+        }
+
+        StringBuilder stack = new StringBuilder();
+
+        for (int i = 0; i < n; i++) {
+            char c = s.charAt(i);
+
+            // Try to pop while conditions are satisfied
+            while (stack.length() > 0 &&
+                   stack.charAt(stack.length() - 1) > c &&
+                   stack.length() - 1 + (n - i) >= k &&
+                   (stack.charAt(stack.length() - 1) != letter || remainingLetter > repetition)) {
+                
+                if (stack.charAt(stack.length() - 1) == letter) {
+                    repetition++;
+                }
+                stack.deleteCharAt(stack.length() - 1);
+            }
+
+            // Decide to include current character
+            if (stack.length() < k) {
+                if (c == letter) {
+                    stack.append(c);
+                    repetition--;
+                } else if (k - stack.length() > repetition) {
+                    stack.append(c);
+                }
+            }
+
+            // Update remaining letter count
+            if (c == letter) remainingLetter--;
+        }
+
+        return stack.toString();
+    }
+}
