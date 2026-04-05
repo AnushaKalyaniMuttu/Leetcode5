@@ -1,0 +1,15 @@
+class Solution {
+    public long maxAlternatingSum(int[] nums) {
+        long evenSum = 0; // sum when next element is added
+        long oddSum = 0;  // sum when next element is subtracted
+
+        for (int num : nums) {
+            long newEven = Math.max(evenSum, oddSum + num);
+            long newOdd = Math.max(oddSum, evenSum - num);
+            evenSum = newEven;
+            oddSum = newOdd;
+        }
+
+        return evenSum;
+    }
+}
