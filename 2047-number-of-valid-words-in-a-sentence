@@ -1,0 +1,47 @@
+class Solution {
+    public int countValidWords(String sentence) {
+        String[] words = sentence.trim().split("\\s+");
+        int count = 0;
+
+        for (String word : words) {
+            if (isValid(word)) count++;
+        }
+        return count;
+    }
+
+    private boolean isValid(String word) {
+        int hyphenCount = 0;
+        int punctCount = 0;
+
+        for (int i = 0; i < word.length(); i++) {
+            char c = word.charAt(i);
+
+            // Rule 1: No digits
+            if (Character.isDigit(c)) return false;
+
+            if (c == '-') {
+                hyphenCount++;
+                // Only one hyphen allowed
+                if (hyphenCount > 1) return false;
+
+                // Must be between two lowercase letters
+                if (i == 0 || i == word.length() - 1 ||
+                    !Character.isLowerCase(word.charAt(i - 1)) ||
+                    !Character.isLowerCase(word.charAt(i + 1))) {
+                    return false;
+                }
+            }
+            else if (c == '!' || c == '.' || c == ',') {
+                punctCount++;
+                // Only one punctuation and must be at end
+                if (punctCount > 1 || i != word.length() - 1) {
+                    return false;
+                }
+            }
+            else if (!Character.isLowerCase(c)) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
