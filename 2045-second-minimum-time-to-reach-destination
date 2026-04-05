@@ -1,0 +1,49 @@
+import java.util.*;
+
+class Solution {
+    public int secondMinimum(int n, int[][] edges, int time, int change) {
+        List<List<Integer>> graph = new ArrayList<>();
+        for (int i = 0; i <= n; i++) graph.add(new ArrayList<>());
+        for (int[] e : edges) {
+            graph.get(e[0]).add(e[1]);
+            graph.get(e[1]).add(e[0]);
+        }
+
+        // Each node keeps two best times
+        int[][] dist = new int[n + 1][2];
+        for (int[] d : dist) Arrays.fill(d, Integer.MAX_VALUE);
+
+        Queue<int[]> queue = new LinkedList<>();
+        queue.offer(new int[]{1, 0});
+        dist[1][0] = 0;
+
+        while (!queue.isEmpty()) {
+            int[] curr = queue.poll();
+            int node = curr[0];
+            int currTime = curr[1];
+
+            for (int nei : graph.get(node)) {
+                int nextTime = currTime;
+
+                // Wait if signal is red
+                if ((nextTime / change) % 2 == 1) {
+                    nextTime = (nextTime / change + 1) * change;
+                }
+
+                nextTime += time;
+
+                // Update first or second shortest
+                if (nextTime < dist[nei][0]) {
+                    dist[nei][1] = dist[nei][0];
+                    dist[nei][0] = nextTime;
+                    queue.offer(new int[]{nei, nextTime});
+                } else if (nextTime > dist[nei][0] && nextTime < dist[nei][1]) {
+                    dist[nei][1] = nextTime;
+                    queue.offer(new int[]{nei, nextTime});
+                }
+            }
+        }
+
+        return dist[n][1]; // second minimum time
+    }
+}
