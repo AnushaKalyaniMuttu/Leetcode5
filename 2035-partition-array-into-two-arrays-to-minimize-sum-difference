@@ -1,0 +1,56 @@
+import java.util.*;
+
+class Solution {
+    public int minimumDifference(int[] nums) {
+        int n = nums.length / 2;
+        int total = Arrays.stream(nums).sum();
+        List<Integer>[] left = new List[n + 1];
+        List<Integer>[] right = new List[n + 1];
+        
+        for (int i = 0; i <= n; i++) {
+            left[i] = new ArrayList<>();
+            right[i] = new ArrayList<>();
+        }
+
+        // Generate all subset sums for left half
+        genSums(nums, 0, n, 0, 0, new ArrayList<>(), left);
+
+        // Generate all subset sums for right half
+        genSums(nums, n, 2 * n, 0, 0, new ArrayList<>(), right);
+
+        for (List<Integer> l : right) Collections.sort(l); // Sort for binary search
+
+        int res = Integer.MAX_VALUE;
+        for (int i = 0; i <= n; i++) {
+            for (int s : left[i]) {
+                List<Integer> rList = right[n - i];
+                int target = total / 2 - s;
+                int idx = Collections.binarySearch(rList, target);
+                if (idx < 0) idx = -idx - 1;
+
+                // Check idx and idx-1 for closest
+                for (int j = idx - 1; j <= idx; j++) {
+                    if (j >= 0 && j < rList.size()) {
+                        int sum = s + rList.get(j);
+                        res = Math.min(res, Math.abs(total - 2 * sum));
+                    }
+                }
+            }
+        }
+        return res;
+    }
+
+    // Generate all subset sums by size
+    private void genSums(int[] nums, int start, int end, int idx, int sum, List<Integer> chosen, List<Integer>[] sums) {
+        if (idx == end - start) {
+            sums[chosen.size()].add(sum);
+            return;
+        }
+        // Not pick
+        genSums(nums, start, end, idx + 1, sum, chosen, sums);
+        // Pick
+        chosen.add(nums[start + idx]);
+        genSums(nums, start, end, idx + 1, sum + nums[start + idx], chosen, sums);
+        chosen.remove(chosen.size() - 1);
+    }
+}
