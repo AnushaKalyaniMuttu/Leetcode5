@@ -1,0 +1,36 @@
+import java.util.*;
+
+class StockPrice {
+    private Map<Integer, Integer> map;
+    private TreeMap<Integer, Integer> priceCount;
+    private int latestTime;
+
+    public StockPrice() {
+        map = new HashMap<>();
+        priceCount = new TreeMap<>();
+        latestTime = 0;
+    }
+
+    public void update(int timestamp, int price) {
+        latestTime = Math.max(latestTime, timestamp);
+        if (map.containsKey(timestamp)) {
+            int oldPrice = map.get(timestamp);
+            priceCount.put(oldPrice, priceCount.get(oldPrice) - 1);
+            if (priceCount.get(oldPrice) == 0) priceCount.remove(oldPrice);
+        }
+        map.put(timestamp, price);
+        priceCount.put(price, priceCount.getOrDefault(price, 0) + 1);
+    }
+
+    public int current() {
+        return map.get(latestTime);
+    }
+
+    public int maximum() {
+        return priceCount.lastKey();
+    }
+
+    public int minimum() {
+        return priceCount.firstKey();
+    }
+}
