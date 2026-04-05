@@ -1,0 +1,28 @@
+import java.util.*;
+
+class Solution {
+    public int minOperations(int[][] grid, int x) {
+        List<Integer> nums = new ArrayList<>();
+        int mod = grid[0][0] % x;
+
+        // Flatten grid and check feasibility
+        for (int[] row : grid) {
+            for (int val : row) {
+                if (val % x != mod) return -1; // impossible
+                nums.add(val);
+            }
+        }
+
+        // Sort to find median
+        Collections.sort(nums);
+        int median = nums.get(nums.size() / 2);
+
+        // Count total operations
+        int ops = 0;
+        for (int val : nums) {
+            ops += Math.abs(val - median) / x;
+        }
+
+        return ops;
+    }
+}
