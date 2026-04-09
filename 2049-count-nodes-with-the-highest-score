@@ -1,0 +1,50 @@
+import java.util.*;
+
+class Solution {
+    long maxScore = 0;
+    int count = 0;
+    int n;
+    List<Integer>[] tree;
+
+    public int countHighestScoreNodes(int[] parents) {
+        n = parents.length;
+
+        // Build tree
+        tree = new ArrayList[n];
+        for (int i = 0; i < n; i++) {
+            tree[i] = new ArrayList<>();
+        }
+
+        for (int i = 1; i < n; i++) {
+            tree[parents[i]].add(i);
+        }
+
+        dfs(0);
+        return count;
+    }
+
+    private int dfs(int node) {
+        long score = 1;
+        int size = 1; // include current node
+
+        for (int child : tree[node]) {
+            int childSize = dfs(child);
+            size += childSize;
+            score *= childSize;
+        }
+
+        int remaining = n - size;
+        if (remaining > 0) {
+            score *= remaining;
+        }
+
+        if (score > maxScore) {
+            maxScore = score;
+            count = 1;
+        } else if (score == maxScore) {
+            count++;
+        }
+
+        return size;
+    }
+}
