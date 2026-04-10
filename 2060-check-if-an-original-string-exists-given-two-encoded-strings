@@ -1,0 +1,63 @@
+import java.util.*;
+
+class Solution {
+    Set<String> memo = new HashSet<>();
+
+    public boolean possiblyEquals(String s1, String s2) {
+        return dfs(s1, s2, 0, 0, 0);
+    }
+
+    private boolean dfs(String s1, String s2, int i, int j, int diff) {
+        String key = i + "," + j + "," + diff;
+        if (memo.contains(key)) return false;
+
+        int n = s1.length(), m = s2.length();
+
+        // If both strings are fully processed
+        if (i == n && j == m) {
+            return diff == 0;
+        }
+
+        // Try consuming digits in s1
+        if (i < n && Character.isDigit(s1.charAt(i))) {
+            int val = 0;
+            for (int k = i; k < n && Character.isDigit(s1.charAt(k)); k++) {
+                val = val * 10 + (s1.charAt(k) - '0');
+                if (dfs(s1, s2, k + 1, j, diff + val)) return true;
+            }
+        }
+
+        // Try consuming digits in s2
+        if (j < m && Character.isDigit(s2.charAt(j))) {
+            int val = 0;
+            for (int k = j; k < m && Character.isDigit(s2.charAt(k)); k++) {
+                val = val * 10 + (s2.charAt(k) - '0');
+                if (dfs(s1, s2, i, k + 1, diff - val)) return true;
+            }
+        }
+
+        // Match characters
+        if (diff > 0) {
+            // s1 has extra chars to match
+            if (j < m && !Character.isDigit(s2.charAt(j))) {
+                if (dfs(s1, s2, i, j + 1, diff - 1)) return true;
+            }
+        } else if (diff < 0) {
+            // s2 has extra chars
+            if (i < n && !Character.isDigit(s1.charAt(i))) {
+                if (dfs(s1, s2, i + 1, j, diff + 1)) return true;
+            }
+        } else {
+            // diff == 0 → match characters directly
+            if (i < n && j < m &&
+                !Character.isDigit(s1.charAt(i)) &&
+                !Character.isDigit(s2.charAt(j)) &&
+                s1.charAt(i) == s2.charAt(j)) {
+                if (dfs(s1, s2, i + 1, j + 1, 0)) return true;
+            }
+        }
+
+        memo.add(key);
+        return false;
+    }
+}
