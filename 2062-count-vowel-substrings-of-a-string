@@ -1,0 +1,30 @@
+import java.util.*;
+
+class Solution {
+    public int countVowelSubstrings(String word) {
+        int n = word.length();
+        int count = 0;
+
+        for (int i = 0; i < n; i++) {
+            Set<Character> set = new HashSet<>();
+
+            for (int j = i; j < n; j++) {
+                char ch = word.charAt(j);
+
+                // If consonant → break
+                if (!isVowel(ch)) break;
+
+                set.add(ch);
+
+                // If all 5 vowels present
+                if (set.size() == 5) count++;
+            }
+        }
+
+        return count;
+    }
+
+    private boolean isVowel(char ch) {
+        return ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u';
+    }
+}
