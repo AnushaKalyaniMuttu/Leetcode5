@@ -1,0 +1,12 @@
+SELECT 
+    m.member_id,
+    m.name,
+    CASE
+        WHEN COALESCE(SUM(p.charged_amount), 0) >= 100 THEN 'VIP'
+        WHEN COALESCE(SUM(p.charged_amount), 0) >= 50 THEN 'Premium'
+        ELSE 'Standard'
+    END AS category
+FROM Members m
+LEFT JOIN Visits v ON m.member_id = v.member_id
+LEFT JOIN Purchases p ON v.visit_id = p.visit_id
+GROUP BY m.member_id, m.name;
