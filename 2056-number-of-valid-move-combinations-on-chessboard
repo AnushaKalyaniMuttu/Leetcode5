@@ -1,0 +1,99 @@
+import java.util.*;
+
+class Solution {
+
+    int[][] rookDirs = {{1,0},{-1,0},{0,1},{0,-1}};
+    int[][] bishopDirs = {{1,1},{1,-1},{-1,1},{-1,-1}};
+    int[][] queenDirs = {
+        {1,0},{-1,0},{0,1},{0,-1},
+        {1,1},{1,-1},{-1,1},{-1,-1}
+    };
+
+    List<List<int[]>> allPaths = new ArrayList<>();
+    int result = 0;
+
+    public int countCombinations(String[] pieces, int[][] positions) {
+        int n = pieces.length;
+
+        // Generate all paths for each piece
+        for (int i = 0; i < n; i++) {
+            List<int[]> paths = generatePaths(pieces[i], positions[i]);
+            allPaths.add(paths);
+        }
+
+        backtrack(0, new ArrayList<>());
+        return result;
+    }
+
+    private void backtrack(int idx, List<int[]> chosen) {
+        if (idx == allPaths.size()) {
+            if (isValid(chosen)) result++;
+            return;
+        }
+
+        for (int[] path : allPaths.get(idx)) {
+            chosen.add(path);
+            backtrack(idx + 1, chosen);
+            chosen.remove(chosen.size() - 1);
+        }
+    }
+
+    private boolean isValid(List<int[]> chosen) {
+        int maxSteps = 8;
+
+        for (int t = 0; t <= maxSteps; t++) {
+            Set<String> seen = new HashSet<>();
+
+            for (int[] path : chosen) {
+                int r = path[0], c = path[1];
+                int dr = path[2], dc = path[3];
+                int steps = path[4];
+
+                int nr = r, nc = c;
+
+                if (t <= steps) {
+                    nr = r + dr * t;
+                    nc = c + dc * t;
+                } else {
+                    nr = r + dr * steps;
+                    nc = c + dc * steps;
+                }
+
+                String key = nr + "," + nc;
+                if (!seen.add(key)) return false;
+            }
+        }
+
+        return true;
+    }
+
+    private List<int[]> generatePaths(String piece, int[] pos) {
+        List<int[]> res = new ArrayList<>();
+
+        int[][] dirs;
+        if (piece.equals("rook")) dirs = rookDirs;
+        else if (piece.equals("bishop")) dirs = bishopDirs;
+        else dirs = queenDirs;
+
+        int r = pos[0] - 1;
+        int c = pos[1] - 1;
+
+        // stay in place
+        res.add(new int[]{r, c, 0, 0, 0});
+
+        for (int[] d : dirs) {
+            int nr = r, nc = c;
+
+            for (int step = 1; step <= 7; step++) {
+                nr += d[0];
+                nc += d[1];
+
+                if (nr < 0 || nr >= 8 || nc < 0 || nc >= 8) break;
+
+                res.add(new int[]{r, c, d[0], d[1], step});
+            }
+        }
+
+        return res;
+    }
+}
