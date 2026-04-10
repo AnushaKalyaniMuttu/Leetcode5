@@ -1,0 +1,38 @@
+import java.util.*;
+
+class Solution {
+    public int numberOfCleanRooms(int[][] room) {
+        int m = room.length, n = room[0].length;
+
+        // Directions: right, down, left, up
+        int[] dr = {0, 1, 0, -1};
+        int[] dc = {1, 0, -1, 0};
+
+        Set<String> visitedState = new HashSet<>();
+        Set<String> cleaned = new HashSet<>();
+
+        int r = 0, c = 0, dir = 0;
+
+        while (true) {
+            String state = r + "," + c + "," + dir;
+            if (visitedState.contains(state)) break;
+
+            visitedState.add(state);
+            cleaned.add(r + "," + c);
+
+            int nr = r + dr[dir];
+            int nc = c + dc[dir];
+
+            // If next move is valid
+            if (nr >= 0 && nr < m && nc >= 0 && nc < n && room[nr][nc] == 0) {
+                r = nr;
+                c = nc;
+            } else {
+                // Turn right
+                dir = (dir + 1) % 4;
+            }
+        }
+
+        return cleaned.size();
+    }
+}
