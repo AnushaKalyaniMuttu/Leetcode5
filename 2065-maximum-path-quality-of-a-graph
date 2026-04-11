@@ -1,0 +1,53 @@
+import java.util.*;
+
+class Solution {
+    int maxQuality = 0;
+
+    public int maximalPathQuality(int[] values, int[][] edges, int maxTime) {
+        int n = values.length;
+
+        // Build graph
+        List<int[]>[] graph = new ArrayList[n];
+        for (int i = 0; i < n; i++) graph[i] = new ArrayList<>();
+
+        for (int[] e : edges) {
+            graph[e[0]].add(new int[]{e[1], e[2]});
+            graph[e[1]].add(new int[]{e[0], e[2]});
+        }
+
+        int[] visited = new int[n];
+        dfs(0, 0, values[0], maxTime, values, graph, visited);
+
+        return maxQuality;
+    }
+
+    private void dfs(int node, int time, int currentSum, int maxTime,
+                     int[] values, List<int[]>[] graph, int[] visited) {
+
+        if (time > maxTime) return;
+
+        // If back at node 0, update answer
+        if (node == 0) {
+            maxQuality = Math.max(maxQuality, currentSum);
+        }
+
+        visited[node]++;
+
+        for (int[] nei : graph[node]) {
+            int next = nei[0];
+            int cost = nei[1];
+
+            int addedValue = (visited[next] == 0) ? values[next] : 0;
+
+            dfs(next,
+                time + cost,
+                currentSum + addedValue,
+                maxTime,
+                values,
+                graph,
+                visited);
+        }
+
+        visited[node]--; // backtrack
+    }
+}
