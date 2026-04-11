@@ -1,0 +1,56 @@
+class Solution {
+    public int equalCountSubstrings(String s, int count) {
+        int n = s.length();
+        int result = 0;
+
+        // Try all possible number of unique characters
+        for (int k = 1; k <= 26; k++) {
+            int windowSize = k * count;
+            if (windowSize > n) break;
+
+            int[] freq = new int[26];
+            int distinct = 0;
+            int exact = 0;   // chars with freq == count
+            int over = 0;    // chars with freq > count
+
+            for (int i = 0; i < n; i++) {
+                int add = s.charAt(i) - 'a';
+
+                // add character
+                if (freq[add] == 0) distinct++;
+                if (freq[add] == count) exact--;
+                if (freq[add] == count + 1) over--;
+
+                freq[add]++;
+
+                if (freq[add] == count) exact++;
+                if (freq[add] == count + 1) over++;
+
+                // remove left side if window exceeds size
+                if (i >= windowSize) {
+                    int rem = s.charAt(i - windowSize) - 'a';
+
+                    if (freq[rem] == count) exact--;
+                    if (freq[rem] == count + 1) over--;
+
+                    freq[rem]--;
+
+                    if (freq[rem] == count) exact++;
+                    if (freq[rem] == count - 1) exact--; // no longer valid
+                    if (freq[rem] == 0) distinct--;
+                    if (freq[rem] == count) exact++;
+                    if (freq[rem] == count + 1) over++;
+                }
+
+                // check validity
+                if (i >= windowSize - 1) {
+                    if (distinct == k && exact == k && over == 0) {
+                        result++;
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+}
