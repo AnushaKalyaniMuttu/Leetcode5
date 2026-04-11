@@ -1,0 +1,38 @@
+class Solution {
+    public int minimizedMaximum(int n, int[] quantities) {
+        int left = 1;
+        int right = 0;
+        
+        // Find max quantity for upper bound
+        for (int q : quantities) {
+            right = Math.max(right, q);
+        }
+        
+        int answer = right;
+        
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            
+            if (canDistribute(n, quantities, mid)) {
+                answer = mid;
+                right = mid - 1; // try smaller max
+            } else {
+                left = mid + 1;
+            }
+        }
+        
+        return answer;
+    }
+    
+    private boolean canDistribute(int n, int[] quantities, int maxLoad) {
+        int storesNeeded = 0;
+        
+        for (int q : quantities) {
+            storesNeeded += (q + maxLoad - 1) / maxLoad; // ceil(q / maxLoad)
+            
+            if (storesNeeded > n) return false;
+        }
+        
+        return true;
+    }
+}
