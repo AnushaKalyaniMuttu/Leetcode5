@@ -1,0 +1,46 @@
+import java.util.*;
+
+class Solution {
+    public int equalCountSubstrings(String s, int count) {
+        int n = s.length();
+        int result = 0;
+
+        // Try different number of unique characters
+        for (int unique = 1; unique <= 26; unique++) {
+            int windowSize = unique * count;
+            if (windowSize > n) break;
+
+            int[] freq = new int[26];
+            int distinct = 0;
+            int valid = 0;
+
+            for (int i = 0; i < n; i++) {
+                // Add character
+                int idx = s.charAt(i) - 'a';
+                freq[idx]++;
+
+                if (freq[idx] == 1) distinct++;
+                if (freq[idx] == count) valid++;
+                if (freq[idx] == count + 1) valid--;
+
+                // Remove if window too big
+                if (i >= windowSize) {
+                    int leftIdx = s.charAt(i - windowSize) - 'a';
+
+                    if (freq[leftIdx] == count) valid--;
+                    if (freq[leftIdx] == count + 1) valid++;
+
+                    freq[leftIdx]--;
+                    if (freq[leftIdx] == 0) distinct--;
+                }
+
+                // Check valid window
+                if (distinct == unique && valid == unique) {
+                    result++;
+                }
+            }
+        }
+
+        return result;
+    }
+}
