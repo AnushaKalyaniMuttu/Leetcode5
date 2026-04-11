@@ -1,0 +1,54 @@
+import java.util.*;
+
+class Solution {
+    public int[] maximumBeauty(int[][] items, int[] queries) {
+        int n = items.length;
+
+        // Step 1: sort by price
+        Arrays.sort(items, (a, b) -> a[0] - b[0]);
+
+        // Step 2: build prefix max beauty
+        int[] prices = new int[n];
+        int[] maxBeauty = new int[n];
+
+        int best = 0;
+        for (int i = 0; i < n; i++) {
+            prices[i] = items[i][0];
+            best = Math.max(best, items[i][1]);
+            maxBeauty[i] = best;
+        }
+
+        // Step 3: answer queries
+        int[] res = new int[queries.length];
+
+        for (int i = 0; i < queries.length; i++) {
+            int q = queries[i];
+
+            int idx = upperBound(prices, q) - 1;
+
+            if (idx >= 0) {
+                res[i] = maxBeauty[idx];
+            } else {
+                res[i] = 0;
+            }
+        }
+
+        return res;
+    }
+
+    // first index > target
+    private int upperBound(int[] arr, int target) {
+        int l = 0, r = arr.length;
+
+        while (l < r) {
+            int m = (l + r) / 2;
+            if (arr[m] <= target) {
+                l = m + 1;
+            } else {
+                r = m;
+            }
+        }
+
+        return l;
+    }
+}
