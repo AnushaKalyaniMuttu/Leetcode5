@@ -1,0 +1,47 @@
+import java.util.*;
+
+class Solution {
+    public int maxTaskAssign(int[] tasks, int[] workers, int pills, int strength) {
+        Arrays.sort(tasks);
+        Arrays.sort(workers);
+
+        int left = 0, right = Math.min(tasks.length, workers.length);
+
+        while (left < right) {
+            int mid = (left + right + 1) / 2;
+            if (canAssign(tasks, workers, pills, strength, mid)) {
+                left = mid;
+            } else {
+                right = mid - 1;
+            }
+        }
+
+        return left;
+    }
+
+    private boolean canAssign(int[] tasks, int[] workers, int pills, int strength, int k) {
+        Deque<Integer> dq = new ArrayDeque<>();
+
+        int j = workers.length - 1;
+
+        // Add k strongest workers who can potentially do the tasks
+        for (int i = k - 1; i >= 0; i--) {
+            while (j >= workers.length - k && workers[j] + strength >= tasks[i]) {
+                dq.addLast(workers[j]);
+                j--;
+            }
+
+            if (dq.isEmpty()) return false;
+
+            if (dq.peekFirst() >= tasks[i]) {
+                dq.pollFirst(); // no pill needed
+            } else {
+                if (pills == 0) return false;
+                pills--;
+                dq.pollLast(); // use pill on weakest viable worker
+            }
+        }
+
+        return true;
+    }
+}
