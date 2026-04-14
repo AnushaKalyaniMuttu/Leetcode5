@@ -1,0 +1,58 @@
+class Solution {
+    int[] parent;
+
+    public boolean[] friendRequests(int n, int[][] restrictions, int[][] requests) {
+        parent = new int[n];
+
+        // Initialize DSU
+        for (int i = 0; i < n; i++) {
+            parent[i] = i;
+        }
+
+        boolean[] result = new boolean[requests.length];
+
+        for (int i = 0; i < requests.length; i++) {
+            int u = requests[i][0];
+            int v = requests[i][1];
+
+            int pu = find(u);
+            int pv = find(v);
+
+            boolean canBeFriends = true;
+
+            // Check all restrictions
+            for (int[] r : restrictions) {
+                int a = r[0];
+                int b = r[1];
+
+                int pa = find(a);
+                int pb = find(b);
+
+                if ((pu == pa && pv == pb) || (pu == pb && pv == pa)) {
+                    canBeFriends = false;
+                    break;
+                }
+            }
+
+            if (canBeFriends) {
+                union(pu, pv);
+                result[i] = true;
+            } else {
+                result[i] = false;
+            }
+        }
+
+        return result;
+    }
+
+    private int find(int x) {
+        if (parent[x] != x) {
+            parent[x] = find(parent[x]); // Path compression
+        }
+        return parent[x];
+    }
+
+    private void union(int x, int y) {
+        parent[x] = y;
+    }
+}
