@@ -1,0 +1,40 @@
+import java.util.*;
+
+class Solution {
+    public int numberOfPaths(int n, int[][] corridors) {
+        // Build adjacency list using sets
+        List<Set<Integer>> graph = new ArrayList<>();
+        for (int i = 0; i <= n; i++) {
+            graph.add(new HashSet<>());
+        }
+
+        for (int[] c : corridors) {
+            int u = c[0], v = c[1];
+            graph.get(u).add(v);
+            graph.get(v).add(u);
+        }
+
+        int count = 0;
+
+        // Count triangles
+        for (int[] c : corridors) {
+            int u = c[0], v = c[1];
+
+            // iterate smaller set for efficiency
+            if (graph.get(u).size() > graph.get(v).size()) {
+                int temp = u;
+                u = v;
+                v = temp;
+            }
+
+            for (int neighbor : graph.get(u)) {
+                if (graph.get(v).contains(neighbor)) {
+                    count++;
+                }
+            }
+        }
+
+        // each triangle counted 3 times
+        return count / 3;
+    }
+}
