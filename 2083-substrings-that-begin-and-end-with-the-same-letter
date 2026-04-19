@@ -1,0 +1,18 @@
+class Solution {
+    public long numberOfSubstrings(String s) {
+        long result = 0;
+        long[] count = new long[26]; // for 'a' to 'z'
+        
+        for (char c : s.toCharArray()) {
+            int index = c - 'a';
+            
+            // existing substrings + single char substring
+            result += count[index] + 1;
+            
+            // update frequency
+            count[index]++;
+        }
+        
+        return result;
+    }
+}
