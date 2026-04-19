@@ -1,0 +1,18 @@
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+class Solution {
+    public int countWords(String[] words1, String[] words2) {
+
+        Map<String, Long> map1 = Arrays.stream(words1)
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+        Map<String, Long> map2 = Arrays.stream(words2)
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+        return (int) map1.entrySet().stream()
+                .filter(e -> e.getValue() == 1 && map2.getOrDefault(e.getKey(), 0L) == 1)
+                .count();
+    }
+}
