@@ -1,0 +1,57 @@
+import java.util.*;
+
+class Solution {
+    public int minimumCost(int n, int[][] highways, int discounts) {
+        // Build graph
+        List<int[]>[] graph = new ArrayList[n];
+        for (int i = 0; i < n; i++) graph[i] = new ArrayList<>();
+        
+        for (int[] h : highways) {
+            int u = h[0], v = h[1], w = h[2];
+            graph[u].add(new int[]{v, w});
+            graph[v].add(new int[]{u, w});
+        }
+
+        // dist[node][discountsUsed]
+        long[][] dist = new long[n][discounts + 1];
+        for (long[] row : dist) Arrays.fill(row, Long.MAX_VALUE);
+
+        PriorityQueue<long[]> pq = new PriorityQueue<>(Comparator.comparingLong(a -> a[0]));
+        // {cost, node, discountsUsed}
+        pq.offer(new long[]{0, 0, 0});
+        dist[0][0] = 0;
+
+        while (!pq.isEmpty()) {
+            long[] curr = pq.poll();
+            long cost = curr[0];
+            int node = (int) curr[1];
+            int used = (int) curr[2];
+
+            if (node == n - 1) return (int) cost;
+
+            if (cost > dist[node][used]) continue;
+
+            for (int[] nei : graph[node]) {
+                int next = nei[0];
+                int weight = nei[1];
+
+                // Case 1: no discount
+                if (cost + weight < dist[next][used]) {
+                    dist[next][used] = cost + weight;
+                    pq.offer(new long[]{dist[next][used], next, used});
+                }
+
+                // Case 2: use discount
+                if (used < discounts) {
+                    long discounted = cost + weight / 2;
+                    if (discounted < dist[next][used + 1]) {
+                        dist[next][used + 1] = discounted;
+                        pq.offer(new long[]{discounted, next, used + 1});
+                    }
+                }
+            }
+        }
+
+        return -1;
+    }
+}
