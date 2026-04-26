@@ -1,0 +1,40 @@
+class Solution {
+    public int minimumRefill(int[] plants, int capacityA, int capacityB) {
+        int i = 0, j = plants.length - 1;
+
+        int aliceWater = capacityA;
+        int bobWater = capacityB;
+
+        int refills = 0;
+
+        while (i <= j) {
+
+            // both on same plant
+            if (i == j) {
+                int maxWater = Math.max(aliceWater, bobWater);
+                if (maxWater < plants[i]) {
+                    refills++;
+                }
+                break;
+            }
+
+            // Alice side
+            if (aliceWater < plants[i]) {
+                refills++;
+                aliceWater = capacityA;
+            }
+            aliceWater -= plants[i];
+            i++;
+
+            // Bob side
+            if (bobWater < plants[j]) {
+                refills++;
+                bobWater = capacityB;
+            }
+            bobWater -= plants[j];
+            j--;
+        }
+
+        return refills;
+    }
+}
