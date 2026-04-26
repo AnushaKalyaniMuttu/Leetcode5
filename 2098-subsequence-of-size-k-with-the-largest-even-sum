@@ -1,0 +1,33 @@
+import java.util.*;
+
+class Solution {
+    public int[] maxSubsequence(int[] nums, int k) {
+        int n = nums.length;
+
+        int[][] arr = new int[n][2]; // {value, index}
+
+        for (int i = 0; i < n; i++) {
+            arr[i][0] = nums[i];
+            arr[i][1] = i;
+        }
+
+        // sort by value descending
+        Arrays.sort(arr, (a, b) -> b[0] - a[0]);
+
+        // take top k
+        int[][] pick = new int[k][2];
+        for (int i = 0; i < k; i++) {
+            pick[i] = arr[i];
+        }
+
+        // sort by index to maintain order
+        Arrays.sort(pick, (a, b) -> a[1] - b[1]);
+
+        int[] ans = new int[k];
+        for (int i = 0; i < k; i++) {
+            ans[i] = pick[i][0];
+        }
+
+        return ans;
+    }
+}
