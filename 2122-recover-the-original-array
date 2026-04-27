@@ -1,0 +1,45 @@
+import java.util.*;
+
+class Solution {
+    public int[] recoverArray(int[] nums) {
+        Arrays.sort(nums);
+        int n = nums.length / 2;
+
+        for (int i = 1; i < nums.length; i++) {
+            int diff = nums[i] - nums[0];
+            if (diff <= 0 || diff % 2 != 0) continue;
+
+            int k = diff / 2;
+
+            Map<Integer, Integer> freq = new HashMap<>();
+            for (int num : nums) {
+                freq.put(num, freq.getOrDefault(num, 0) + 1);
+            }
+
+            int[] result = new int[n];
+            int idx = 0;
+            boolean valid = true;
+
+            for (int num : nums) {
+                if (freq.get(num) == 0) continue;
+
+                int target = num + 2 * k;
+
+                if (!freq.containsKey(target) || freq.get(target) == 0) {
+                    valid = false;
+                    break;
+                }
+
+                // use both
+                freq.put(num, freq.get(num) - 1);
+                freq.put(target, freq.get(target) - 1);
+
+                result[idx++] = num + k;
+            }
+
+            if (valid) return result;
+        }
+
+        return new int[0];
+    }
+}
