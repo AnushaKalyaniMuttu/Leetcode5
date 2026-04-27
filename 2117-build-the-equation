@@ -1,0 +1,16 @@
+SELECT
+    CONCAT(
+        GROUP_CONCAT(
+            CASE
+                WHEN power = 0 THEN
+                    CONCAT(IF(factor > 0, '+', ''), factor)
+                WHEN power = 1 THEN
+                    CONCAT(IF(factor > 0, '+', ''), factor, 'X')
+                ELSE
+                    CONCAT(IF(factor > 0, '+', ''), factor, 'X^', power)
+            END
+            ORDER BY power DESC
+        ),
+        '=0'
+    ) AS equation
+FROM Terms;
