@@ -1,0 +1,24 @@
+class Solution {
+    public int[] elementInNums(int[] nums, int[][] queries) {
+        int n = nums.length;
+        int cycle = 2 * n;
+        int[] res = new int[queries.length];
+
+        for (int q = 0; q < queries.length; q++) {
+            int time = queries[q][0];
+            int index = queries[q][1];
+
+            int t = time % cycle;
+
+            if (t < n) {
+                int size = n - t;
+                res[q] = (index < size) ? nums[t + index] : -1;
+            } else {
+                int t2 = t - n;
+                res[q] = (index <= t2) ? nums[index] : -1;
+            }
+        }
+
+        return res;
+    }
+}
