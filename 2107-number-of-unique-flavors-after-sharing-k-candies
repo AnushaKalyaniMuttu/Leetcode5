@@ -1,0 +1,40 @@
+import java.util.*;
+
+class Solution {
+    public int shareCandies(int[] candies, int k) {
+        Map<Integer, Integer> map = new HashMap<>();
+
+        // Step 1: Count all candies
+        for (int c : candies) {
+            map.put(c, map.getOrDefault(c, 0) + 1);
+        }
+
+        int unique = map.size();
+        int maxUnique = 0;
+
+        // Step 2: Sliding window
+        for (int i = 0; i < candies.length; i++) {
+            // remove current candy from your share
+            map.put(candies[i], map.get(candies[i]) - 1);
+            if (map.get(candies[i]) == 0) {
+                unique--;
+            }
+
+            // maintain window size k
+            if (i >= k) {
+                // add back candy leaving window
+                if (map.get(candies[i - k]) == 0) {
+                    unique++;
+                }
+                map.put(candies[i - k], map.get(candies[i - k]) + 1);
+            }
+
+            // when window size == k
+            if (i >= k - 1) {
+                maxUnique = Math.max(maxUnique, unique);
+            }
+        }
+
+        return maxUnique;
+    }
+}
