@@ -1,0 +1,41 @@
+import java.util.*;
+
+class Solution {
+    public long[] getDistances(int[] arr) {
+        int n = arr.length;
+        long[] res = new long[n];
+
+        // Step 1: group indices
+        Map<Integer, List<Integer>> map = new HashMap<>();
+
+        for (int i = 0; i < n; i++) {
+            map.computeIfAbsent(arr[i], x -> new ArrayList<>()).add(i);
+        }
+
+        // Step 2: process each group
+        for (List<Integer> list : map.values()) {
+            int size = list.size();
+
+            long[] prefix = new long[size + 1];
+
+            // build prefix sum of indices
+            for (int i = 0; i < size; i++) {
+                prefix[i + 1] = prefix[i] + list.get(i);
+            }
+
+            for (int i = 0; i < size; i++) {
+                int idx = list.get(i);
+
+                // left
+                long left = (long) idx * i - prefix[i];
+
+                // right
+                long right = (prefix[size] - prefix[i + 1]) - (long) idx * (size - i - 1);
+
+                res[idx] = left + right;
+            }
+        }
+
+        return res;
+    }
+}
