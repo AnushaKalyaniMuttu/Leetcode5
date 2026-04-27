@@ -1,0 +1,37 @@
+class Solution {
+    public int maxTotalFruits(int[][] fruits, int startPos, int k) {
+        int left = 0, sum = 0, max = 0;
+
+        for (int right = 0; right < fruits.length; right++) {
+            sum += fruits[right][1];
+
+            while (left <= right && !canReach(fruits, left, right, startPos, k)) {
+                sum -= fruits[left][1];
+                left++;
+            }
+
+            max = Math.max(max, sum);
+        }
+
+        return max;
+    }
+
+    private boolean canReach(int[][] fruits, int left, int right, int startPos, int k) {
+        int L = fruits[left][0];
+        int R = fruits[right][0];
+        int cost;
+
+        if (R <= startPos) {
+            cost = startPos - L;
+        } else if (L >= startPos) {
+            cost = R - startPos;
+        } else {
+            cost = Math.min(
+                2 * (startPos - L) + (R - startPos),
+                2 * (R - startPos) + (startPos - L)
+            );
+        }
+
+        return cost <= k;
+    }
+}
