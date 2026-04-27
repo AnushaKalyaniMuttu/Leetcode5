@@ -1,0 +1,31 @@
+class Solution {
+    public boolean canBeValid(String s, String locked) {
+        int n = s.length();
+
+        if (n % 2 != 0) return false;
+
+        int low = 0, high = 0;
+
+        // Left to right pass
+        for (int i = 0; i < n; i++) {
+            if (locked.charAt(i) == '1') {
+                if (s.charAt(i) == '(') {
+                    low++;
+                    high++;
+                } else {
+                    low--;
+                    high--;
+                }
+            } else {
+                // can be '(' or ')'
+                low--;   // assume ')'
+                high++;  // assume '('
+            }
+
+            if (high < 0) return false;
+            if (low < 0) low = 0;
+        }
+
+        return low == 0;
+    }
+}
