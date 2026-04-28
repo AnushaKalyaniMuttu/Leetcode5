@@ -1,0 +1,31 @@
+import java.util.*;
+
+class Solution {
+    public int[] countPassengers(int[][] buses, int[] passengers) {
+        Arrays.sort(buses, (a, b) -> a[0] - b[0]);
+        Arrays.sort(passengers);
+
+        int n = buses.length;
+        int[] result = new int[n];
+
+        int i = 0; // passenger pointer
+
+        for (int j = 0; j < n; j++) {
+            int busTime = buses[j][0];
+            int cap = buses[j][1];
+
+            int count = 0;
+
+            while (i < passengers.length &&
+                   passengers[i] <= busTime &&
+                   count < cap) {
+                i++;
+                count++;
+            }
+
+            result[j] = count;
+        }
+
+        return result;
+    }
+}
