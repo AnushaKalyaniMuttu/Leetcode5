@@ -1,0 +1,48 @@
+class Solution {
+
+    class SegmentTree {
+        int[] tree;
+        boolean[] lazy;
+        int n;
+
+        SegmentTree(int n) {
+            this.n = n;
+            tree = new int[4 * n];
+            lazy = new boolean[4 * n];
+        }
+
+        int update(int node, int start, int end, int l, int r) {
+            if (r < start || end < l) return 0;
+
+            if (l <= start && end <= r) {
+                if (lazy[node]) return 0;
+                lazy[node] = true;
+                tree[node] = end - start + 1;
+                return tree[node];
+            }
+
+            int mid = (start + end) / 2;
+
+            int left = update(2 * node, start, mid, l, r);
+            int right = update(2 * node + 1, mid + 1, end, l, r);
+
+            tree[node] = tree[2 * node] + tree[2 * node + 1];
+            return left + right;
+        }
+    }
+
+    public int[] amountPainted(int[][] paint) {
+        int MAX = 50005;
+        SegmentTree st = new SegmentTree(MAX);
+
+        int[] res = new int[paint.length];
+
+        for (int i = 0; i < paint.length; i++) {
+            int l = paint[i][0];
+            int r = paint[i][1] - 1; // convert to inclusive
+            res[i] = st.update(1, 0, MAX - 1, l, r);
+        }
+
+        return res;
+    }
+}
