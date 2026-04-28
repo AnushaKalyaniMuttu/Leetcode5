@@ -1,0 +1,63 @@
+class Solution {
+    int rows, cols;
+    int[][] grid;
+    int[] match;
+    boolean[] visited;
+    
+    int[][] directions = {{1,0}, {-1,0}, {0,1}, {0,-1}};
+    
+    public int minimumOperations(int[][] grid) {
+        this.grid = grid;
+        rows = grid.length;
+        cols = grid[0].length;
+        
+        int totalOnes = 0;
+        for (int[] row : grid) {
+            for (int val : row) {
+                if (val == 1) totalOnes++;
+            }
+        }
+        
+        // Each node gets an index
+        match = new int[rows * cols];
+        Arrays.fill(match, -1);
+        
+        int result = 0;
+        
+        // Try matching from one side (checkerboard pattern)
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (grid[i][j] == 1 && (i + j) % 2 == 0) {
+                    visited = new boolean[rows * cols];
+                    if (dfs(i, j)) {
+                        result++;
+                    }
+                }
+            }
+        }
+        
+        // Each operation removes 2 ones
+        if (result * 2 != totalOnes) return -1;
+        return result;
+    }
+    
+    private boolean dfs(int i, int j) {
+        for (int[] d : directions) {
+            int ni = i + d[0];
+            int nj = j + d[1];
+            
+            if (ni >= 0 && nj >= 0 && ni < rows && nj < cols && grid[ni][nj] == 1) {
+                int idx = ni * cols + nj;
+                
+                if (visited[idx]) continue;
+                visited[idx] = true;
+                
+                if (match[idx] == -1 || dfs(match[idx] / cols, match[idx] % cols)) {
+                    match[idx] = i * cols + j;
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+}
