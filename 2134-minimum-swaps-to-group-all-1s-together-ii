@@ -1,0 +1,31 @@
+class Solution {
+    public int minSwaps(int[] nums) {
+        int n = nums.length;
+
+        int totalOnes = 0;
+        for (int num : nums) {
+            totalOnes += num;
+        }
+
+        // edge case: no swaps needed
+        if (totalOnes == 0 || totalOnes == n) return 0;
+
+        int windowOnes = 0;
+
+        // first window
+        for (int i = 0; i < totalOnes; i++) {
+            windowOnes += nums[i];
+        }
+
+        int maxOnes = windowOnes;
+
+        // sliding window over circular array (simulate with modulo)
+        for (int i = totalOnes; i < n + totalOnes; i++) {
+            windowOnes += nums[i % n];
+            windowOnes -= nums[(i - totalOnes) % n];
+            maxOnes = Math.max(maxOnes, windowOnes);
+        }
+
+        return totalOnes - maxOnes;
+    }
+}
