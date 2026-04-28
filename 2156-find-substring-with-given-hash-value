@@ -1,0 +1,37 @@
+class Solution {
+    public String subStrHash(String s, int power, int mod, int k, int hashValue) {
+        int n = s.length();
+        long hash = 0;
+        long pow = 1;
+
+        int ansIndex = 0;
+
+        // compute power^(k-1)
+        for (int i = 0; i < k - 1; i++) {
+            pow = (pow * power) % mod;
+        }
+
+        // compute initial hash (last window)
+        for (int i = n - 1; i >= n - k; i--) {
+            hash = (hash * power + (s.charAt(i) - 'a' + 1)) % mod;
+        }
+
+        if (hash == hashValue) {
+            ansIndex = n - k;
+        }
+
+        // slide window backwards
+        for (int i = n - k - 1; i >= 0; i--) {
+            long remove = (s.charAt(i + k) - 'a' + 1) * pow % mod;
+
+            hash = (hash - remove + mod) % mod;
+            hash = (hash * power + (s.charAt(i) - 'a' + 1)) % mod;
+
+            if (hash == hashValue) {
+                ansIndex = i;
+            }
+        }
+
+        return s.substring(ansIndex, ansIndex + k);
+    }
+}
