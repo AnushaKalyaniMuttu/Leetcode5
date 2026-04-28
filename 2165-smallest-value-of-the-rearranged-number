@@ -1,0 +1,44 @@
+import java.util.*;
+
+class Solution {
+    public long smallestNumber(long num) {
+        if (num == 0) return 0;
+
+        boolean negative = num < 0;
+        num = Math.abs(num);
+
+        List<Integer> digits = new ArrayList<>();
+
+        while (num > 0) {
+            digits.add((int)(num % 10));
+            num /= 10;
+        }
+
+        if (negative) {
+            // maximize magnitude → sort descending
+            digits.sort(Collections.reverseOrder());
+        } else {
+            // minimize number → sort ascending
+            Collections.sort(digits);
+
+            // avoid leading zero
+            if (digits.get(0) == 0) {
+                for (int i = 1; i < digits.size(); i++) {
+                    if (digits.get(i) != 0) {
+                        int temp = digits.get(0);
+                        digits.set(0, digits.get(i));
+                        digits.set(i, temp);
+                        break;
+                    }
+                }
+            }
+        }
+
+        long result = 0;
+        for (int d : digits) {
+            result = result * 10 + d;
+        }
+
+        return negative ? -result : result;
+    }
+}
