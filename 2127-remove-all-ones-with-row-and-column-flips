@@ -1,0 +1,27 @@
+class Solution {
+    public boolean removeOnes(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+
+        for (int i = 1; i < m; i++) {
+            // Check relation with first row
+            boolean same = true;
+            boolean inverse = true;
+
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] != grid[0][j]) {
+                    same = false;
+                }
+                if (grid[i][j] == grid[0][j]) {
+                    inverse = false;
+                }
+            }
+
+            if (!same && !inverse) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
