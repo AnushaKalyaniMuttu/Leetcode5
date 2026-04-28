@@ -1,0 +1,92 @@
+import java.util.*;
+
+class Solution {
+
+    public int[] groupStrings(String[] words) {
+        int n = words.length;
+
+        UnionFind uf = new UnionFind(n);
+
+        Map<Integer, Integer> map = new HashMap<>();
+
+        for (int i = 0; i < n; i++) {
+            int mask = getMask(words[i]);
+
+            // try to merge with existing masks
+            for (int j = 0; j < 26; j++) {
+                if ((mask & (1 << j)) != 0) {
+                    int removed = mask ^ (1 << j);
+                    if (map.containsKey(removed)) {
+                        uf.union(i, map.get(removed));
+                    }
+                }
+            }
+
+            // try replacement (add/remove/replace equivalence)
+            for (int j = 0; j < 26; j++) {
+                int replaced = mask ^ (1 << j);
+                if (map.containsKey(replaced)) {
+                    uf.union(i, map.get(replaced));
+                }
+            }
+
+            map.put(mask, i);
+        }
+
+        int groups = 0;
+        int maxSize = 0;
+
+        for (int i = 0; i < n; i++) {
+            if (uf.find(i) == i) groups++;
+            maxSize = Math.max(maxSize, uf.size[i]);
+        }
+
+        return new int[]{groups, maxSize};
+    }
+
+    private int getMask(String s) {
+        int mask = 0;
+        for (char c : s.toCharArray()) {
+            mask |= (1 << (c - 'a'));
+        }
+        return mask;
+    }
+
+    class UnionFind {
+        int[] parent;
+        int[] size;
+
+        UnionFind(int n) {
+            parent = new int[n];
+            size = new int[n];
+
+            for (int i = 0; i < n; i++) {
+                parent[i] = i;
+                size[i] = 1;
+            }
+        }
+
+        int find(int x) {
+            if (parent[x] != x) {
+                parent[x] = find(parent[x]);
+            }
+            return parent[x];
+        }
+
+        void union(int a, int b) {
+            int pa = find(a);
+            int pb = find(b);
+
+            if (pa == pb) return;
+
+            if (size[pa] < size[pb]) {
+                int temp = pa;
+                pa = pb;
+                pb = temp;
+            }
+
+            parent[pb] = pa;
+            size[pa] += size[pb];
+        }
+    }
+}
