@@ -1,0 +1,33 @@
+class Solution {
+    public int maximumGood(int[][] statements) {
+        int n = statements.length;
+        int maxGood = 0;
+
+        int limit = 1 << n;
+
+        for (int mask = 0; mask < limit; mask++) {
+            if (isValid(mask, statements, n)) {
+                maxGood = Math.max(maxGood, Integer.bitCount(mask));
+            }
+        }
+
+        return maxGood;
+    }
+
+    private boolean isValid(int mask, int[][] statements, int n) {
+        for (int i = 0; i < n; i++) {
+            if (((mask >> i) & 1) == 0) continue; // person i is bad
+
+            for (int j = 0; j < n; j++) {
+                int val = statements[i][j];
+                if (val == 2) continue;
+
+                int isGood = (mask >> j) & 1;
+
+                if (val == 1 && isGood == 0) return false;
+                if (val == 0 && isGood == 1) return false;
+            }
+        }
+        return true;
+    }
+}
