@@ -1,0 +1,42 @@
+import java.util.*;
+
+class Solution {
+    public int minimumLines(int[][] points) {
+        int n = points.length;
+        if (n <= 2) return n - 1;
+
+        int res = n;
+
+        for (int i = 0; i < n; i++) {
+            Set<String> slopes = new HashSet<>();
+
+            for (int j = 0; j < n; j++) {
+                if (i == j) continue;
+
+                int dx = points[j][0] - points[i][0];
+                int dy = points[j][1] - points[i][1];
+
+                int g = gcd(dx, dy);
+                dx /= g;
+                dy /= g;
+
+                // normalize sign
+                if (dx < 0) {
+                    dx = -dx;
+                    dy = -dy;
+                }
+
+                slopes.add(dy + "/" + dx);
+            }
+
+            res = Math.min(res, slopes.size());
+        }
+
+        return res;
+    }
+
+    private int gcd(int a, int b) {
+        if (b == 0) return a;
+        return gcd(b, a % b);
+    }
+}
