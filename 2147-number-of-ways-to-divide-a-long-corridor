@@ -1,0 +1,43 @@
+class Solution {
+    public int numberOfWays(String corridor) {
+        int MOD = 1_000_000_007;
+
+        int seats = 0;
+        long result = 1;
+
+        int i = 0, n = corridor.length();
+
+        // count total seats
+        for (char c : corridor.toCharArray()) {
+            if (c == 'S') seats++;
+        }
+
+        if (seats == 0 || seats % 2 != 0) return 0;
+
+        int seatCount = 0;
+        int plantCount = 0;
+
+        boolean started = false;
+
+        for (char c : corridor.toCharArray()) {
+            if (c == 'S') {
+                seatCount++;
+
+                if (seatCount == 2) {
+                    started = true;
+                    seatCount = 0;
+                } else if (seatCount == 1 && started) {
+                    // new section starts, use previous plants
+                    result = (result * (plantCount + 1)) % MOD;
+                    plantCount = 0;
+                }
+            } else {
+                if (started && seatCount == 0) {
+                    plantCount++;
+                }
+            }
+        }
+
+        return (int) result;
+    }
+}
