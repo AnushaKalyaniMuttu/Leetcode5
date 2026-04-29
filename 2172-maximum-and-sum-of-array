@@ -1,0 +1,46 @@
+class Solution {
+    public int maximumANDSum(int[] nums, int numSlots) {
+        int totalStates = 1;
+        for (int i = 0; i < numSlots; i++) {
+            totalStates *= 3;
+        }
+
+        int[] dp = new int[totalStates];
+
+        for (int mask = 0; mask < totalStates; mask++) {
+            int used = 0;
+            int temp = mask;
+
+            for (int i = 0; i < numSlots; i++) {
+                used += temp % 3;
+                temp /= 3;
+            }
+
+            if (used >= nums.length) {
+                continue;
+            }
+
+            temp = mask;
+            int power = 1;
+
+            for (int slot = 1; slot <= numSlots; slot++) {
+                int count = temp % 3;
+
+                if (count < 2) {
+                    int nextMask = mask + power;
+                    dp[nextMask] = Math.max(dp[nextMask], dp[mask] + (nums[used] & slot));
+                }
+
+                temp /= 3;
+                power *= 3;
+            }
+        }
+
+        int ans = 0;
+        for (int val : dp) {
+            ans = Math.max(ans, val);
+        }
+
+        return ans;
+    }
+}
