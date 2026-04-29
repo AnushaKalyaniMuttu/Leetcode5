@@ -1,0 +1,23 @@
+import java.util.Arrays;
+
+class Solution {
+    public long minimumRemoval(int[] beans) {
+        Arrays.sort(beans);
+        long total = 0;
+        
+        for (int bean : beans) {
+            total += bean;
+        }
+
+        long ans = Long.MAX_VALUE;
+        int n = beans.length;
+
+        for (int i = 0; i < n; i++) {
+            long keep = (long) beans[i] * (n - i);
+            long remove = total - keep;
+            ans = Math.min(ans, remove);
+        }
+
+        return ans;
+    }
+}
