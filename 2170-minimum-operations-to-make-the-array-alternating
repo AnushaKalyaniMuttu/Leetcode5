@@ -1,0 +1,49 @@
+import java.util.HashMap;
+import java.util.Map;
+
+class Solution {
+    public int minimumOperations(int[] nums) {
+        Map<Integer, Integer> evenMap = new HashMap<>();
+        Map<Integer, Integer> oddMap = new HashMap<>();
+
+        for (int i = 0; i < nums.length; i++) {
+            if (i % 2 == 0) {
+                evenMap.put(nums[i], evenMap.getOrDefault(nums[i], 0) + 1);
+            } else {
+                oddMap.put(nums[i], oddMap.getOrDefault(nums[i], 0) + 1);
+            }
+        }
+
+        int[] evenTop1 = getTopTwo(evenMap)[0];
+        int[] evenTop2 = getTopTwo(evenMap)[1];
+        int[] oddTop1 = getTopTwo(oddMap)[0];
+        int[] oddTop2 = getTopTwo(oddMap)[1];
+
+        if (evenTop1[0] != oddTop1[0]) {
+            return nums.length - evenTop1[1] - oddTop1[1];
+        }
+
+        return Math.min(
+            nums.length - evenTop1[1] - oddTop2[1],
+            nums.length - evenTop2[1] - oddTop1[1]
+        );
+    }
+
+    private int[][] getTopTwo(Map<Integer, Integer> map) {
+        int[][] res = new int[][] { {-1, 0}, {-1, 0} }; // {value, freq}
+
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            int val = entry.getKey();
+            int freq = entry.getValue();
+
+            if (freq > res[0][1]) {
+                res[1] = res[0];
+                res[0] = new int[] { val, freq };
+            } else if (freq > res[1][1]) {
+                res[1] = new int[] { val, freq };
+            }
+        }
+
+        return res;
+    }
+}
