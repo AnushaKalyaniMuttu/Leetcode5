@@ -1,0 +1,67 @@
+import java.util.*;
+
+class Solution {
+    public long goodTriplets(int[] nums1, int[] nums2) {
+        int n = nums1.length;
+
+        // pos[x] = index of value x in nums1
+        int[] pos = new int[n];
+        for (int i = 0; i < n; i++) {
+            pos[nums1[i]] = i;
+        }
+
+        // Convert nums2 values into their positions in nums1
+        int[] arr = new int[n];
+        for (int i = 0; i < n; i++) {
+            arr[i] = pos[nums2[i]];
+        }
+
+        long[] leftSmaller = new long[n];
+        long[] rightGreater = new long[n];
+
+        Fenwick leftTree = new Fenwick(n);
+        for (int i = 0; i < n; i++) {
+            // how many previous positions are smaller than arr[i]
+            leftSmaller[i] = leftTree.query(arr[i]);
+            leftTree.add(arr[i] + 1, 1);
+        }
+
+        Fenwick rightTree = new Fenwick(n);
+        for (int i = n - 1; i >= 0; i--) {
+            // how many later positions are greater than arr[i]
+            rightGreater[i] = rightTree.query(n) - rightTree.query(arr[i] + 1);
+            rightTree.add(arr[i] + 1, 1);
+        }
+
+        long ans = 0;
+        for (int i = 0; i < n; i++) {
+            ans += leftSmaller[i] * rightGreater[i];
+        }
+
+        return ans;
+    }
+
+    static class Fenwick {
+        private final long[] bit;
+
+        Fenwick(int n) {
+            bit = new long[n + 1];
+        }
+
+        void add(int index, long delta) {
+            while (index < bit.length) {
+                bit[index] += delta;
+                index += index & -index;
+            }
+        }
+
+        long query(int index) {
+            long sum = 0;
+            while (index > 0) {
+                sum += bit[index];
+                index -= index & -index;
+            }
+            return sum;
+        }
+    }
+}
