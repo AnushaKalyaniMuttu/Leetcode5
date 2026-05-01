@@ -1,0 +1,8 @@
+SELECT
+    t.team_id,
+    t.name,
+    CAST(ROW_NUMBER() OVER (ORDER BY t.points DESC, t.name ASC) AS SIGNED)
+  - CAST(ROW_NUMBER() OVER (ORDER BY t.points + p.points_change DESC, t.name ASC) AS SIGNED) AS rank_diff
+FROM TeamPoints t
+JOIN PointsChange p
+  ON t.team_id = p.team_id;
