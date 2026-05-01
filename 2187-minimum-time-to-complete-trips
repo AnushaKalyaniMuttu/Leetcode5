@@ -1,0 +1,29 @@
+class Solution {
+    public long minimumTime(int[] time, int totalTrips) {
+        long left = 1;
+        long right = (long) 1e14; // large upper bound
+
+        while (left < right) {
+            long mid = left + (right - left) / 2;
+
+            if (canFinish(time, totalTrips, mid)) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+
+        return left;
+    }
+
+    private boolean canFinish(int[] time, int totalTrips, long t) {
+        long trips = 0;
+
+        for (int bus : time) {
+            trips += t / bus;
+            if (trips >= totalTrips) return true; // early stop
+        }
+
+        return false;
+    }
+}
