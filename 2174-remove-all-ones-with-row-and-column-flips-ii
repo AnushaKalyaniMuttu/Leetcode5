@@ -1,0 +1,55 @@
+import java.util.*;
+
+class Solution {
+    public int removeOnes(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        Map<Integer, Integer> memo = new HashMap<>();
+        int startMask = encode(grid, m, n);
+        return dfs(startMask, m, n, memo);
+    }
+
+    private int dfs(int mask, int m, int n, Map<Integer, Integer> memo) {
+        if (mask == 0) return 0;
+        if (memo.containsKey(mask)) return memo.get(mask);
+
+        int ans = Integer.MAX_VALUE;
+
+        // Try choosing every cell (i, j) that currently contains 1
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                int bit = i * n + j;
+                if ((mask & (1 << bit)) == 0) continue;
+
+                int nextMask = mask;
+
+                // Remove all 1s in row i
+                for (int col = 0; col < n; col++) {
+                    nextMask &= ~(1 << (i * n + col));
+                }
+
+                // Remove all 1s in column j
+                for (int row = 0; row < m; row++) {
+                    nextMask &= ~(1 << (row * n + j));
+                }
+
+                ans = Math.min(ans, 1 + dfs(nextMask, m, n, memo));
+            }
+        }
+
+        memo.put(mask, ans);
+        return ans;
+    }
+
+    private int encode(int[][] grid, int m, int n) {
+        int mask = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 1) {
+                    mask |= (1 << (i * n + j));
+                }
+            }
+        }
+        return mask;
+    }
+}
