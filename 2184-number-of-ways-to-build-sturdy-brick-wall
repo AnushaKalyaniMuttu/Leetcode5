@@ -1,0 +1,60 @@
+import java.util.*;
+
+class Solution {
+    private static final int MOD = 1_000_000_007;
+
+    public int buildWall(int height, int width, int[] bricks) {
+        List<Integer> rows = new ArrayList<>();
+        buildRows(width, bricks, 0, rows);
+
+        int n = rows.size();
+        List<Integer>[] graph = new ArrayList[n];
+        for (int i = 0; i < n; i++) {
+            graph[i] = new ArrayList<>();
+        }
+
+        // Two rows are compatible if their internal seams do not overlap.
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if ((rows.get(i) & rows.get(j)) == 0) {
+                    graph[i].add(j);
+                }
+            }
+        }
+
+        long[] dp = new long[n];
+        Arrays.fill(dp, 1L); // height = 1
+
+        for (int h = 2; h <= height; h++) {
+            long[] next = new long[n];
+            for (int i = 0; i < n; i++) {
+                for (int prev : graph[i]) {
+                    next[i] += dp[prev];
+                    if (next[i] >= MOD) {
+                        next[i] %= MOD;
+                    }
+                }
+            }
+            dp = next;
+        }
+
+        long ans = 0;
+        for (long ways : dp) {
+            ans += ways;
+            ans %= MOD;
+        }
+        return (int) ans;
+    }
+
+    private void buildRows(int width, int[] bricks, int mask, List<Integer> rows) {
+        for (int brick : bricks) {
+            if (brick == width) {
+                rows.add(mask);
+            } else if (brick < width) {
+                int remaining = width - brick;
+                // Mark the seam after placing this brick.
+                buildRows(remaining, bricks, mask | (1 << remaining), rows);
+            }
+        }
+    }
+}
