@@ -1,0 +1,46 @@
+import java.util.*;
+
+class Solution {
+    public int minimumFinishTime(int[][] tires, int changeTime, int numLaps) {
+        final int INF = 1_000_000_000;
+
+        // best[k] = minimum time to finish exactly k consecutive laps using one tire
+        int[] best = new int[numLaps + 1];
+        Arrays.fill(best, INF);
+
+        for (int[] tire : tires) {
+            long f = tire[0];
+            long r = tire[1];
+
+            long lapTime = f;
+            long total = 0;
+
+            for (int k = 1; k <= numLaps; k++) {
+                total += lapTime;
+                best[k] = Math.min(best[k], (int) total);
+
+                // Stop when continuing with same tire is worse than changing to a fresh tire
+                if (lapTime * r > f + changeTime) {
+                    break;
+                }
+
+                lapTime *= r;
+            }
+        }
+
+        // dp[i] = minimum time to finish i laps
+        int[] dp = new int[numLaps + 1];
+        Arrays.fill(dp, INF);
+        dp[0] = 0;
+
+        for (int i = 1; i <= numLaps; i++) {
+            for (int k = 1; k <= i; k++) {
+                if (best[k] == INF) continue;
+                dp[i] = Math.min(dp[i], dp[i - k] + best[k] + changeTime);
+            }
+        }
+
+        // No need to pay changeTime after the final segment
+        return dp[numLaps] - changeTime;
+    }
+}
