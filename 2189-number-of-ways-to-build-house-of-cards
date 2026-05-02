@@ -1,0 +1,16 @@
+class Solution {
+    public int houseOfCards(int n) {
+        int[] dp = new int[n + 1];
+        dp[0] = 1;
+
+        // Possible row card counts: 2, 5, 8, 11, ...
+        for (int cards = 2; cards <= n; cards += 3) {
+            for (int sum = n; sum >= cards; sum--) {
+                dp[sum] += dp[sum - cards];
+            }
+        }
+
+        // Exclude the empty selection, because a house must have at least one row
+        return dp[n];
+    }
+}
