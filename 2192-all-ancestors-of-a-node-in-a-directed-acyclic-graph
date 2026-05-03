@@ -1,0 +1,56 @@
+import java.util.*;
+
+class Solution {
+    public List<List<Integer>> getAncestors(int n, int[][] edges) {
+        List<List<Integer>> graph = new ArrayList<>();
+        int[] indegree = new int[n];
+
+        for (int i = 0; i < n; i++) {
+            graph.add(new ArrayList<>());
+        }
+
+        // Build graph
+        for (int[] e : edges) {
+            graph.get(e[0]).add(e[1]);
+            indegree[e[1]]++;
+        }
+
+        // Ancestor sets
+        List<Set<Integer>> ancestors = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            ancestors.add(new TreeSet<>());
+        }
+
+        // Topological BFS
+        Queue<Integer> queue = new LinkedList<>();
+        for (int i = 0; i < n; i++) {
+            if (indegree[i] == 0) {
+                queue.offer(i);
+            }
+        }
+
+        while (!queue.isEmpty()) {
+            int node = queue.poll();
+
+            for (int nei : graph.get(node)) {
+                // Add current node as ancestor
+                ancestors.get(nei).add(node);
+                // Add all ancestors of current node
+                ancestors.get(nei).addAll(ancestors.get(node));
+
+                indegree[nei]--;
+                if (indegree[nei] == 0) {
+                    queue.offer(nei);
+                }
+            }
+        }
+
+        // Convert to List<List<Integer>>
+        List<List<Integer>> result = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            result.add(new ArrayList<>(ancestors.get(i)));
+        }
+
+        return result;
+    }
+}
