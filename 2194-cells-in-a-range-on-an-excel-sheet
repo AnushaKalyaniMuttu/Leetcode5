@@ -1,0 +1,20 @@
+import java.util.*;
+
+class Solution {
+    public List<String> cellsInRange(String s) {
+        List<String> result = new ArrayList<>();
+
+        char colStart = s.charAt(0);
+        char rowStart = s.charAt(1);
+        char colEnd = s.charAt(3);
+        char rowEnd = s.charAt(4);
+
+        for (char col = colStart; col <= colEnd; col++) {
+            for (char row = rowStart; row <= rowEnd; row++) {
+                result.add("" + col + row);
+            }
+        }
+
+        return result;
+    }
+}
