@@ -1,0 +1,23 @@
+class Solution {
+    public int maximumTop(int[] nums, int k) {
+        int n = nums.length;
+
+        if (n == 1) {
+            return k % 2 == 1 ? -1 : nums[0];
+        }
+
+        int ans = -1;
+
+        // We can remove up to k-1 elements and put one back on top
+        for (int i = 0; i < Math.min(n, k - 1); i++) {
+            ans = Math.max(ans, nums[i]);
+        }
+
+        // Or remove exactly k elements, making nums[k] the top
+        if (k < n) {
+            ans = Math.max(ans, nums[k]);
+        }
+
+        return ans;
+    }
+}
