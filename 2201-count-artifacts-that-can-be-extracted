@@ -1,0 +1,33 @@
+import java.util.*;
+
+class Solution {
+    public int digArtifacts(int n, int[][] artifacts, int[][] dig) {
+        Set<Integer> dug = new HashSet<>();
+
+        // Store dug cells as encoded values
+        for (int[] d : dig) {
+            dug.add(d[0] * n + d[1]);
+        }
+
+        int count = 0;
+
+        // Check each artifact
+        for (int[] a : artifacts) {
+            int r1 = a[0], c1 = a[1], r2 = a[2], c2 = a[3];
+            boolean canExtract = true;
+
+            for (int r = r1; r <= r2 && canExtract; r++) {
+                for (int c = c1; c <= c2; c++) {
+                    if (!dug.contains(r * n + c)) {
+                        canExtract = false;
+                        break;
+                    }
+                }
+            }
+
+            if (canExtract) count++;
+        }
+
+        return count;
+    }
+}
