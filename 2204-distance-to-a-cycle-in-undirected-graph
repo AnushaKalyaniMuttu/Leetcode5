@@ -1,0 +1,67 @@
+import java.util.*;
+
+class Solution {
+    public int[] distanceToCycle(int n, int[][] edges) {
+        List<Integer>[] graph = new ArrayList[n];
+        int[] degree = new int[n];
+
+        for (int i = 0; i < n; i++) {
+            graph[i] = new ArrayList<>();
+        }
+
+        for (int[] e : edges) {
+            int u = e[0], v = e[1];
+            graph[u].add(v);
+            graph[v].add(u);
+            degree[u]++;
+            degree[v]++;
+        }
+
+        Queue<Integer> queue = new LinkedList<>();
+        boolean[] inCycle = new boolean[n];
+        Arrays.fill(inCycle, true);
+
+        for (int i = 0; i < n; i++) {
+            if (degree[i] == 1) {
+                queue.offer(i);
+            }
+        }
+
+        while (!queue.isEmpty()) {
+            int node = queue.poll();
+            inCycle[node] = false;
+
+            for (int nei : graph[node]) {
+                degree[nei]--;
+                if (degree[nei] == 1) {
+                    queue.offer(nei);
+                }
+            }
+        }
+
+        int[] dist = new int[n];
+        Arrays.fill(dist, -1);
+
+        queue.clear();
+
+        for (int i = 0; i < n; i++) {
+            if (inCycle[i]) {
+                dist[i] = 0;
+                queue.offer(i);
+            }
+        }
+
+        while (!queue.isEmpty()) {
+            int node = queue.poll();
+
+            for (int nei : graph[node]) {
+                if (dist[nei] == -1) {
+                    dist[nei] = dist[node] + 1;
+                    queue.offer(nei);
+                }
+            }
+        }
+
+        return dist;
+    }
+}
