@@ -1,0 +1,78 @@
+import java.util.*;
+
+class Solution {
+    static class Edge {
+        int to;
+        long w;
+
+        Edge(int to, long w) {
+            this.to = to;
+            this.w = w;
+        }
+    }
+
+    public long minimumWeight(int n, int[][] edges, int src1, int src2, int dest) {
+        List<Edge>[] graph = new ArrayList[n];
+        List<Edge>[] reverse = new ArrayList[n];
+
+        for (int i = 0; i < n; i++) {
+            graph[i] = new ArrayList<>();
+            reverse[i] = new ArrayList<>();
+        }
+
+        for (int[] e : edges) {
+            int u = e[0], v = e[1], w = e[2];
+            graph[u].add(new Edge(v, w));
+            reverse[v].add(new Edge(u, w));
+        }
+
+        long[] dist1 = dijkstra(graph, src1);
+        long[] dist2 = dijkstra(graph, src2);
+        long[] distDest = dijkstra(reverse, dest);
+
+        long ans = Long.MAX_VALUE;
+
+        for (int meet = 0; meet < n; meet++) {
+            if (dist1[meet] == Long.MAX_VALUE ||
+                dist2[meet] == Long.MAX_VALUE ||
+                distDest[meet] == Long.MAX_VALUE) {
+                continue;
+            }
+
+            ans = Math.min(ans, dist1[meet] + dist2[meet] + distDest[meet]);
+        }
+
+        return ans == Long.MAX_VALUE ? -1 : ans;
+    }
+
+    private long[] dijkstra(List<Edge>[] graph, int source) {
+        int n = graph.length;
+        long[] dist = new long[n];
+        Arrays.fill(dist, Long.MAX_VALUE);
+        dist[source] = 0;
+
+        PriorityQueue<long[]> pq = new PriorityQueue<>(
+            Comparator.comparingLong(a -> a[1])
+        );
+
+        pq.offer(new long[]{source, 0});
+
+        while (!pq.isEmpty()) {
+            long[] curr = pq.poll();
+            int node = (int) curr[0];
+            long d = curr[1];
+
+            if (d > dist[node]) continue;
+
+            for (Edge edge : graph[node]) {
+                long nd = d + edge.w;
+                if (nd < dist[edge.to]) {
+                    dist[edge.to] = nd;
+                    pq.offer(new long[]{edge.to, nd});
+                }
+            }
+        }
+
+        return dist;
+    }
+}
