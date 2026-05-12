@@ -1,0 +1,24 @@
+import java.util.*;
+
+class Solution {
+    public int maxValueOfCoins(List<List<Integer>> piles, int k) {
+        int[] dp = new int[k + 1];
+
+        for (List<Integer> pile : piles) {
+            int[] next = dp.clone();
+
+            int prefix = 0;
+            for (int take = 1; take <= Math.min(pile.size(), k); take++) {
+                prefix += pile.get(take - 1);
+
+                for (int coins = take; coins <= k; coins++) {
+                    next[coins] = Math.max(next[coins], dp[coins - take] + prefix);
+                }
+            }
+
+            dp = next;
+        }
+
+        return dp[k];
+    }
+}
