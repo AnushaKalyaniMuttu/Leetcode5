@@ -1,0 +1,23 @@
+class Solution {
+    public long maximumSubsequenceCount(String text, String pattern) {
+        char a = pattern.charAt(0);
+        char b = pattern.charAt(1);
+
+        long countA = 0;
+        long countB = 0;
+        long result = 0;
+
+        for (char c : text.toCharArray()) {
+            if (c == b) {
+                result += countA; // existing subsequences
+                countB++;
+            }
+            if (c == a) {
+                countA++;
+            }
+        }
+
+        // Add best possible insertion
+        return result + Math.max(countA, countB);
+    }
+}
