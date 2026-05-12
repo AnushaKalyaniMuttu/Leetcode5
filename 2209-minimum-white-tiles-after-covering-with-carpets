@@ -1,0 +1,30 @@
+class Solution {
+    public int minimumWhiteTiles(String floor, int numCarpets, int carpetLen) {
+        int n = floor.length();
+        Integer[][] memo = new Integer[n][numCarpets + 1];
+        return dfs(0, numCarpets, floor, carpetLen, memo);
+    }
+
+    private int dfs(int i, int carpets, String floor, int len, Integer[][] memo) {
+        if (i >= floor.length()) return 0;
+        if (carpets == 0) {
+            // count remaining white tiles
+            int count = 0;
+            for (int j = i; j < floor.length(); j++) {
+                if (floor.charAt(j) == '1') count++;
+            }
+            return count;
+        }
+
+        if (memo[i][carpets] != null) return memo[i][carpets];
+
+        // Option 1: don't cover this tile
+        int notCover = (floor.charAt(i) == '1' ? 1 : 0)
+                     + dfs(i + 1, carpets, floor, len, memo);
+
+        // Option 2: place carpet
+        int cover = dfs(i + len, carpets - 1, floor, len, memo);
+
+        return memo[i][carpets] = Math.min(notCover, cover);
+    }
+}
