@@ -1,0 +1,15 @@
+class Solution {
+    public long minimumHealth(int[] damage, int armor) {
+        long totalDamage = 0;
+        int maxDamage = 0;
+
+        for (int d : damage) {
+            totalDamage += d;
+            maxDamage = Math.max(maxDamage, d);
+        }
+
+        long blocked = Math.min(maxDamage, armor);
+
+        return totalDamage - blocked + 1;
+    }
+}
