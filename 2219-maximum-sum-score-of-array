@@ -1,0 +1,17 @@
+class Solution {
+    public long maximumSumScore(int[] nums) {
+        long total = 0;
+        for (int num : nums) total += num;
+
+        long prefix = 0;
+        long ans = Long.MIN_VALUE;
+
+        for (int num : nums) {
+            prefix += num;
+            long suffix = total - prefix + num; // sum from current index to end
+            ans = Math.max(ans, Math.max(prefix, suffix));
+        }
+
+        return ans;
+    }
+}
