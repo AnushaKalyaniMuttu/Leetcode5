@@ -1,0 +1,21 @@
+import java.util.*;
+
+class Solution {
+    public boolean isConsecutive(int[] nums) {
+        int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
+
+        Set<Integer> set = new HashSet<>();
+
+        for (int num : nums) {
+            min = Math.min(min, num);
+            max = Math.max(max, num);
+
+            if (!set.add(num)) {
+                return false; // duplicate found
+            }
+        }
+
+        return max - min + 1 == nums.length;
+    }
+}
