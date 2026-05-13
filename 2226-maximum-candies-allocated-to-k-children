@@ -1,0 +1,37 @@
+class Solution {
+    public int maximumCandies(int[] candies, long k) {
+        int left = 1;
+        int right = 0;
+
+        // find max pile
+        for (int c : candies) {
+            right = Math.max(right, c);
+        }
+
+        int ans = 0;
+
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+
+            if (canDistribute(candies, k, mid)) {
+                ans = mid;        // valid, try bigger
+                left = mid + 1;
+            } else {
+                right = mid - 1;  // too big
+            }
+        }
+
+        return ans;
+    }
+
+    private boolean canDistribute(int[] candies, long k, int size) {
+        long count = 0;
+
+        for (int c : candies) {
+            count += c / size;
+            if (count >= k) return true;
+        }
+
+        return false;
+    }
+}
