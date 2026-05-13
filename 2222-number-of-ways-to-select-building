@@ -1,0 +1,37 @@
+class Solution {
+    public long numberOfWays(String s) {
+        int n = s.length();
+
+        long[] prefix0 = new long[n];
+        long[] prefix1 = new long[n];
+
+        // Build prefix counts
+        if (s.charAt(0) == '0') prefix0[0] = 1;
+        else prefix1[0] = 1;
+
+        for (int i = 1; i < n; i++) {
+            prefix0[i] = prefix0[i - 1];
+            prefix1[i] = prefix1[i - 1];
+
+            if (s.charAt(i) == '0') prefix0[i]++;
+            else prefix1[i]++;
+        }
+
+        long result = 0;
+
+        // Count patterns "010" and "101"
+        for (int i = 1; i < n - 1; i++) {
+            if (s.charAt(i) == '0') {
+                long left1 = prefix1[i - 1];
+                long right1 = prefix1[n - 1] - prefix1[i];
+                result += left1 * right1; // "101"
+            } else {
+                long left0 = prefix0[i - 1];
+                long right0 = prefix0[n - 1] - prefix0[i];
+                result += left0 * right0; // "010"
+            }
+        }
+
+        return result;
+    }
+}
