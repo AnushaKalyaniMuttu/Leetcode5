@@ -1,0 +1,76 @@
+class Solution {
+    public int maxTrailingZeros(int[][] grid) {
+        int m = grid.length, n = grid[0].length;
+
+        int[][] two = new int[m][n];
+        int[][] five = new int[m][n];
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                int x = grid[i][j];
+
+                while (x % 2 == 0) {
+                    two[i][j]++;
+                    x /= 2;
+                }
+
+                while (x % 5 == 0) {
+                    five[i][j]++;
+                    x /= 5;
+                }
+            }
+        }
+
+        int[][] row2 = new int[m + 1][n + 1];
+        int[][] row5 = new int[m + 1][n + 1];
+        int[][] col2 = new int[m + 1][n + 1];
+        int[][] col5 = new int[m + 1][n + 1];
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                row2[i + 1][j + 1] = row2[i + 1][j] + two[i][j];
+                row5[i + 1][j + 1] = row5[i + 1][j] + five[i][j];
+
+                col2[i + 1][j + 1] = col2[i][j + 1] + two[i][j];
+                col5[i + 1][j + 1] = col5[i][j + 1] + five[i][j];
+            }
+        }
+
+        int ans = 0;
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+
+                int up2 = col2[i + 1][j + 1];
+                int up5 = col5[i + 1][j + 1];
+
+                int down2 = col2[m][j + 1] - col2[i][j + 1];
+                int down5 = col5[m][j + 1] - col5[i][j + 1];
+
+                int left2 = row2[i + 1][j + 1];
+                int left5 = row5[i + 1][j + 1];
+
+                int right2 = row2[i + 1][n] - row2[i + 1][j];
+                int right5 = row5[i + 1][n] - row5[i + 1][j];
+
+                ans = Math.max(ans,
+                        Math.min(up2 + left2 - two[i][j],
+                                 up5 + left5 - five[i][j]));
+
+                ans = Math.max(ans,
+                        Math.min(up2 + right2 - two[i][j],
+                                 up5 + right5 - five[i][j]));
+
+                ans = Math.max(ans,
+                        Math.min(down2 + left2 - two[i][j],
+                                 down5 + left5 - five[i][j]));
+
+                ans = Math.max(ans,
+                        Math.min(down2 + right2 - two[i][j],
+                                 down5 + right5 - five[i][j]));
+            }
+        }
+
+        return ans;
+    }
+}
