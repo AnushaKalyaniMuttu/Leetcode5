@@ -1,0 +1,35 @@
+import java.util.*;
+
+class CountIntervals {
+
+    private final TreeMap<Integer, Integer> intervals;
+    private long count;
+
+    public CountIntervals() {
+        intervals = new TreeMap<>();
+        count = 0;
+    }
+
+    public void add(int left, int right) {
+        Integer start = intervals.floorKey(right);
+
+        while (start != null && intervals.get(start) >= left) {
+            int end = intervals.get(start);
+
+            left = Math.min(left, start);
+            right = Math.max(right, end);
+
+            count -= (long) end - start + 1;
+            intervals.remove(start);
+
+            start = intervals.floorKey(right);
+        }
+
+        intervals.put(left, right);
+        count += (long) right - left + 1;
+    }
+
+    public int count() {
+        return (int) count;
+    }
+}
