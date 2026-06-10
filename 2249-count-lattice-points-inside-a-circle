@@ -1,0 +1,27 @@
+class Solution {
+    public int countLatticePoints(int[][] circles) {
+        boolean[][] seen = new boolean[201][201];
+
+        for (int[] c : circles) {
+            int x = c[0], y = c[1], r = c[2];
+
+            for (int i = x - r; i <= x + r; i++) {
+                for (int j = y - r; j <= y + r; j++) {
+                    if ((i - x) * (i - x) + (j - y) * (j - y) <= r * r) {
+                        seen[i][j] = true;
+                    }
+                }
+            }
+        }
+
+        int ans = 0;
+
+        for (int i = 0; i <= 200; i++) {
+            for (int j = 0; j <= 200; j++) {
+                if (seen[i][j]) ans++;
+            }
+        }
+
+        return ans;
+    }
+}
