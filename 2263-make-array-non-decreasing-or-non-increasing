@@ -1,0 +1,33 @@
+import java.util.*;
+
+class Solution {
+    public int convertArray(int[] nums) {
+        return Math.min(cost(nums), cost(reverseSign(nums)));
+    }
+
+    private int cost(int[] nums) {
+        PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());
+        int ans = 0;
+
+        for (int num : nums) {
+            pq.offer(num);
+
+            if (pq.peek() > num) {
+                ans += pq.poll() - num;
+                pq.offer(num);
+            }
+        }
+
+        return ans;
+    }
+
+    private int[] reverseSign(int[] nums) {
+        int[] arr = new int[nums.length];
+
+        for (int i = 0; i < nums.length; i++) {
+            arr[i] = -nums[i];
+        }
+
+        return arr;
+    }
+}
