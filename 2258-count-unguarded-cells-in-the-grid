@@ -1,0 +1,101 @@
+import java.util.*;
+
+class Solution {
+    private final int INF = 1_000_000_000;
+    private final int[][] dirs = {{1,0},{-1,0},{0,1},{0,-1}};
+
+    public int maximumMinutes(int[][] grid) {
+        int m = grid.length, n = grid[0].length;
+
+        int[][] fire = new int[m][n];
+        for (int[] row : fire) Arrays.fill(row, INF);
+
+        Queue<int[]> q = new LinkedList<>();
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 1) {
+                    fire[i][j] = 0;
+                    q.offer(new int[]{i, j});
+                }
+            }
+        }
+
+        bfsFire(grid, fire, q);
+
+        int left = 0, right = 1_000_000_000;
+        int ans = -1;
+
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+
+            if (canEscape(grid, fire, mid)) {
+                ans = mid;
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+
+        return ans;
+    }
+
+    private void bfsFire(int[][] grid, int[][] fire, Queue<int[]> q) {
+        int m = grid.length, n = grid[0].length;
+
+        while (!q.isEmpty()) {
+            int[] cur = q.poll();
+            int r = cur[0], c = cur[1];
+
+            for (int[] d : dirs) {
+                int nr = r + d[0];
+                int nc = c + d[1];
+
+                if (nr < 0 || nr >= m || nc < 0 || nc >= n) continue;
+                if (grid[nr][nc] == 2 || fire[nr][nc] != INF) continue;
+
+                fire[nr][nc] = fire[r][c] + 1;
+                q.offer(new int[]{nr, nc});
+            }
+        }
+    }
+
+    private boolean canEscape(int[][] grid, int[][] fire, int wait) {
+        int m = grid.length, n = grid[0].length;
+
+        if (wait >= fire[0][0]) return false;
+
+        Queue<int[]> q = new LinkedList<>();
+        boolean[][] seen = new boolean[m][n];
+
+        q.offer(new int[]{0, 0, wait});
+        seen[0][0] = true;
+
+        while (!q.isEmpty()) {
+            int[] cur = q.poll();
+            int r = cur[0], c = cur[1], time = cur[2];
+
+            if (r == m - 1 && c == n - 1) return true;
+
+            for (int[] d : dirs) {
+                int nr = r + d[0];
+                int nc = c + d[1];
+                int nextTime = time + 1;
+
+                if (nr < 0 || nr >= m || nc < 0 || nc >= n) continue;
+                if (grid[nr][nc] == 2 || seen[nr][nc]) continue;
+
+                if (nr == m - 1 && nc == n - 1) {
+                    if (nextTime <= fire[nr][nc]) return true;
+                } else {
+                    if (nextTime < fire[nr][nc]) {
+                        seen[nr][nc] = true;
+                        q.offer(new int[]{nr, nc, nextTime});
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+}
