@@ -1,0 +1,41 @@
+class ATM {
+
+    private long[] notes;
+    private final int[] values = {20, 50, 100, 200, 500};
+
+    public ATM() {
+        notes = new long[5];
+    }
+
+    public void deposit(int[] banknotesCount) {
+        for (int i = 0; i < 5; i++) {
+            notes[i] += banknotesCount[i];
+        }
+    }
+
+    public int[] withdraw(int amount) {
+        int[] used = new int[5];
+        long[] temp = notes.clone();
+
+        for (int i = 4; i >= 0; i--) {
+            long take = Math.min(temp[i], amount / values[i]);
+            used[i] = (int) take;
+            amount -= take * values[i];
+            temp[i] -= take;
+        }
+
+        if (amount != 0) {
+            return new int[]{-1};
+        }
+
+        notes = temp;
+        return used;
+    }
+}
+
+/**
+ * Your ATM object will be instantiated and called as such:
+ * ATM obj = new ATM();
+ * obj.deposit(banknotesCount);
+ * int[] param_2 = obj.withdraw(amount);
+ */
