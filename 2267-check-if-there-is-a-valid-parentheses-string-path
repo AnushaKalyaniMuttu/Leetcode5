@@ -1,0 +1,55 @@
+class Solution {
+    public boolean hasValidPath(char[][] grid) {
+        int m = grid.length, n = grid[0].length;
+
+        if (grid[0][0] == ')' || grid[m - 1][n - 1] == '(') {
+            return false;
+        }
+
+        int len = m + n - 1;
+        if ((len & 1) == 1) {
+            return false;
+        }
+
+        Boolean[][][] memo = new Boolean[m][n][len + 1];
+
+        return dfs(0, 0, 0, grid, memo);
+    }
+
+    private boolean dfs(int r, int c, int balance,
+                        char[][] grid, Boolean[][][] memo) {
+        int m = grid.length, n = grid[0].length;
+
+        balance += (grid[r][c] == '(' ? 1 : -1);
+
+        if (balance < 0) {
+            return false;
+        }
+
+        if (r == m - 1 && c == n - 1) {
+            return balance == 0;
+        }
+
+        if (memo[r][c][balance] != null) {
+            return memo[r][c][balance];
+        }
+
+        int remaining = (m - 1 - r) + (n - 1 - c);
+
+        if (balance > remaining + 1) {
+            return memo[r][c][balance] = false;
+        }
+
+        boolean ans = false;
+
+        if (r + 1 < m) {
+            ans |= dfs(r + 1, c, balance, grid, memo);
+        }
+
+        if (!ans && c + 1 < n) {
+            ans |= dfs(r, c + 1, balance, grid, memo);
+        }
+
+        return memo[r][c][balance] = ans;
+    }
+}
