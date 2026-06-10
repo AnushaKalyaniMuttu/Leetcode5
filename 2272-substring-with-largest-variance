@@ -1,0 +1,40 @@
+class Solution {
+    public int largestVariance(String s) {
+        int ans = 0;
+
+        for (char a = 'a'; a <= 'z'; a++) {
+            for (char b = 'a'; b <= 'z'; b++) {
+                if (a == b) continue;
+
+                int diff = 0;
+                boolean hasB = false;
+                boolean canExtendPrevB = false;
+
+                for (char c : s.toCharArray()) {
+                    if (c == a) {
+                        diff++;
+                    } else if (c == b) {
+                        diff--;
+                        hasB = true;
+                    } else {
+                        continue;
+                    }
+
+                    if (hasB) {
+                        ans = Math.max(ans, diff);
+                    } else if (canExtendPrevB) {
+                        ans = Math.max(ans, diff - 1);
+                    }
+
+                    if (diff < 0) {
+                        diff = 0;
+                        hasB = false;
+                        canExtendPrevB = true;
+                    }
+                }
+            }
+        }
+
+        return ans;
+    }
+}
