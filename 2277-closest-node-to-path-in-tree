@@ -1,0 +1,64 @@
+import java.util.*;
+
+class Solution {
+    public int[] closestNode(int n, int[][] edges, int[][] query) {
+        List<Integer>[] graph = new ArrayList[n];
+        for (int i = 0; i < n; i++) graph[i] = new ArrayList<>();
+
+        for (int[] e : edges) {
+            graph[e[0]].add(e[1]);
+            graph[e[1]].add(e[0]);
+        }
+
+        int[][] dist = new int[n][n];
+
+        for (int i = 0; i < n; i++) {
+            Arrays.fill(dist[i], -1);
+            dfsDist(i, i, 0, graph, dist);
+        }
+
+        int[] ans = new int[query.length];
+
+        for (int i = 0; i < query.length; i++) {
+            int start = query[i][0];
+            int end = query[i][1];
+            int node = query[i][2];
+
+            int best = start;
+            int curr = start;
+            int parent = -1;
+
+            while (curr != end) {
+                if (dist[curr][node] < dist[best][node]) {
+                    best = curr;
+                }
+
+                for (int next : graph[curr]) {
+                    if (next != parent && dist[next][end] < dist[curr][end]) {
+                        parent = curr;
+                        curr = next;
+                        break;
+                    }
+                }
+            }
+
+            if (dist[end][node] < dist[best][node]) {
+                best = end;
+            }
+
+            ans[i] = best;
+        }
+
+        return ans;
+    }
+
+    private void dfsDist(int root, int curr, int d, List<Integer>[] graph, int[][] dist) {
+        dist[root][curr] = d;
+
+        for (int next : graph[curr]) {
+            if (dist[root][next] == -1) {
+                dfsDist(root, next, d + 1, graph, dist);
+            }
+        }
+    }
+}
