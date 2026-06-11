@@ -1,0 +1,33 @@
+class Solution {
+    public String discountPrices(String sentence, int discount) {
+        String[] words = sentence.split(" ");
+
+        for (int i = 0; i < words.length; i++) {
+            String word = words[i];
+
+            if (isPrice(word)) {
+                long price = Long.parseLong(word.substring(1));
+
+                double discountedPrice = price * (100.0 - discount) / 100.0;
+
+                words[i] = String.format("$%.2f", discountedPrice);
+            }
+        }
+
+        return String.join(" ", words);
+    }
+
+    private boolean isPrice(String s) {
+        if (s.length() < 2 || s.charAt(0) != '$') {
+            return false;
+        }
+
+        for (int i = 1; i < s.length(); i++) {
+            if (!Character.isDigit(s.charAt(i))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
