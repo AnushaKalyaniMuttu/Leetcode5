@@ -1,0 +1,28 @@
+class Solution {
+    public int totalSteps(int[] nums) {
+        int n = nums.length;
+        int ans = 0;
+
+        Stack<int[]> stack = new Stack<>();
+        // {value, steps}
+
+        for (int num : nums) {
+            int steps = 0;
+
+            while (!stack.isEmpty() && num >= stack.peek()[0]) {
+                steps = Math.max(steps, stack.pop()[1]);
+            }
+
+            if (stack.isEmpty()) {
+                steps = 0;
+            } else {
+                steps += 1;
+            }
+
+            ans = Math.max(ans, steps);
+            stack.push(new int[]{num, steps});
+        }
+
+        return ans;
+    }
+}
