@@ -1,0 +1,27 @@
+import java.util.*;
+
+class Solution {
+    public String largestWordCount(String[] messages, String[] senders) {
+        Map<String, Integer> map = new HashMap<>();
+
+        for (int i = 0; i < messages.length; i++) {
+            int words = messages[i].split(" ").length;
+            map.put(senders[i], map.getOrDefault(senders[i], 0) + words);
+        }
+
+        String ans = "";
+        int maxCount = 0;
+
+        for (String sender : map.keySet()) {
+            int count = map.get(sender);
+
+            if (count > maxCount ||
+                (count == maxCount && sender.compareTo(ans) > 0)) {
+                maxCount = count;
+                ans = sender;
+            }
+        }
+
+        return ans;
+    }
+}
