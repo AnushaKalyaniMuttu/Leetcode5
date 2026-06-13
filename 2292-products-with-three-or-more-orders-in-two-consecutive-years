@@ -1,0 +1,18 @@
+SELECT DISTINCT product_id
+FROM (
+    SELECT product_id,
+           year,
+           LEAD(year) OVER (
+               PARTITION BY product_id
+               ORDER BY year
+           ) AS next_year,
+           order_count,
+           LEAD(order_count) OVER (
+               PARTITION BY product_id
+               ORDER BY year
+           ) AS next_count
+    FROM Orders
+) t
+WHERE order_count >= 3
+  AND next_count >= 3
+  AND next_year = year + 1;
