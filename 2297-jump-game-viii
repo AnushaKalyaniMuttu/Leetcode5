@@ -1,0 +1,41 @@
+import java.util.*;
+
+class Solution {
+    public long minCost(int[] nums, int[] costs) {
+        int n = nums.length;
+
+        long[] dp = new long[n];
+        Arrays.fill(dp, Long.MAX_VALUE);
+        dp[0] = 0;
+
+        Deque<Integer> inc = new ArrayDeque<>();
+        Deque<Integer> dec = new ArrayDeque<>();
+
+        inc.push(0);
+        dec.push(0);
+
+        for (int i = 1; i < n; i++) {
+
+            while (!inc.isEmpty() && nums[inc.peek()] <= nums[i]) {
+                dp[i] = Math.min(dp[i], dp[inc.pop()] + costs[i]);
+            }
+
+            while (!dec.isEmpty() && nums[dec.peek()] > nums[i]) {
+                dp[i] = Math.min(dp[i], dp[dec.pop()] + costs[i]);
+            }
+
+            if (!inc.isEmpty()) {
+                dp[i] = Math.min(dp[i], dp[inc.peek()] + costs[i]);
+            }
+
+            if (!dec.isEmpty()) {
+                dp[i] = Math.min(dp[i], dp[dec.peek()] + costs[i]);
+            }
+
+            inc.push(i);
+            dec.push(i);
+        }
+
+        return dp[n - 1];
+    }
+}
