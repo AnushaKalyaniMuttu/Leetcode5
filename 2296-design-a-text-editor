@@ -1,0 +1,93 @@
+class TextEditor {
+
+    class Node {
+        char ch;
+        Node prev, next;
+
+        Node(char ch) {
+            this.ch = ch;
+        }
+    }
+
+    private Node left;   // dummy head
+    private Node right;  // dummy tail
+    private Node cursor; // node to the left of cursor
+
+    public TextEditor() {
+        left = new Node('#');
+        right = new Node('#');
+
+        left.next = right;
+        right.prev = left;
+
+        cursor = left;
+    }
+
+    public void addText(String text) {
+        for (char c : text.toCharArray()) {
+            Node node = new Node(c);
+
+            node.prev = cursor;
+            node.next = cursor.next;
+
+            cursor.next.prev = node;
+            cursor.next = node;
+
+            cursor = node;
+        }
+    }
+
+    public int deleteText(int k) {
+        int deleted = 0;
+
+        while (cursor != left && k-- > 0) {
+            Node prev = cursor.prev;
+            Node next = cursor.next;
+
+            prev.next = next;
+            next.prev = prev;
+
+            cursor = prev;
+            deleted++;
+        }
+
+        return deleted;
+    }
+
+    public String cursorLeft(int k) {
+        while (cursor != left && k-- > 0) {
+            cursor = cursor.prev;
+        }
+        return getLeftText();
+    }
+
+    public String cursorRight(int k) {
+        while (cursor.next != right && k-- > 0) {
+            cursor = cursor.next;
+        }
+        return getLeftText();
+    }
+
+    private String getLeftText() {
+        StringBuilder sb = new StringBuilder();
+
+        Node curr = cursor;
+        int count = 10;
+
+        while (curr != left && count-- > 0) {
+            sb.append(curr.ch);
+            curr = curr.prev;
+        }
+
+        return sb.reverse().toString();
+    }
+}
+
+/**
+ * Your TextEditor object will be instantiated and called as such:
+ * TextEditor obj = new TextEditor();
+ * obj.addText(text);
+ * int param_2 = obj.deleteText(k);
+ * String param_3 = obj.cursorLeft(k);
+ * String param_4 = obj.cursorRight(k);
+ */
