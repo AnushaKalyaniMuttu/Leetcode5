@@ -1,0 +1,34 @@
+import java.util.*;
+
+class Solution {
+    public boolean matchReplacement(String s, String sub, char[][] mappings) {
+        Map<Character, Set<Character>> map = new HashMap<>();
+
+        for (char[] m : mappings) {
+            map.computeIfAbsent(m[0], k -> new HashSet<>()).add(m[1]);
+        }
+
+        int n = s.length();
+        int m = sub.length();
+
+        for (int start = 0; start <= n - m; start++) {
+            boolean ok = true;
+
+            for (int i = 0; i < m; i++) {
+                char sc = s.charAt(start + i);
+                char tc = sub.charAt(i);
+
+                if (sc == tc) continue;
+
+                if (!map.containsKey(tc) || !map.get(tc).contains(sc)) {
+                    ok = false;
+                    break;
+                }
+            }
+
+            if (ok) return true;
+        }
+
+        return false;
+    }
+}
