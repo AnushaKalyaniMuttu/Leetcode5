@@ -1,0 +1,62 @@
+import java.util.*;
+
+class Solution {
+    private static class UnionFind {
+        Map<String, String> parent = new HashMap<>();
+        Map<String, Double> weight = new HashMap<>();
+
+        public void add(String x) {
+            if (!parent.containsKey(x)) {
+                parent.put(x, x);
+                weight.put(x, 1.0);
+            }
+        }
+
+        public String find(String x) {
+            if (!parent.get(x).equals(x)) {
+                String p = parent.get(x);
+                String root = find(p);
+
+                weight.put(x, weight.get(x) * weight.get(p));
+                parent.put(x, root);
+            }
+            return parent.get(x);
+        }
+
+        public boolean union(String a, String b, double value) {
+            add(a);
+            add(b);
+
+            String rootA = find(a);
+            String rootB = find(b);
+
+            double wa = weight.get(a);
+            double wb = weight.get(b);
+
+            if (rootA.equals(rootB)) {
+                double ratio = wa / wb;
+                return Math.abs(ratio - value) < 1e-5;
+            }
+
+            parent.put(rootA, rootB);
+            weight.put(rootA, value * wb / wa);
+
+            return true;
+        }
+    }
+
+    public boolean checkContradictions(List<List<String>> equations, double[] values) {
+        UnionFind uf = new UnionFind();
+
+        for (int i = 0; i < equations.size(); i++) {
+            String a = equations.get(i).get(0);
+            String b = equations.get(i).get(1);
+
+            if (!uf.union(a, b, values[i])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
