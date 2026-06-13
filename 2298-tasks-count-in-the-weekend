@@ -1,0 +1,15 @@
+class Solution {
+    public int countWeekendDays(int[] days) {
+        int count = 0;
+
+        for (int day : days) {
+            int d = day % 7;
+
+            if (d == 6 || d == 0) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+}
