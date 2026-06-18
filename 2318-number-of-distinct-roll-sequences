@@ -1,0 +1,59 @@
+class Solution {
+    private static final int MOD = 1_000_000_007;
+
+    public int distinctSequences(int n) {
+        if (n == 1) return 6;
+
+        long[][] dp = new long[7][7];
+
+        // Length = 2
+        for (int a = 1; a <= 6; a++) {
+            for (int b = 1; b <= 6; b++) {
+                if (a != b && gcd(a, b) == 1) {
+                    dp[a][b] = 1;
+                }
+            }
+        }
+
+        for (int len = 3; len <= n; len++) {
+            long[][] next = new long[7][7];
+
+            for (int prev2 = 1; prev2 <= 6; prev2++) {
+                for (int prev1 = 1; prev1 <= 6; prev1++) {
+                    long ways = dp[prev2][prev1];
+                    if (ways == 0) continue;
+
+                    for (int cur = 1; cur <= 6; cur++) {
+                        if (cur != prev1 &&
+                            cur != prev2 &&
+                            gcd(cur, prev1) == 1) {
+
+                            next[prev1][cur] =
+                                (next[prev1][cur] + ways) % MOD;
+                        }
+                    }
+                }
+            }
+
+            dp = next;
+        }
+
+        long ans = 0;
+        for (int i = 1; i <= 6; i++) {
+            for (int j = 1; j <= 6; j++) {
+                ans = (ans + dp[i][j]) % MOD;
+            }
+        }
+
+        return (int) ans;
+    }
+
+    private int gcd(int a, int b) {
+        while (b != 0) {
+            int t = a % b;
+            a = b;
+            b = t;
+        }
+        return a;
+    }
+}
