@@ -1,0 +1,19 @@
+class Solution {
+    public int countHousePlacements(int n) {
+        long mod = 1_000_000_007L;
+
+        long a = 1; // ends with empty
+        long b = 1; // ends with house
+
+        for (int i = 2; i <= n; i++) {
+            long newA = (a + b) % mod;
+            long newB = a;
+
+            a = newA;
+            b = newB;
+        }
+
+        long waysOneSide = (a + b) % mod;
+        return (int) ((waysOneSide * waysOneSide) % mod);
+    }
+}
