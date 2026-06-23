@@ -1,0 +1,68 @@
+class Solution {
+    int[] nums, xor, in, out;
+    List<Integer>[] graph;
+    int time = 0;
+
+    public int minimumScore(int[] nums, int[][] edges) {
+        int n = nums.length;
+        this.nums = nums;
+        xor = new int[n];
+        in = new int[n];
+        out = new int[n];
+        graph = new ArrayList[n];
+
+        for (int i = 0; i < n; i++) graph[i] = new ArrayList<>();
+
+        for (int[] e : edges) {
+            graph[e[0]].add(e[1]);
+            graph[e[1]].add(e[0]);
+        }
+
+        dfs(0, -1);
+
+        int ans = Integer.MAX_VALUE;
+
+        for (int i = 1; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                int a, b, c;
+
+                if (isAncestor(i, j)) {
+                    a = xor[j];
+                    b = xor[i] ^ xor[j];
+                    c = xor[0] ^ xor[i];
+                } else if (isAncestor(j, i)) {
+                    a = xor[i];
+                    b = xor[j] ^ xor[i];
+                    c = xor[0] ^ xor[j];
+                } else {
+                    a = xor[i];
+                    b = xor[j];
+                    c = xor[0] ^ xor[i] ^ xor[j];
+                }
+
+                int max = Math.max(a, Math.max(b, c));
+                int min = Math.min(a, Math.min(b, c));
+                ans = Math.min(ans, max - min);
+            }
+        }
+
+        return ans;
+    }
+
+    private void dfs(int node, int parent) {
+        in[node] = time++;
+        xor[node] = nums[node];
+
+        for (int nei : graph[node]) {
+            if (nei == parent) continue;
+            dfs(nei, node);
+            xor[node] ^= xor[nei];
+        }
+
+        out[node] = time++;
+    }
+
+    private boolean isAncestor(int u, int v) {
+        return in[u] < in[v] && out[v] < out[u];
+    }
+}
