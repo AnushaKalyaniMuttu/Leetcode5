@@ -1,0 +1,44 @@
+class Solution {
+    private static final int MOD = 1_000_000_007;
+    private int[][] grid;
+    private int[][] memo;
+    private int m, n;
+
+    public int countPaths(int[][] grid) {
+        this.grid = grid;
+        this.m = grid.length;
+        this.n = grid[0].length;
+        this.memo = new int[m][n];
+
+        long ans = 0;
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                ans = (ans + dfs(i, j)) % MOD;
+            }
+        }
+
+        return (int) ans;
+    }
+
+    private int dfs(int i, int j) {
+        if (memo[i][j] != 0) return memo[i][j];
+
+        long count = 1; // path containing only this cell
+
+        int[][] dirs = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+
+        for (int[] d : dirs) {
+            int x = i + d[0];
+            int y = j + d[1];
+
+            if (x >= 0 && x < m && y >= 0 && y < n 
+                && grid[x][y] > grid[i][j]) {
+                count = (count + dfs(x, y)) % MOD;
+            }
+        }
+
+        memo[i][j] = (int) count;
+        return memo[i][j];
+    }
+}
