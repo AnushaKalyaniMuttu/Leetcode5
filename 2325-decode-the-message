@@ -1,0 +1,30 @@
+class Solution {
+    public String decodeMessage(String key, String message) {
+        char[] map = new char[26];
+        boolean[] seen = new boolean[26];
+
+        char curr = 'a';
+
+        for (char c : key.toCharArray()) {
+            if (c == ' ') continue;
+
+            int idx = c - 'a';
+            if (!seen[idx]) {
+                seen[idx] = true;
+                map[idx] = curr++;
+            }
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        for (char c : message.toCharArray()) {
+            if (c == ' ') {
+                sb.append(' ');
+            } else {
+                sb.append(map[c - 'a']);
+            }
+        }
+
+        return sb.toString();
+    }
+}
