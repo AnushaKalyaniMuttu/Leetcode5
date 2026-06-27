@@ -1,0 +1,51 @@
+class Solution {
+    private static final int MOD = 1_000_000_007;
+
+    public int idealArrays(int n, int maxValue) {
+        int maxLen = 14; // because 2^14 > 10000
+
+        // Pascal's triangle for combinations
+        long[][] comb = new long[n + maxLen][maxLen + 1];
+        for (int i = 0; i < comb.length; i++) {
+            comb[i][0] = 1;
+            for (int j = 1; j <= Math.min(i, maxLen); j++) {
+                if (j == i) {
+                    comb[i][j] = 1;
+                } else {
+                    comb[i][j] = (comb[i - 1][j - 1] + comb[i - 1][j]) % MOD;
+                }
+            }
+        }
+
+        // Smallest prime factor sieve
+        int[] spf = new int[maxValue + 1];
+        for (int i = 2; i <= maxValue; i++) {
+            if (spf[i] == 0) {
+                for (int j = i; j <= maxValue; j += i) {
+                    if (spf[j] == 0) spf[j] = i;
+                }
+            }
+        }
+
+        long ans = 0;
+
+        for (int x = 1; x <= maxValue; x++) {
+            int t = x;
+            long ways = 1;
+
+            while (t > 1) {
+                int p = spf[t];
+                int cnt = 0;
+                while (t % p == 0) {
+                    t /= p;
+                    cnt++;
+                }
+                ways = ways * comb[n - 1 + cnt][cnt] % MOD;
+            }
+
+            ans = (ans + ways) % MOD;
+        }
+
+        return (int) ans;
+    }
+}
