@@ -1,0 +1,27 @@
+class Solution {
+    public int minimumSwaps(int[] nums) {
+        int n = nums.length;
+        int minIndex = 0;
+        int maxIndex = 0;
+
+        for (int i = 0; i < n; i++) {
+            // Leftmost minimum
+            if (nums[i] < nums[minIndex]) {
+                minIndex = i;
+            }
+
+            // Rightmost maximum
+            if (nums[i] >= nums[maxIndex]) {
+                maxIndex = i;
+            }
+        }
+
+        int swaps = minIndex + (n - 1 - maxIndex);
+
+        if (minIndex > maxIndex) {
+            swaps--;
+        }
+
+        return swaps;
+    }
+}
