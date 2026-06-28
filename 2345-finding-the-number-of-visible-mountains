@@ -1,0 +1,47 @@
+import java.util.*;
+
+class Solution {
+    public int visibleMountains(int[][] peaks) {
+        int n = peaks.length;
+        int[][] intervals = new int[n][2];
+
+        for (int i = 0; i < n; i++) {
+            int x = peaks[i][0];
+            int y = peaks[i][1];
+
+            intervals[i][0] = x - y;
+            intervals[i][1] = x + y;
+        }
+
+        Arrays.sort(intervals, (a, b) -> {
+            if (a[0] == b[0]) {
+                return b[1] - a[1];
+            }
+            return a[0] - b[0];
+        });
+
+        int visible = 0;
+        int maxRight = Integer.MIN_VALUE;
+        int i = 0;
+
+        while (i < n) {
+            int left = intervals[i][0];
+            int right = intervals[i][1];
+            int count = 0;
+
+            while (i < n && intervals[i][0] == left && intervals[i][1] == right) {
+                count++;
+                i++;
+            }
+
+            if (right > maxRight) {
+                if (count == 1) {
+                    visible++;
+                }
+                maxRight = right;
+            }
+        }
+
+        return visible;
+    }
+}
