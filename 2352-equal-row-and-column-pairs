@@ -1,0 +1,30 @@
+import java.util.*;
+
+class Solution {
+    public int equalPairs(int[][] grid) {
+        int n = grid.length;
+        Map<List<Integer>, Integer> map = new HashMap<>();
+
+        // Count each row
+        for (int[] row : grid) {
+            List<Integer> list = new ArrayList<>();
+            for (int num : row) {
+                list.add(num);
+            }
+            map.put(list, map.getOrDefault(list, 0) + 1);
+        }
+
+        int ans = 0;
+
+        // Compare each column with the stored rows
+        for (int j = 0; j < n; j++) {
+            List<Integer> col = new ArrayList<>();
+            for (int i = 0; i < n; i++) {
+                col.add(grid[i][j]);
+            }
+            ans += map.getOrDefault(col, 0);
+        }
+
+        return ans;
+    }
+}
