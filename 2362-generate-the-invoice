@@ -1,0 +1,7 @@
+SELECT
+    invoice_id,
+    customer_name,
+    price,
+    quantity,
+    price * quantity AS total
+FROM Purchases;
