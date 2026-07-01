@@ -1,0 +1,24 @@
+class Solution {
+    public long[] minimumCosts(int[] regular, int[] express, int expressCost) {
+        int n = regular.length;
+        long[] ans = new long[n];
+
+        long regularCost = 0;
+        long expressCostSoFar = expressCost;
+
+        for (int i = 0; i < n; i++) {
+            long newRegular = Math.min(regularCost + regular[i],
+                                       expressCostSoFar + regular[i]);
+
+            long newExpress = Math.min(expressCostSoFar + express[i],
+                                       regularCost + expressCost + express[i]);
+
+            regularCost = newRegular;
+            expressCostSoFar = newExpress;
+
+            ans[i] = Math.min(regularCost, expressCostSoFar);
+        }
+
+        return ans;
+    }
+}
