@@ -1,0 +1,29 @@
+class Solution {
+    public int longestCycle(int[] edges) {
+        int n = edges.length;
+        int[] visitedAt = new int[n];
+        Arrays.fill(visitedAt, -1);
+
+        int time = 0;
+        int ans = -1;
+
+        for (int i = 0; i < n; i++) {
+            if (visitedAt[i] != -1) continue;
+
+            Map<Integer, Integer> seen = new HashMap<>();
+            int node = i;
+
+            while (node != -1 && visitedAt[node] == -1) {
+                seen.put(node, time);
+                visitedAt[node] = time++;
+                node = edges[node];
+            }
+
+            if (node != -1 && seen.containsKey(node)) {
+                ans = Math.max(ans, time - seen.get(node));
+            }
+        }
+
+        return ans;
+    }
+}
