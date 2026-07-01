@@ -1,0 +1,36 @@
+class Solution {
+    public int reachableNodes(int n, int[][] edges, int[] restricted) {
+        List<Integer>[] graph = new ArrayList[n];
+        for (int i = 0; i < n; i++) {
+            graph[i] = new ArrayList<>();
+        }
+
+        for (int[] edge : edges) {
+            graph[edge[0]].add(edge[1]);
+            graph[edge[1]].add(edge[0]);
+        }
+
+        boolean[] blocked = new boolean[n];
+        for (int node : restricted) {
+            blocked[node] = true;
+        }
+
+        return dfs(0, -1, graph, blocked);
+    }
+
+    private int dfs(int node, int parent, List<Integer>[] graph, boolean[] blocked) {
+        if (blocked[node]) {
+            return 0;
+        }
+
+        int count = 1;
+
+        for (int next : graph[node]) {
+            if (next != parent) {
+                count += dfs(next, node, graph, blocked);
+            }
+        }
+
+        return count;
+    }
+}
