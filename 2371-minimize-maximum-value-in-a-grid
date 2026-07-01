@@ -1,0 +1,40 @@
+class Solution {
+    public int[][] minScore(int[][] grid) {
+        int m = grid.length, n = grid[0].length;
+        int[][] ans = new int[m][n];
+
+        TreeMap<Integer, List<int[]>> map = new TreeMap<>();
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                map.computeIfAbsent(grid[i][j], k -> new ArrayList<>())
+                   .add(new int[]{i, j});
+            }
+        }
+
+        int[] rowMax = new int[m];
+        int[] colMax = new int[n];
+
+        for (int val : map.keySet()) {
+            List<int[]> cells = map.get(val);
+            int[] scores = new int[cells.size()];
+
+            for (int k = 0; k < cells.size(); k++) {
+                int r = cells.get(k)[0];
+                int c = cells.get(k)[1];
+                scores[k] = Math.max(rowMax[r], colMax[c]) + 1;
+            }
+
+            for (int k = 0; k < cells.size(); k++) {
+                int r = cells.get(k)[0];
+                int c = cells.get(k)[1];
+
+                ans[r][c] = scores[k];
+                rowMax[r] = Math.max(rowMax[r], scores[k]);
+                colMax[c] = Math.max(colMax[c], scores[k]);
+            }
+        }
+
+        return ans;
+    }
+}
