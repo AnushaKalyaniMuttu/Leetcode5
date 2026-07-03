@@ -1,0 +1,57 @@
+class Solution {
+
+    public int median(int[][] matrix) {
+        int n = matrix.length;
+        int m = matrix[0].length;
+
+        int low = Integer.MAX_VALUE;
+        int high = Integer.MIN_VALUE;
+
+        for (int i = 0; i < n; i++) {
+            low = Math.min(low, matrix[i][0]);
+            high = Math.max(high, matrix[i][m - 1]);
+        }
+
+        int target = (n * m) / 2;
+
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+
+            int count = countLessEqual(matrix, mid);
+
+            if (count <= target) {
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+
+        return low;
+    }
+
+    private int countLessEqual(int[][] matrix, int x) {
+        int count = 0;
+
+        for (int[] row : matrix) {
+            count += upperBound(row, x);
+        }
+
+        return count;
+    }
+
+    private int upperBound(int[] row, int x) {
+        int l = 0, r = row.length;
+
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+
+            if (row[mid] <= x) {
+                l = mid + 1;
+            } else {
+                r = mid;
+            }
+        }
+
+        return l;
+    }
+}
