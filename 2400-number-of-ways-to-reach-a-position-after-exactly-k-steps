@@ -1,0 +1,31 @@
+import java.util.*;
+
+class Solution {
+
+    static final int MOD = 1_000_000_007;
+
+    public int numberOfWays(int startPos, int endPos, int k) {
+
+        int offset = k + Math.abs(startPos - endPos) + 10;
+        int size = 2 * offset;
+
+        long[] dp = new long[size];
+
+        dp[startPos + offset] = 1;
+
+        for (int step = 0; step < k; step++) {
+            long[] next = new long[size];
+
+            for (int i = 1; i < size - 1; i++) {
+                if (dp[i] > 0) {
+                    next[i - 1] = (next[i - 1] + dp[i]) % MOD;
+                    next[i + 1] = (next[i + 1] + dp[i]) % MOD;
+                }
+            }
+
+            dp = next;
+        }
+
+        return (int) dp[endPos + offset];
+    }
+}
