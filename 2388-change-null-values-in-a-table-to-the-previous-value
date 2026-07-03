@@ -1,0 +1,9 @@
+SELECT 
+    id,
+    COALESCE(value,
+        MAX(value) OVER (
+            ORDER BY id
+            ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+        )
+    ) AS value
+FROM TableName;
