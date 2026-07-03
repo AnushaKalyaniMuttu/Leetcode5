@@ -1,0 +1,41 @@
+class Solution {
+    public String largestPalindromic(String num) {
+        int[] freq = new int[10];
+
+        for (char c : num.toCharArray()) {
+            freq[c - '0']++;
+        }
+
+        StringBuilder left = new StringBuilder();
+        String mid = "";
+
+        // Build left half
+        for (int d = 9; d >= 0; d--) {
+            while (freq[d] >= 2) {
+                if (left.length() == 0 && d == 0) {
+                    // avoid leading zeros
+                    break;
+                }
+                left.append(d);
+                freq[d] -= 2;
+            }
+        }
+
+        // Choose middle digit
+        for (int d = 9; d >= 0; d--) {
+            if (freq[d] > 0) {
+                mid = String.valueOf(d);
+                break;
+            }
+        }
+
+        // Edge case: only zeros
+        if (left.length() == 0 && mid.equals("")) {
+            return "0";
+        }
+
+        // Build result
+        StringBuilder right = new StringBuilder(left).reverse();
+        return left.toString() + mid + right.toString();
+    }
+}
