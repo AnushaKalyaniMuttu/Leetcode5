@@ -1,0 +1,41 @@
+import java.util.*;
+
+class Solution {
+
+    public int maximumRobots(int[] chargeTimes, int[] runningCosts, long budget) {
+
+        int n = chargeTimes.length;
+        Deque<Integer> dq = new ArrayDeque<>();
+
+        long sum = 0;
+        int left = 0, res = 0;
+
+        for (int right = 0; right < n; right++) {
+
+            sum += runningCosts[right];
+
+            while (!dq.isEmpty() && chargeTimes[dq.peekLast()] <= chargeTimes[right]) {
+                dq.pollLast();
+            }
+            dq.offerLast(right);
+
+            while (left <= right) {
+                int k = right - left + 1;
+                long cost = chargeTimes[dq.peekFirst()] + (long) k * sum;
+
+                if (cost <= budget) break;
+
+                if (dq.peekFirst() == left) {
+                    dq.pollFirst();
+                }
+
+                sum -= runningCosts[left];
+                left++;
+            }
+
+            res = Math.max(res, right - left + 1);
+        }
+
+        return res;
+    }
+}
