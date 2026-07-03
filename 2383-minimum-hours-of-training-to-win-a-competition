@@ -1,0 +1,30 @@
+class Solution {
+    public int minNumberOfHours(int initialEnergy, int initialExperience,
+                                int[] energy, int[] experience) {
+
+        int training = 0;
+
+        // Energy requirement first
+        int totalEnergy = 0;
+        for (int e : energy) {
+            totalEnergy += e;
+        }
+
+        if (initialEnergy <= totalEnergy) {
+            training += (totalEnergy - initialEnergy + 1);
+            initialEnergy = totalEnergy + 1;
+        }
+
+        // Experience simulation
+        for (int exp : experience) {
+            if (initialExperience <= exp) {
+                int need = exp - initialExperience + 1;
+                training += need;
+                initialExperience += need;
+            }
+            initialExperience += exp;
+        }
+
+        return training;
+    }
+}
