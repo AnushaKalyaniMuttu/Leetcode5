@@ -1,0 +1,63 @@
+import java.util.*;
+
+class Solution {
+
+    public int maximumRows(int[][] matrix, int cols) {
+        int m = matrix.length;
+        int n = matrix[0].length;
+
+        int[] rowMask = new int[m];
+
+        // Convert each row into bitmask
+        for (int i = 0; i < m; i++) {
+            int mask = 0;
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j] == 1) {
+                    mask |= (1 << j);
+                }
+            }
+            rowMask[i] = mask;
+        }
+
+        int[] columns = new int[n];
+        for (int i = 0; i < n; i++) columns[i] = i;
+
+        int[] res = new int[1];
+        combine(columns, cols, 0, new ArrayList<>(), rowMask, res);
+
+        return res[0];
+    }
+
+    private void combine(int[] cols, int k, int idx,
+                         List<Integer> curr,
+                         int[] rowMask,
+                         int[] res) {
+
+        if (curr.size() == k) {
+            int mask = 0;
+            for (int c : curr) {
+                mask |= (1 << c);
+            }
+
+            int count = 0;
+            for (int rm : rowMask) {
+                if ((rm & mask) == rm) {
+                    count++;
+                }
+            }
+
+            res[0] = Math.max(res[0], count);
+            return;
+        }
+
+        if (idx == cols.length) return;
+
+        // take
+        curr.add(cols[idx]);
+        combine(cols, k, idx + 1, curr, rowMask, res);
+        curr.remove(curr.size() - 1);
+
+        // not take
+        combine(cols, k, idx + 1, curr, rowMask, res);
+    }
+}
