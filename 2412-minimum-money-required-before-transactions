@@ -1,0 +1,31 @@
+class Solution {
+    public long minimumMoney(int[][] transactions) {
+        long totalLoss = 0;
+
+        for (int[] t : transactions) {
+            int cost = t[0];
+            int cashback = t[1];
+
+            if (cost > cashback) {
+                totalLoss += (long) (cost - cashback);
+            }
+        }
+
+        long ans = 0;
+
+        for (int[] t : transactions) {
+            int cost = t[0];
+            int cashback = t[1];
+
+            if (cost > cashback) {
+                ans = Math.max(ans,
+                        totalLoss - (cost - cashback) + (long) cost);
+            } else {
+                ans = Math.max(ans,
+                        totalLoss + (long) cost);
+            }
+        }
+
+        return ans;
+    }
+}
