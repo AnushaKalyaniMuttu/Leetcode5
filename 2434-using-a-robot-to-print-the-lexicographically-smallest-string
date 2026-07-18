@@ -1,0 +1,29 @@
+class Solution {
+    public String robotWithString(String s) {
+        int[] freq = new int[26];
+        for (char c : s.toCharArray()) {
+            freq[c - 'a']++;
+        }
+
+        StringBuilder ans = new StringBuilder();
+        Deque<Character> stack = new ArrayDeque<>();
+
+        int minChar = 0;
+
+        for (char c : s.toCharArray()) {
+            stack.push(c);
+            freq[c - 'a']--;
+
+            while (minChar < 26 && freq[minChar] == 0) {
+                minChar++;
+            }
+
+            while (!stack.isEmpty() &&
+                   (minChar == 26 || stack.peek() - 'a' <= minChar)) {
+                ans.append(stack.pop());
+            }
+        }
+
+        return ans.toString();
+    }
+}
