@@ -1,0 +1,42 @@
+class Solution {
+    private int[][][] dp;
+    private int[] price;
+    private int[] tastiness;
+    private int n;
+
+    public int maxTastiness(int[] price, int[] tastiness, int maxAmount, int maxCoupons) {
+        this.price = price;
+        this.tastiness = tastiness;
+        this.n = price.length;
+
+        dp = new int[n][maxAmount + 1][maxCoupons + 1];
+
+        return dfs(0, maxAmount, maxCoupons);
+    }
+
+    private int dfs(int idx, int amount, int coupons) {
+        if (idx == n) return 0;
+
+        if (dp[idx][amount][coupons] != 0)
+            return dp[idx][amount][coupons];
+
+        // Option 1: Skip
+        int ans = dfs(idx + 1, amount, coupons);
+
+        // Option 2: Buy without coupon
+        if (amount >= price[idx]) {
+            ans = Math.max(ans,
+                    tastiness[idx] + dfs(idx + 1, amount - price[idx], coupons));
+        }
+
+        // Option 3: Buy with coupon
+        int discounted = price[idx] / 2;
+        if (coupons > 0 && amount >= discounted) {
+            ans = Math.max(ans,
+                    tastiness[idx] + dfs(idx + 1, amount - discounted, coupons - 1));
+        }
+
+        dp[idx][amount][coupons] = ans;
+        return ans;
+    }
+}
