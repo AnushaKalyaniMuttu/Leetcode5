@@ -1,0 +1,34 @@
+import java.util.*;
+
+class Solution {
+    public String oddString(String[] words) {
+        Map<String, Integer> map = new HashMap<>();
+
+        for (String word : words) {
+            StringBuilder pattern = new StringBuilder();
+
+            for (int i = 1; i < word.length(); i++) {
+                pattern.append(word.charAt(i) - word.charAt(i - 1))
+                       .append(",");
+            }
+
+            String key = pattern.toString();
+            map.put(key, map.getOrDefault(key, 0) + 1);
+        }
+
+        for (String word : words) {
+            StringBuilder pattern = new StringBuilder();
+
+            for (int i = 1; i < word.length(); i++) {
+                pattern.append(word.charAt(i) - word.charAt(i - 1))
+                       .append(",");
+            }
+
+            if (map.get(pattern.toString()) == 1) {
+                return word;
+            }
+        }
+
+        return "";
+    }
+}
