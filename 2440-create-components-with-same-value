@@ -1,0 +1,54 @@
+class Solution {
+    private List<Integer>[] graph;
+    private int[] nums;
+    private int target;
+
+    public int componentValue(int[] nums, int[][] edges) {
+        int n = nums.length;
+        this.nums = nums;
+
+        graph = new ArrayList[n];
+        for (int i = 0; i < n; i++) {
+            graph[i] = new ArrayList<>();
+        }
+
+        for (int[] e : edges) {
+            graph[e[0]].add(e[1]);
+            graph[e[1]].add(e[0]);
+        }
+
+        int sum = 0;
+        for (int x : nums) {
+            sum += x;
+        }
+
+        for (int k = n; k >= 1; k--) {
+            if (sum % k != 0) continue;
+
+            target = sum / k;
+            if (dfs(0, -1) == 0) {
+                return k - 1;
+            }
+        }
+
+        return 0;
+    }
+
+    private int dfs(int u, int parent) {
+        int cur = nums[u];
+
+        for (int v : graph[u]) {
+            if (v == parent) continue;
+
+            int child = dfs(v, u);
+            if (child == -1) return -1;
+
+            cur += child;
+        }
+
+        if (cur > target) return -1;
+        if (cur == target) return 0;
+
+        return cur;
+    }
+}
