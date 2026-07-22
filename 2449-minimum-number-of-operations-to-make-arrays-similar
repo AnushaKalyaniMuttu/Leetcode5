@@ -1,0 +1,41 @@
+import java.util.*;
+
+class Solution {
+    public long makeSimilar(int[] nums, int[] target) {
+        List<Integer> numsEven = new ArrayList<>();
+        List<Integer> numsOdd = new ArrayList<>();
+        List<Integer> targetEven = new ArrayList<>();
+        List<Integer> targetOdd = new ArrayList<>();
+
+        for (int n : nums) {
+            if (n % 2 == 0)
+                numsEven.add(n);
+            else
+                numsOdd.add(n);
+        }
+
+        for (int n : target) {
+            if (n % 2 == 0)
+                targetEven.add(n);
+            else
+                targetOdd.add(n);
+        }
+
+        Collections.sort(numsEven);
+        Collections.sort(numsOdd);
+        Collections.sort(targetEven);
+        Collections.sort(targetOdd);
+
+        long ans = 0;
+
+        for (int i = 0; i < numsEven.size(); i++) {
+            ans += Math.abs(numsEven.get(i) - targetEven.get(i));
+        }
+
+        for (int i = 0; i < numsOdd.size(); i++) {
+            ans += Math.abs(numsOdd.get(i) - targetOdd.get(i));
+        }
+
+        return ans / 4;
+    }
+}
