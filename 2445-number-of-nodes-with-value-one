@@ -1,0 +1,33 @@
+import java.util.*;
+
+class Solution {
+    public int numberOfNodes(int n, int[] queries) {
+        List<Integer>[] graph = new ArrayList[n + 1];
+        for (int i = 1; i <= n; i++) {
+            graph[i] = new ArrayList<>();
+        }
+
+        for (int i = 2; i <= n; i++) {
+            graph[i / 2].add(i);
+        }
+
+        int[] flip = new int[n + 1];
+        for (int q : queries) {
+            flip[q] ^= 1;
+        }
+
+        return dfs(1, 0, graph, flip);
+    }
+
+    private int dfs(int node, int parity, List<Integer>[] graph, int[] flip) {
+        parity ^= flip[node];
+
+        int ans = parity;
+
+        for (int child : graph[node]) {
+            ans += dfs(child, parity, graph, flip);
+        }
+
+        return ans;
+    }
+}
