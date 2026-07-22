@@ -1,0 +1,28 @@
+import java.util.*;
+
+class Solution {
+    public int destroyTargets(int[] nums, int space) {
+        Map<Integer, Integer> freq = new HashMap<>();
+
+        for (int num : nums) {
+            int rem = num % space;
+            freq.put(rem, freq.getOrDefault(rem, 0) + 1);
+        }
+
+        int maxCount = 0;
+        int ans = Integer.MAX_VALUE;
+
+        for (int num : nums) {
+            int count = freq.get(num % space);
+
+            if (count > maxCount) {
+                maxCount = count;
+                ans = num;
+            } else if (count == maxCount) {
+                ans = Math.min(ans, num);
+            }
+        }
+
+        return ans;
+    }
+}
