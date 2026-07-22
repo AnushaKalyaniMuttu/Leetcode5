@@ -1,0 +1,31 @@
+class Solution {
+    public int minimizeArrayValue(int[] nums) {
+        int left = 0, right = 0;
+        for (int num : nums) {
+            right = Math.max(right, num);
+        }
+
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+
+            if (can(nums, mid)) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+
+        return left;
+    }
+
+    private boolean can(int[] nums, int limit) {
+        long extra = 0;
+
+        for (int i = nums.length - 1; i > 0; i--) {
+            long cur = nums[i] + extra;
+            extra = Math.max(0L, cur - limit);
+        }
+
+        return nums[0] + extra <= limit;
+    }
+}
