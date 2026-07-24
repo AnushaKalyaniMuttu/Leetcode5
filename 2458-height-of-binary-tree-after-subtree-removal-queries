@@ -1,0 +1,59 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+
+    private Map<Integer, Integer> height = new HashMap<>();
+    private Map<Integer, Integer> answer = new HashMap<>();
+
+    public int[] treeQueries(TreeNode root, int[] queries) {
+        getHeight(root);
+        dfs(root, 0, 0);
+
+        int[] res = new int[queries.length];
+        for (int i = 0; i < queries.length; i++) {
+            res[i] = answer.get(queries[i]);
+        }
+        return res;
+    }
+
+    // Height of subtree rooted at node (in edges)
+    private int getHeight(TreeNode node) {
+        if (node == null) return -1;
+        int h = 1 + Math.max(getHeight(node.left), getHeight(node.right));
+        height.put(node.val, h);
+        return h;
+    }
+
+  private void dfs(TreeNode node, int depth, int rest) {
+    if (node == null) return;
+
+    answer.put(node.val, rest);
+
+    dfs(
+        node.left,
+        depth + 1,
+        Math.max(rest,
+                 depth + 1 + (node.right == null ? -1 : height.get(node.right.val)))
+    );
+
+    dfs(
+        node.right,
+        depth + 1,
+        Math.max(rest,
+                 depth + 1 + (node.left == null ? -1 : height.get(node.left.val)))
+    );
+}
+}
