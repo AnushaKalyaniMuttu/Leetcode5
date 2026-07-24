@@ -1,0 +1,42 @@
+import java.util.*;
+
+class Solution {
+    public long minimumTotalDistance(List<Integer> robot, int[][] factory) {
+        Collections.sort(robot);
+
+        Arrays.sort(factory, (a, b) -> a[0] - b[0]);
+
+        int n = robot.size();
+        long INF = Long.MAX_VALUE / 2;
+
+        long[] dp = new long[n + 1];
+        Arrays.fill(dp, INF);
+        dp[0] = 0;
+
+        for (int[] f : factory) {
+            int pos = f[0];
+            int cap = f[1];
+
+            long[] next = new long[n + 1];
+            Arrays.fill(next, INF);
+
+            for (int i = 0; i <= n; i++) {
+                if (dp[i] == INF) continue;
+
+                // Factory repairs 0 robots
+                next[i] = Math.min(next[i], dp[i]);
+
+                // Factory repairs k robots
+                long dist = 0;
+                for (int k = 1; k <= cap && i + k <= n; k++) {
+                    dist += Math.abs(robot.get(i + k - 1) - pos);
+                    next[i + k] = Math.min(next[i + k], dp[i] + dist);
+                }
+            }
+
+            dp = next;
+        }
+
+        return dp[n];
+    }
+}
