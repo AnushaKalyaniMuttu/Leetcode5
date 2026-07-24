@@ -1,0 +1,36 @@
+import java.util.*;
+
+class Solution {
+    public int[] secondGreaterElement(int[] nums) {
+        int n = nums.length;
+        int[] ans = new int[n];
+        Arrays.fill(ans, -1);
+
+        Deque<Integer> stack1 = new ArrayDeque<>();
+        Deque<Integer> stack2 = new ArrayDeque<>();
+        List<Integer> temp = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+
+            // Found second greater element
+            while (!stack2.isEmpty() && nums[stack2.peek()] < nums[i]) {
+                ans[stack2.pop()] = nums[i];
+            }
+
+            // Found first greater element
+            while (!stack1.isEmpty() && nums[stack1.peek()] < nums[i]) {
+                temp.add(stack1.pop());
+            }
+
+            // Move to second stack in reverse order
+            for (int j = temp.size() - 1; j >= 0; j--) {
+                stack2.push(temp.get(j));
+            }
+            temp.clear();
+
+            stack1.push(i);
+        }
+
+        return ans;
+    }
+}
