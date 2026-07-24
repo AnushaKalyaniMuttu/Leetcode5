@@ -1,0 +1,18 @@
+class Solution {
+    public int validSubarraySplit(int[] nums) {
+        int n = nums.length;
+        int ans = 0;
+        int and = -1; // all bits set
+
+        for (int num : nums) {
+            and &= num;
+
+            if (and == 0) {
+                ans++;
+                and = -1;
+            }
+        }
+
+        return and == -1 ? ans : -1;
+    }
+}
