@@ -1,0 +1,60 @@
+import java.util.*;
+
+class Solution {
+    public int sortArray(int[] nums) {
+        return Math.min(helper(nums, true), helper(nums, false));
+    }
+
+    private int helper(int[] nums, boolean zeroFirst) {
+        int n = nums.length;
+        int[] arr = nums.clone();
+        int[] pos = new int[n];
+
+        for (int i = 0; i < n; i++) {
+            pos[arr[i]] = i;
+        }
+
+        int ans = 0;
+
+        while (true) {
+            int zero = pos[0];
+
+            if ((zeroFirst && zero != 0) || (!zeroFirst && zero != n - 1)) {
+                int target = zeroFirst ? zero : zero + 1;
+                swap(arr, pos, zero, pos[target]);
+                ans++;
+                continue;
+            }
+
+            int wrong = -1;
+            for (int i = 0; i < n; i++) {
+                int expect = zeroFirst
+                        ? (i == 0 ? 0 : i)
+                        : (i == n - 1 ? 0 : i + 1);
+
+                if (arr[i] != expect) {
+                    wrong = i;
+                    break;
+                }
+            }
+
+            if (wrong == -1) break;
+
+            swap(arr, pos, zero, wrong);
+            ans++;
+        }
+
+        return ans;
+    }
+
+    private void swap(int[] arr, int[] pos, int i, int j) {
+        int a = arr[i];
+        int b = arr[j];
+
+        arr[i] = b;
+        arr[j] = a;
+
+        pos[a] = j;
+        pos[b] = i;
+    }
+}
