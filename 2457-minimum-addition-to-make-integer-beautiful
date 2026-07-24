@@ -1,0 +1,24 @@
+class Solution {
+    public long makeIntegerBeautiful(long n, int target) {
+        long original = n;
+        long base = 1;
+
+        while (digitSum(n) > target) {
+            long digit = (n / base) % 10;
+            n += (10 - digit) % 10 * base;
+            n = (n / (base * 10)) * (base * 10);
+            base *= 10;
+        }
+
+        return n - original;
+    }
+
+    private int digitSum(long x) {
+        int sum = 0;
+        while (x > 0) {
+            sum += x % 10;
+            x /= 10;
+        }
+        return sum;
+    }
+}
