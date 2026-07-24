@@ -1,0 +1,72 @@
+import java.util.*;
+
+class Solution {
+    List<Integer>[] graph;
+    int[] amount;
+    int[] bobTime;
+    int ans = Integer.MIN_VALUE;
+
+    public int mostProfitablePath(int[][] edges, int bob, int[] amount) {
+        int n = amount.length;
+
+        this.amount = amount;
+        graph = new ArrayList[n];
+        bobTime = new int[n];
+
+        Arrays.fill(bobTime, Integer.MAX_VALUE);
+
+        for (int i = 0; i < n; i++) {
+            graph[i] = new ArrayList<>();
+        }
+
+        for (int[] e : edges) {
+            graph[e[0]].add(e[1]);
+            graph[e[1]].add(e[0]);
+        }
+
+        findBob(bob, -1, 0);
+
+        dfsAlice(0, -1, 0, 0);
+
+        return ans;
+    }
+
+    // Find Bob's path to node 0
+    private boolean findBob(int node, int parent, int time) {
+        if (node == 0) {
+            bobTime[node] = time;
+            return true;
+        }
+
+        for (int next : graph[node]) {
+            if (next != parent && findBob(next, node, time + 1)) {
+                bobTime[node] = time;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // Alice DFS
+    private void dfsAlice(int node, int parent, int time, int profit) {
+        if (time < bobTime[node]) {
+            profit += amount[node];
+        } else if (time == bobTime[node]) {
+            profit += amount[node] / 2;
+        }
+
+        boolean leaf = true;
+
+        for (int next : graph[node]) {
+            if (next != parent) {
+                leaf = false;
+                dfsAlice(next, node, time + 1, profit);
+            }
+        }
+
+        if (leaf) {
+            ans = Math.max(ans, profit);
+        }
+    }
+}
