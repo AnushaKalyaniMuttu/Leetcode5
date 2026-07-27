@@ -1,0 +1,76 @@
+class Solution {
+    long ans = 0;
+    long[] sum;
+    List<Integer>[] graph;
+
+    class Trie {
+        Trie[] child = new Trie[2];
+
+        void insert(long x) {
+            Trie node = this;
+            for (int i = 47; i >= 0; i--) {
+                int bit = (int)((x >> i) & 1);
+                if (node.child[bit] == null)
+                    node.child[bit] = new Trie();
+                node = node.child[bit];
+            }
+        }
+
+        long query(long x) {
+            Trie node = this;
+            long res = 0;
+            for (int i = 47; i >= 0; i--) {
+                int bit = (int)((x >> i) & 1);
+                if (node.child[bit ^ 1] != null) {
+                    res |= 1L << i;
+                    node = node.child[bit ^ 1];
+                } else {
+                    node = node.child[bit];
+                }
+            }
+            return res;
+        }
+    }
+
+    Trie root = new Trie();
+
+    public long maxXor(int n, int[][] edges, int[] values) {
+        graph = new ArrayList[n];
+        for (int i = 0; i < n; i++)
+            graph[i] = new ArrayList<>();
+
+        for (int[] e : edges) {
+            graph[e[0]].add(e[1]);
+            graph[e[1]].add(e[0]);
+        }
+
+        sum = new long[n];
+        dfsSum(0, -1, values);
+        dfs(0, -1);
+
+        return ans;
+    }
+
+    private void dfsSum(int u, int parent, int[] values) {
+        sum[u] = values[u];
+        for (int v : graph[u]) {
+            if (v != parent) {
+                dfsSum(v, u, values);
+                sum[u] += sum[v];
+            }
+        }
+    }
+
+    private void dfs(int u, int parent) {
+        for (int v : graph[u]) {
+            if (v != parent)
+                dfs(v, u);
+        }
+
+        if (root.child[0] != null || root.child[1] != null) {
+            ans = Math.max(ans, root.query(sum[u]));
+        }
+
+        root.insert(sum[u]);
+    }
+}
