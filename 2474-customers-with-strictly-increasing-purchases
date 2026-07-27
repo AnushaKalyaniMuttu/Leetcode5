@@ -1,0 +1,24 @@
+SELECT customer_id
+FROM (
+    SELECT
+        customer_id,
+        YEAR(order_date) AS year,
+        SUM(price) AS total
+    FROM Orders
+    GROUP BY customer_id, YEAR(order_date)
+) t
+GROUP BY customer_id
+HAVING COUNT(*) = SUM(
+    CASE
+        WHEN total > LAG(total) OVER (
+            PARTITION BY customer_id
+            ORDER BY year
+        )
+        OR LAG(total) OVER (
+            PARTITION BY customer_id
+            ORDER BY year
+        ) IS NULL
+        THEN 1
+        ELSE 0
+    END
+);
