@@ -1,0 +1,33 @@
+class Solution {
+    public List<List<Integer>> closestNodes(TreeNode root, List<Integer> queries) {
+        List<Integer> inorder = new ArrayList<>();
+        inorder(root, inorder);
+
+        List<List<Integer>> ans = new ArrayList<>();
+
+        for (int q : queries) {
+            int idx = Collections.binarySearch(inorder, q);
+
+            if (idx >= 0) {
+                ans.add(Arrays.asList(q, q));
+            } else {
+                idx = -idx - 1;
+
+                int floor = (idx == 0) ? -1 : inorder.get(idx - 1);
+                int ceil = (idx == inorder.size()) ? -1 : inorder.get(idx);
+
+                ans.add(Arrays.asList(floor, ceil));
+            }
+        }
+
+        return ans;
+    }
+
+    private void inorder(TreeNode node, List<Integer> list) {
+        if (node == null) return;
+
+        inorder(node.left, list);
+        list.add(node.val);
+        inorder(node.right, list);
+    }
+}
