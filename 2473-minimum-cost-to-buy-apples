@@ -1,0 +1,58 @@
+class Solution {
+    public long[] minCost(int n, int[][] roads, int[] appleCost, int k) {
+        List<int[]>[] graph = new ArrayList[n];
+        for (int i = 0; i < n; i++) {
+            graph[i] = new ArrayList<>();
+        }
+
+        for (int[] road : roads) {
+            int u = road[0] - 1;
+            int v = road[1] - 1;
+            int w = road[2];
+            graph[u].add(new int[]{v, w});
+            graph[v].add(new int[]{u, w});
+        }
+
+        long[] ans = new long[n];
+
+        for (int start = 0; start < n; start++) {
+            long[] dist = new long[n];
+            Arrays.fill(dist, Long.MAX_VALUE);
+
+            PriorityQueue<long[]> pq = new PriorityQueue<>(
+                (a, b) -> Long.compare(a[1], b[1])
+            );
+
+            dist[start] = 0;
+            pq.offer(new long[]{start, 0});
+
+            while (!pq.isEmpty()) {
+                long[] cur = pq.poll();
+                int u = (int) cur[0];
+                long d = cur[1];
+
+                if (d > dist[u]) continue;
+
+                for (int[] next : graph[u]) {
+                    int v = next[0];
+                    long nd = d + next[1];
+
+                    if (nd < dist[v]) {
+                        dist[v] = nd;
+                        pq.offer(new long[]{v, nd});
+                    }
+                }
+            }
+
+            long best = Long.MAX_VALUE;
+            for (int city = 0; city < n; city++) {
+                best = Math.min(best,
+                        dist[city] * (k + 1L) + appleCost[city]);
+            }
+
+            ans[start] = best;
+        }
+
+        return ans;
+    }
+}
