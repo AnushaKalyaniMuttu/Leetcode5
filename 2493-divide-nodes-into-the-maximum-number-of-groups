@@ -1,0 +1,110 @@
+import java.util.*;
+
+class Solution {
+    public int magnificentSets(int n, int[][] edges) {
+        List<Integer>[] graph = new ArrayList[n + 1];
+
+        for (int i = 1; i <= n; i++) {
+            graph[i] = new ArrayList<>();
+        }
+
+        for (int[] e : edges) {
+            graph[e[0]].add(e[1]);
+            graph[e[1]].add(e[0]);
+        }
+
+        // Check bipartite
+        int[] color = new int[n + 1];
+
+        for (int i = 1; i <= n; i++) {
+            if (color[i] == 0) {
+                if (!isBipartite(i, graph, color)) {
+                    return -1;
+                }
+            }
+        }
+
+        // Find connected components
+        boolean[] visited = new boolean[n + 1];
+        int answer = 0;
+
+        for (int i = 1; i <= n; i++) {
+            if (!visited[i]) {
+                List<Integer> component = new ArrayList<>();
+                collect(i, graph, visited, component);
+
+                int maxGroups = 0;
+
+                for (int node : component) {
+                    maxGroups = Math.max(maxGroups, bfsDepth(node, graph));
+                }
+
+                answer += maxGroups;
+            }
+        }
+
+        return answer;
+    }
+
+    private boolean isBipartite(int start, List<Integer>[] graph, int[] color) {
+        Queue<Integer> queue = new LinkedList<>();
+
+        queue.offer(start);
+        color[start] = 1;
+
+        while (!queue.isEmpty()) {
+            int node = queue.poll();
+
+            for (int next : graph[node]) {
+                if (color[next] == 0) {
+                    color[next] = -color[node];
+                    queue.offer(next);
+                } else if (color[next] == color[node]) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private void collect(int node, List<Integer>[] graph,
+                         boolean[] visited, List<Integer> component) {
+        visited[node] = true;
+        component.add(node);
+
+        for (int next : graph[node]) {
+            if (!visited[next]) {
+                collect(next, graph, visited, component);
+            }
+        }
+    }
+
+    private int bfsDepth(int start, List<Integer>[] graph) {
+        Queue<Integer> queue = new LinkedList<>();
+        boolean[] visited = new boolean[graph.length];
+
+        queue.offer(start);
+        visited[start] = true;
+
+        int groups = 0;
+
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            groups++;
+
+            while (size-- > 0) {
+                int node = queue.poll();
+
+                for (int next : graph[node]) {
+                    if (!visited[next]) {
+                        visited[next] = true;
+                        queue.offer(next);
+                    }
+                }
+            }
+        }
+
+        return groups;
+    }
+}
