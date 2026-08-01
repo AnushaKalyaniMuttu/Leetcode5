@@ -1,0 +1,28 @@
+import java.util.*;
+
+class Solution {
+    public int longestSquareStreak(int[] nums) {
+        Set<Integer> set = new HashSet<>();
+
+        for (int num : nums) {
+            set.add(num);
+        }
+
+        int ans = 0;
+
+        for (int num : nums) {
+            long current = num;
+            int count = 1;
+
+            while (current * current <= 1_000_000_000 
+                    && set.contains((int)(current * current))) {
+                current = current * current;
+                count++;
+            }
+
+            ans = Math.max(ans, count);
+        }
+
+        return ans >= 2 ? ans : -1;
+    }
+}
