@@ -1,0 +1,24 @@
+class Solution {
+    public long evenProduct(int[] nums) {
+        long n = nums.length;
+
+        long total = n * (n + 1) / 2;
+        long oddOnly = 0;
+
+        long count = 0;
+
+        for (int num : nums) {
+            if (num % 2 != 0) {
+                count++;
+            } else {
+                oddOnly += count * (count + 1) / 2;
+                count = 0;
+            }
+        }
+
+        // Remaining odd segment
+        oddOnly += count * (count + 1) / 2;
+
+        return total - oddOnly;
+    }
+}
