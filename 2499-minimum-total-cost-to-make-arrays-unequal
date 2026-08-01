@@ -1,0 +1,67 @@
+import java.util.*;
+
+class Solution {
+    public long minimumTotalCost(int[] nums1, int[] nums2) {
+        int n = nums1.length;
+
+        long cost = 0;
+        int sameCount = 0;
+
+        Map<Integer, Integer> freq = new HashMap<>();
+
+        int maxFreq = 0;
+        int dominant = -1;
+
+        for (int i = 0; i < n; i++) {
+            if (nums1[i] == nums2[i]) {
+                cost += i;
+                sameCount++;
+
+                int f = freq.getOrDefault(nums1[i], 0) + 1;
+                freq.put(nums1[i], f);
+
+                if (f > maxFreq) {
+                    maxFreq = f;
+                    dominant = nums1[i];
+                }
+            }
+        }
+
+        // Already unequal
+        if (sameCount == 0) {
+            return 0;
+        }
+
+        int extra = 0;
+
+        // Need extra swaps if dominant value is more than half
+        while (maxFreq * 2 > sameCount + extra) {
+            boolean found = false;
+
+            for (int i = 0; i < n; i++) {
+                if (nums1[i] != nums2[i]
+                        && nums1[i] != dominant
+                        && nums2[i] != dominant) {
+
+                    cost += i;
+                    extra++;
+                    found = true;
+
+                    if (maxFreq * 2 <= sameCount + extra) {
+                        break;
+                    }
+                }
+            }
+
+            if (!found) {
+                break;
+            }
+        }
+
+        if (maxFreq * 2 > sameCount + extra) {
+            return -1;
+        }
+
+        return cost;
+    }
+}
