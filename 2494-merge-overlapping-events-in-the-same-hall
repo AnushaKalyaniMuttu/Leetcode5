@@ -1,0 +1,26 @@
+import java.util.*;
+
+class Solution {
+    public int[][] merge(int[][] events) {
+        Arrays.sort(events, (a, b) -> a[0] - b[0]);
+
+        List<int[]> result = new ArrayList<>();
+
+        int start = events[0][0];
+        int end = events[0][1];
+
+        for (int i = 1; i < events.length; i++) {
+            if (events[i][0] <= end) {
+                end = Math.max(end, events[i][1]);
+            } else {
+                result.add(new int[]{start, end});
+                start = events[i][0];
+                end = events[i][1];
+            }
+        }
+
+        result.add(new int[]{start, end});
+
+        return result.toArray(new int[result.size()][]);
+    }
+}
