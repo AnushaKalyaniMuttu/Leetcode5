@@ -1,0 +1,13 @@
+class Solution {
+    public int subSequenceSumOr(int[] nums) {
+        int ans = 0;
+        int sum = 0;
+
+        for (int num : nums) {
+            sum += num;
+            ans |= sum;
+        }
+
+        return ans;
+    }
+}
