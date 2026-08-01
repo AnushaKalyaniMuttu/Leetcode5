@@ -1,0 +1,47 @@
+import java.util.*;
+
+class Solution {
+    public int maxStarSum(int[] vals, int[][] edges, int k) {
+        int n = vals.length;
+
+        List<Integer>[] graph = new ArrayList[n];
+
+        for (int i = 0; i < n; i++) {
+            graph[i] = new ArrayList<>();
+        }
+
+        for (int[] edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+
+            graph[u].add(vals[v]);
+            graph[v].add(vals[u]);
+        }
+
+        int ans = Integer.MIN_VALUE;
+
+        for (int i = 0; i < n; i++) {
+            List<Integer> neighbors = graph[i];
+
+            neighbors.sort(Collections.reverseOrder());
+
+            int sum = vals[i];
+            int count = 0;
+
+            for (int value : neighbors) {
+                if (count == k) {
+                    break;
+                }
+
+                if (value > 0) {
+                    sum += value;
+                    count++;
+                }
+            }
+
+            ans = Math.max(ans, sum);
+        }
+
+        return ans;
+    }
+}
