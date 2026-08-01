@@ -1,0 +1,29 @@
+import java.util.HashMap;
+import java.util.Map;
+
+class Solution {
+    public long fixedRatio(String s, int num1, int num2) {
+        Map<Long, Long> map = new HashMap<>();
+
+        long balance = 0;
+        long ans = 0;
+
+        map.put(0L, 1L);
+
+        for (char c : s.toCharArray()) {
+            if (c == '0') {
+                balance += num2;
+            } else {
+                balance -= num1;
+            }
+
+            if (map.containsKey(balance)) {
+                ans += map.get(balance);
+            }
+
+            map.put(balance, map.getOrDefault(balance, 0L) + 1);
+        }
+
+        return ans;
+    }
+}
