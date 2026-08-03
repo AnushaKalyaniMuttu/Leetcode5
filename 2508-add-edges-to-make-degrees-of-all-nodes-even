@@ -1,0 +1,50 @@
+class Solution {
+    public boolean isPossible(int n, List<List<Integer>> edges) {
+        Set<Integer>[] graph = new HashSet[n + 1];
+        for (int i = 0; i <= n; i++) {
+            graph[i] = new HashSet<>();
+        }
+
+        for (List<Integer> e : edges) {
+            int u = e.get(0);
+            int v = e.get(1);
+            graph[u].add(v);
+            graph[v].add(u);
+        }
+
+        List<Integer> odd = new ArrayList<>();
+        for (int i = 1; i <= n; i++) {
+            if ((graph[i].size() & 1) == 1) {
+                odd.add(i);
+            }
+        }
+
+        if (odd.size() == 0) return true;
+
+        if (odd.size() == 2) {
+            int a = odd.get(0), b = odd.get(1);
+
+            if (!graph[a].contains(b)) return true;
+
+            for (int i = 1; i <= n; i++) {
+                if (i != a && i != b &&
+                    !graph[a].contains(i) &&
+                    !graph[b].contains(i)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        if (odd.size() == 4) {
+            int a = odd.get(0), b = odd.get(1);
+            int c = odd.get(2), d = odd.get(3);
+
+            return (!graph[a].contains(b) && !graph[c].contains(d)) ||
+                   (!graph[a].contains(c) && !graph[b].contains(d)) ||
+                   (!graph[a].contains(d) && !graph[b].contains(c));
+        }
+
+        return false;
+    }
+}
