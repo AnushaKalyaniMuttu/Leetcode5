@@ -1,0 +1,28 @@
+import java.util.*;
+
+class Solution {
+    public int distinctPrimeFactors(int[] nums) {
+        Set<Integer> set = new HashSet<>();
+
+        for (int num : nums) {
+            int n = num;
+
+            for (int p = 2; p * p <= n; p++) {
+                if (n % p == 0) {
+                    set.add(p);
+
+                    while (n % p == 0) {
+                        n /= p;
+                    }
+                }
+            }
+
+            // If n > 1, n itself is a prime factor
+            if (n > 1) {
+                set.add(n);
+            }
+        }
+
+        return set.size();
+    }
+}
