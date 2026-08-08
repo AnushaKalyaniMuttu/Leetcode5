@@ -1,0 +1,26 @@
+class Solution {
+    public int minimumPartition(String s, int k) {
+        int count = 0;
+        long current = 0;
+
+        for (char c : s.toCharArray()) {
+            int digit = c - '0';
+
+            // A single digit itself is greater than k
+            if (digit > k) {
+                return -1;
+            }
+
+            // Adding this digit would make the number > k
+            if (current * 10 + digit > k) {
+                count++;
+                current = digit;
+            } else {
+                current = current * 10 + digit;
+            }
+        }
+
+        // Count the final substring
+        return count + 1;
+    }
+}
