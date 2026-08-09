@@ -1,0 +1,88 @@
+import java.util.*;
+
+class Solution {
+
+    private static final long MOD = 1_000_000_007L;
+
+    public int maxFrequencyScore(int[] nums, int k) {
+
+        Map<Integer, Integer> freq = new HashMap<>();
+
+        // First window
+        for (int i = 0; i < k; i++) {
+            freq.put(nums[i], freq.getOrDefault(nums[i], 0) + 1);
+        }
+
+        long score = 0;
+
+        // Calculate score of first window
+        for (Map.Entry<Integer, Integer> entry : freq.entrySet()) {
+            int value = entry.getKey();
+            int count = entry.getValue();
+
+            score = (score + power(value, count)) % MOD;
+        }
+
+        long answer = score;
+
+        // Sliding window
+        for (int right = k; right < nums.length; right++) {
+
+            int add = nums[right];
+            int remove = nums[right - k];
+
+            // Remove contribution of 'remove'
+            int oldRemoveCount = freq.get(remove);
+
+            score = (score - power(remove, oldRemoveCount) + MOD) % MOD;
+
+            oldRemoveCount--;
+
+            if (oldRemoveCount == 0) {
+                freq.remove(remove);
+            } else {
+                freq.put(remove, oldRemoveCount);
+
+                // Add its new contribution
+                score = (score + power(remove, oldRemoveCount)) % MOD;
+            }
+
+            // Add contribution of 'add'
+            int oldAddCount = freq.getOrDefault(add, 0);
+
+            if (oldAddCount > 0) {
+                // Remove old contribution
+                score = (score - power(add, oldAddCount) + MOD) % MOD;
+            }
+
+            int newAddCount = oldAddCount + 1;
+
+            freq.put(add, newAddCount);
+
+            // Add new contribution
+            score = (score + power(add, newAddCount)) % MOD;
+
+            answer = Math.max(answer, score);
+        }
+
+        return (int) answer;
+    }
+
+    // Fast exponentiation
+    private long power(long base, int exponent) {
+
+        long result = 1;
+
+        while (exponent > 0) {
+
+            if ((exponent & 1) == 1) {
+                result = (result * base) % MOD;
+            }
+
+            base = (base * base) % MOD;
+            exponent >>= 1;
+        }
+
+        return result;
+    }
+}
