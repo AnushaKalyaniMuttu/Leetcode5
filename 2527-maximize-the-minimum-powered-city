@@ -1,0 +1,94 @@
+class Solution {
+    public long maxPower(int[] stations, int r, int k) {
+        int n = stations.length;
+
+        long[] power = new long[n];
+
+        // Calculate initial power of every city
+        long window = 0;
+
+        for (int i = 0; i < n; i++) {
+            window += stations[i];
+
+            if (i - r - 1 >= 0) {
+                window -= stations[i - r - 1];
+            }
+
+            if (i + r < n) {
+                // handled later
+            }
+
+            power[i] = window;
+        }
+
+        // Recalculate correctly using prefix sums
+        long[] prefix = new long[n + 1];
+
+        for (int i = 0; i < n; i++) {
+            prefix[i + 1] = prefix[i] + stations[i];
+        }
+
+        for (int i = 0; i < n; i++) {
+            int left = Math.max(0, i - r);
+            int right = Math.min(n - 1, i + r);
+
+            power[i] = prefix[right + 1] - prefix[left];
+        }
+
+        long low = 0;
+        long high = Long.MAX_VALUE / 2;
+
+        // A tighter upper bound
+        long total = prefix[n];
+        high = total + k;
+
+        long answer = 0;
+
+        while (low <= high) {
+            long mid = low + (high - low) / 2;
+
+            if (canAchieve(power, r, k, mid)) {
+                answer = mid;
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+
+        return answer;
+    }
+
+    private boolean canAchieve(long[] power, int r, long k, long target) {
+        int n = power.length;
+
+        long[] diff = new long[n + 1];
+
+        long added = 0;
+
+        for (int i = 0; i < n; i++) {
+            added += diff[i];
+
+            long current = power[i] + added;
+
+            if (current < target) {
+                long need = target - current;
+
+                k -= need;
+
+                if (k < 0) {
+                    return false;
+                }
+
+                added += need;
+
+                int end = Math.min(n - 1, i + 2 * r);
+
+                if (end + 1 < diff.length) {
+                    diff[end + 1] -= need;
+                }
+            }
+        }
+
+        return true;
+    }
+}
