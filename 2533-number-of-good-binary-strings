@@ -1,0 +1,32 @@
+class Solution {
+    public int countGoodStrings(int minLength, int maxLength,
+                                int oneGroup, int zeroGroup) {
+
+        int MOD = 1_000_000_007;
+
+        long[] dp = new long[maxLength + 1];
+
+        dp[0] = 1;
+
+        int answer = 0;
+
+        for (int i = 0; i <= maxLength; i++) {
+
+            if (i >= minLength) {
+                answer = (int) ((answer + dp[i]) % MOD);
+            }
+
+            if (i + oneGroup <= maxLength) {
+                dp[i + oneGroup] =
+                    (dp[i + oneGroup] + dp[i]) % MOD;
+            }
+
+            if (i + zeroGroup <= maxLength) {
+                dp[i + zeroGroup] =
+                    (dp[i + zeroGroup] + dp[i]) % MOD;
+            }
+        }
+
+        return answer;
+    }
+}
