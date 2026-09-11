@@ -1,0 +1,64 @@
+class Solution {
+    public int[] timeTaken(int[] arrival, int[] state) {
+
+        int n = arrival.length;
+        int[] ans = new int[n];
+
+        Queue<Integer> enter = new LinkedList<>();
+        Queue<Integer> exit = new LinkedList<>();
+
+        int time = 0;
+        int i = 0;
+
+        // 1 = exit, 0 = enter
+        int lastUsed = 1;
+
+        while (i < n || !enter.isEmpty() || !exit.isEmpty()) {
+
+            // Add everyone who has arrived
+            while (i < n && arrival[i] <= time) {
+                if (state[i] == 0) {
+                    enter.offer(i);
+                } else {
+                    exit.offer(i);
+                }
+                i++;
+            }
+
+            // Nobody is waiting
+            if (enter.isEmpty() && exit.isEmpty()) {
+                time = arrival[i];
+                lastUsed = 1;
+                continue;
+            }
+
+            // Exit gets priority if door was used for exit previously
+            if (lastUsed == 1 && !exit.isEmpty()) {
+                int person = exit.poll();
+                ans[person] = time;
+                lastUsed = 1;
+            }
+            // Otherwise enter
+            else if (lastUsed == 0 && !enter.isEmpty()) {
+                int person = enter.poll();
+                ans[person] = time;
+                lastUsed = 0;
+            }
+            // If preferred queue is empty, use the other one
+            else if (!exit.isEmpty()) {
+                int person = exit.poll();
+                ans[person] = time;
+                lastUsed = 1;
+            }
+            else {
+                int person = enter.poll();
+                ans[person] = time;
+                lastUsed = 0;
+            }
+
+            time++;
+        }
+
+        return ans;
+    }
+}
