@@ -1,0 +1,41 @@
+class Solution {
+    public long minOperations(int[] nums1, int[] nums2, int k) {
+
+        if (k == 0) {
+
+            for (int i = 0; i < nums1.length; i++) {
+                if (nums1[i] != nums2[i]) {
+                    return -1;
+                }
+            }
+
+            return 0;
+        }
+
+        long positive = 0;
+        long negative = 0;
+
+        for (int i = 0; i < nums1.length; i++) {
+
+            int diff = nums2[i] - nums1[i];
+
+            // Difference must be divisible by k
+            if (diff % k != 0) {
+                return -1;
+            }
+
+            if (diff > 0) {
+                positive += diff;
+            } else {
+                negative += -diff;
+            }
+        }
+
+        // Total amount added must equal total amount removed
+        if (positive != negative) {
+            return -1;
+        }
+
+        return positive / k;
+    }
+}
