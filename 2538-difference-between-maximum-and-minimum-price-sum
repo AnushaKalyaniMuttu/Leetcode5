@@ -1,0 +1,63 @@
+import java.util.*;
+
+class Solution {
+
+    private List<Integer>[] graph;
+    private int[] price;
+    private long answer;
+
+    public long maxOutput(int n, int[][] edges, int[] price) {
+
+        graph = new ArrayList[n];
+        this.price = price;
+
+        for (int i = 0; i < n; i++) {
+            graph[i] = new ArrayList<>();
+        }
+
+        for (int[] edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+
+            graph[u].add(v);
+            graph[v].add(u);
+        }
+
+        answer = 0;
+        dfs(0, -1);
+
+        return answer;
+    }
+
+    private long[] dfs(int node, int parent) {
+
+        // a = maximum path sum including the leaf
+        // b = maximum path sum excluding the leaf
+        long a = price[node];
+        long b = 0;
+
+        for (int next : graph[node]) {
+
+            if (next == parent) {
+                continue;
+            }
+
+            long[] child = dfs(next, node);
+
+            long c = child[0];
+            long d = child[1];
+
+            // Combine two paths through the current node
+            answer = Math.max(
+                answer,
+                Math.max(a + d, b + c)
+            );
+
+            // Update maximum path sums
+            a = Math.max(a, price[node] + c);
+            b = Math.max(b, price[node] + d);
+        }
+
+        return new long[]{a, b};
+    }
+}
